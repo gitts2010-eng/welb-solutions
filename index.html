@@ -86,6 +86,8 @@
   .btn.primary{background:var(--green);color:#fff;border-color:var(--green)}
   .btn.primary:hover{background:#085041}
   .btn.sm{height:26px;font-size:11px;padding:0 10px}
+  .btn.danger-sm{height:26px;font-size:11px;padding:0 10px;background:var(--danger-bg);color:var(--danger);border-color:#fca5a5}
+  .btn.danger-sm:hover{background:#fee2e2}
 
   /* FILTERS */
   .filters{display:flex;gap:8px;padding:10px 16px;border-bottom:1px solid var(--border);flex-wrap:wrap;align-items:center}
@@ -300,8 +302,8 @@
             <input class="fi srch" id="csearch" placeholder="Search name or ID..." oninput="renderClients()">
             <select class="fi" id="cfilter" onchange="renderClients()"><option value="">All Types</option><option value="individual">Individual</option><option value="group">Group Member</option></select>
           </div>
-          <table><thead><tr><th></th><th>ID</th><th>Full Name</th><th>Phone</th><th>Type</th><th>Group</th><th>Location</th><th>Outstanding</th><th>Status</th></tr></thead>
-          <tbody id="ctbody"><tr><td colspan="9" style="text-align:center;padding:24px;color:var(--text2)">No clients yet</td></tr></tbody></table>
+          <table><thead><tr><th></th><th>ID</th><th>Full Name</th><th>Phone</th><th>Type</th><th>Group</th><th>Location</th><th>Outstanding</th><th>Status</th><th>Action</th></tr></thead>
+          <tbody id="ctbody"><tr><td colspan="10" style="text-align:center;padding:24px;color:var(--text2)">No clients yet</td></tr></tbody></table>
         </div>
       </div>
 
@@ -386,7 +388,7 @@
         <div class="card">
           <div class="card-header"><div class="card-title">Loan Groups</div><button class="btn primary" onclick="openModal('modal-group')">+ Create Group</button></div>
           <div class="note">Groups allow multiple clients to borrow under one umbrella. Each member is individually registered and tracked.</div>
-          <table><thead><tr><th>Group ID</th><th>Group Name</th><th>Leader</th><th>Members</th><th>Created</th></tr></thead>
+          <table><thead><tr><th>Group ID</th><th>Group Name</th><th>Leader</th><th>Members</th><th>Created</th><th>Action</th></tr></thead>
           <tbody id="gtbody"><tr><td colspan="5" style="text-align:center;padding:24px;color:var(--text2)">No groups yet</td></tr></tbody></table>
         </div>
       </div>
@@ -431,7 +433,7 @@
       <div class="page" id="page-disbursements">
         <div class="card">
           <div class="card-header"><div class="card-title">Loan Disbursements</div><button class="btn primary" onclick="go('newloan',null)">+ New Loan</button></div>
-          <table><thead><tr><th>Loan ID</th><th>Client</th><th>Type</th><th>Disbursed</th><th>Total Payable</th><th>Paid</th><th>Arrears</th><th>Bal 95%</th><th>Date</th><th>Status</th><th>CR%</th></tr></thead>
+          <table><thead><tr><th>Loan ID</th><th>Client</th><th>Type</th><th>Disbursed</th><th>Total Payable</th><th>Paid</th><th>Arrears</th><th>Bal 95%</th><th>Date</th><th>Status</th><th>CR%</th><th>Action</th></tr></thead>
           <tbody id="dtbody"></tbody><tfoot><tr id="dtfoot"></tr></tfoot></table>
         </div>
       </div>
@@ -485,7 +487,7 @@
         </div>
         <div class="card">
           <div class="card-header"><div class="card-title">Contribution History</div></div>
-          <table><thead><tr><th>Date</th><th>Founder</th><th>Amount</th><th>Running Total</th><th>Note</th></tr></thead>
+          <table><thead><tr><th>Date</th><th>Founder</th><th>Amount</th><th>Running Total</th><th>Note</th><th>Action</th></tr></thead>
           <tbody id="conthtbody"><tr><td colspan="5" style="text-align:center;padding:24px;color:var(--text2)">No contributions yet</td></tr></tbody></table>
         </div>
       </div>
@@ -780,7 +782,7 @@ function renderGroups() {
   if(!S.groups.length) { tb.innerHTML='<tr><td colspan="5" style="text-align:center;padding:24px;color:var(--text2)">No groups yet</td></tr>'; return; }
   tb.innerHTML = S.groups.map(g => {
     const members = S.clients.filter(c=>c.groupId===g.id).length;
-    return `<tr><td>${g.id}</td><td><strong>${g.name}</strong>${g.desc?`<div style="font-size:10px;color:var(--text2)">${g.desc}</div>`:''}</td><td>${g.leader||'—'}</td><td>${members}</td><td>${dd(g.created)}</td></tr>`;
+    return `<tr><td>${g.id}</td><td><strong>${g.name}</strong>${g.desc?`<div style="font-size:10px;color:var(--text2)">${g.desc}</div>`:''}</td><td>${g.leader||'—'}</td><td>${members}</td><td>${dd(g.created)}</td><td><button class="btn danger-sm" onclick="deleteGroup('${g._id||g.id}','${g.name}')">Delete</button></td></tr>`;
   }).join('');
 }
 
@@ -837,7 +839,7 @@ function renderClients() {
     if(filter && c.type !== filter) return false;
     return true;
   });
-  if(!list.length) { tb.innerHTML=`<tr><td colspan="9" style="text-align:center;padding:24px;color:var(--text2)">${S.clients.length?'No matching clients':'No clients yet'}</td></tr>`; return; }
+  if(!list.length) { tb.innerHTML=`<tr><td colspan="10" style="text-align:center;padding:24px;color:var(--text2)">${S.clients.length?'No matching clients':'No clients yet'}</td></tr>`; return; }
   tb.innerHTML = list.map(c => {
     const out = S.loans.filter(l=>l.clientId===c.id).reduce((s,l)=>s+(l.totalPayable-loanPaid(l.id)),0);
     const isOverdue = S.loans.some(l=>l.clientId===c.id&&loanPaid(l.id)<l.monthlyInstalment&&l.status!=='Completed');
@@ -847,7 +849,7 @@ function renderClients() {
     const av = c.photo ? `<img src="${c.photo}" class="client-av" style="border-radius:50%;object-fit:cover">` : `<div class="client-av-ph">${c.name.charAt(0).toUpperCase()}</div>`;
     const gt = c.groupId ? `<span class="sb s-group">${c.groupName||c.groupId}</span>` : '<span style="color:var(--text3)">—</span>';
     const tt = c.type==='group'?'<span class="sb s-group">Group</span>':'<span class="sb s-individual">Individual</span>';
-    return `<tr><td>${av}</td><td style="font-weight:600">${c.id}</td><td>${c.name}</td><td>${c.phone}</td><td>${tt}</td><td>${gt}</td><td>${c.location||'—'}</td><td>${fmt(Math.max(0,out))}</td><td><span class="sb ${sc}">${status}</span></td></tr>`;
+    return `<tr><td>${av}</td><td style="font-weight:600">${c.id}</td><td>${c.name}</td><td>${c.phone}</td><td>${tt}</td><td>${gt}</td><td>${c.location||'—'}</td><td>${fmt(Math.max(0,out))}</td><td><span class="sb ${sc}">${status}</span></td><td><button class="btn danger-sm" onclick="deleteClient('${c._id||c.id}','${c.name}')">Delete</button></td></tr>`;
   }).join('');
 }
 
@@ -875,7 +877,7 @@ function renderFounders() {
     const total = founderTotal(f.id), pct = Math.min(100, Math.round(total/20000*100));
     const barC = pct>=100?'':pct<50?'danger':'warn';
     const status = pct>=100?'<span class="sb s-complete">Complete</span>':total>0?'<span class="sb s-pending">In Progress</span>':'<span class="sb s-overdue">Not Started</span>';
-    return `<tr><td>${i+1}</td><td><strong>${f.name}</strong></td><td>${f.phone||'—'}</td><td>${f.role}</td><td>${fmtK(total)}</td><td><div style="display:flex;align-items:center;gap:6px"><div class="prog-wrap"><div class="prog-bar ${barC}" style="width:${pct}%"></div></div><span style="font-size:11px;color:var(--text2)">${pct}%</span></div></td><td>${status}</td><td><button class="btn sm" onclick="quickContrib('${f.id}')">+ Contribute</button></td></tr>`;
+    return `<tr><td>${i+1}</td><td><strong>${f.name}</strong></td><td>${f.phone||'—'}</td><td>${f.role}</td><td>${fmtK(total)}</td><td><div style="display:flex;align-items:center;gap:6px"><div class="prog-wrap"><div class="prog-bar ${barC}" style="width:${pct}%"></div></div><span style="font-size:11px;color:var(--text2)">${pct}%</span></div></td><td>${status}</td><td style="display:flex;gap:4px"><button class="btn sm" onclick="quickContrib('${f.id}')">+ Contribute</button><button class="btn danger-sm" onclick="deleteFounder('${f._id||f.id}','${f.name}')">Delete</button></td></tr>`;
   }).join('');
 }
 
@@ -926,7 +928,7 @@ function renderContributions() {
   tf.innerHTML = `<td>Totals</td><td>${fmtK(total)}</td><td>${fmtK(target)}</td><td>${fmtK(Math.max(0,target-total))}</td><td></td><td></td>`;
   const ht = document.getElementById('conthtbody');
   if(!S.contributions.length) { ht.innerHTML='<tr><td colspan="5" style="text-align:center;padding:24px;color:var(--text2)">No contributions yet</td></tr>'; return; }
-  ht.innerHTML = [...S.contributions].sort((a,b)=>b.date.localeCompare(a.date)).map(c=>`<tr><td>${dd(c.date)}</td><td>${c.founderName}</td><td>${fmtK(c.amount)}</td><td>${fmtK(c.runningTotal)}</td><td>${c.note||'—'}</td></tr>`).join('');
+  ht.innerHTML = [...S.contributions].sort((a,b)=>b.date.localeCompare(a.date)).map(c=>`<tr><td>${dd(c.date)}</td><td>${c.founderName}</td><td>${fmtK(c.amount)}</td><td>${fmtK(c.runningTotal)}</td><td>${c.note||'—'}</td><td><button class="btn danger-sm" onclick="deleteContrib('${c._id||c.id}','${c.founderName}',${c.amount})">Delete</button></td></tr>`).join('');
 }
 
 // ============================================================
@@ -987,7 +989,7 @@ function renderDisbursements() {
     const sc=l.status==='Active'?'s-active':l.status==='Completed'?'s-complete':'s-overdue';
     const tt=l.type==='group'?'<span class="sb s-group">Group</span>':'<span class="sb s-individual">Individual</span>';
     tD+=l.amount;tC+=l.totalPayable;tP+=paid;tA+=arr;tB+=bal;
-    return `<tr><td><strong>${l.id}</strong></td><td>${l.clientName}</td><td>${tt}</td><td>${fmt(l.amount)}</td><td>${fmt(l.totalPayable)}</td><td>${fmt(paid)}</td><td>${fmt(arr)}</td><td>${fmt(bal)}</td><td>${dd(l.disbursedDate)}</td><td><span class="sb ${sc}">${l.status}</span></td><td class="${crC}">${cr}</td></tr>`;
+    return `<tr><td><strong>${l.id}</strong></td><td>${l.clientName}</td><td>${tt}</td><td>${fmt(l.amount)}</td><td>${fmt(l.totalPayable)}</td><td>${fmt(paid)}</td><td>${fmt(arr)}</td><td>${fmt(bal)}</td><td>${dd(l.disbursedDate)}</td><td><span class="sb ${sc}">${l.status}</span></td><td class="${crC}">${cr}</td><td><button class="btn danger-sm" onclick="deleteLoan('${l._id||l.id}','${l.id}')">Delete</button></td></tr>`;
   }).join('');
   const cr=tC>0?((tP/tC)*100).toFixed(1)+'%':'0%';
   tf.innerHTML=`<td colspan="3"><strong>Totals</strong></td><td>${fmt(tD)}</td><td>${fmt(tC)}</td><td>${fmt(tP)}</td><td>${fmt(tA)}</td><td>${fmt(tB)}</td><td></td><td></td><td class="cr-warn">${cr}</td>`;
@@ -1089,6 +1091,61 @@ async function saveSettings() {
 function loadSettings() {
   document.getElementById('set-user').value=CREDENTIALS.username;
   document.getElementById('set-pass').value='';
+}
+
+// ============================================================
+// DELETE FUNCTIONS
+// ============================================================
+async function deleteClient(docId, name) {
+  if(!confirm(`Delete client "${name}"?\n\nThis will permanently remove them from the system.`)) return;
+  S.clients = S.clients.filter(c => (c._id||c.id) !== docId);
+  if(dbOk) { try { await db.collection('clients').doc(docId).delete(); } catch(e){console.error(e);} }
+  renderClients(); renderDashboard();
+}
+
+async function deleteFounder(docId, name) {
+  if(!confirm(`Delete founder "${name}"?\n\nThis will also remove all their share contributions.`)) return;
+  const founder = S.founders.find(f=>(f._id||f.id)===docId);
+  if(founder) {
+    // delete contributions too
+    const contribs = S.contributions.filter(c=>c.founderId===founder.id);
+    for(const c of contribs) {
+      if(dbOk && c._id) { try { await db.collection('contributions').doc(c._id).delete(); } catch(e){} }
+    }
+    S.contributions = S.contributions.filter(c=>c.founderId!==founder.id);
+  }
+  S.founders = S.founders.filter(f=>(f._id||f.id) !== docId);
+  if(dbOk) { try { await db.collection('founders').doc(docId).delete(); } catch(e){console.error(e);} }
+  renderFounders(); renderContributions(); renderDashboard();
+}
+
+async function deleteLoan(docId, loanId) {
+  if(!confirm(`Delete loan "${loanId}"?\n\nThis will also remove all payments recorded for this loan.`)) return;
+  // delete related payments
+  const pays = S.payments.filter(p=>p.loanId===loanId);
+  for(const p of pays) {
+    if(dbOk && p._id) { try { await db.collection('payments').doc(p._id).delete(); } catch(e){} }
+  }
+  S.payments = S.payments.filter(p=>p.loanId!==loanId);
+  S.loans = S.loans.filter(l=>(l._id||l.id) !== docId);
+  if(dbOk) { try { await db.collection('loans').doc(docId).delete(); } catch(e){console.error(e);} }
+  renderDisbursements(); renderCollections(); renderArrears(); renderDashboard();
+}
+
+async function deleteContrib(docId, founderName, amount) {
+  if(!confirm(`Delete contribution of ${fmtK(amount)} from "${founderName}"?`)) return;
+  S.contributions = S.contributions.filter(c=>(c._id||c.id) !== docId);
+  if(dbOk) { try { await db.collection('contributions').doc(docId).delete(); } catch(e){console.error(e);} }
+  renderContributions(); renderFounders(); renderDashboard();
+}
+
+async function deleteGroup(docId, name) {
+  const members = S.clients.filter(c=>c.groupId === S.groups.find(g=>(g._id||g.id)===docId)?.id).length;
+  if(members > 0) { alert(`Cannot delete group "${name}" — it has ${members} client(s) assigned to it. Remove or reassign those clients first.`); return; }
+  if(!confirm(`Delete group "${name}"?`)) return;
+  S.groups = S.groups.filter(g=>(g._id||g.id) !== docId);
+  if(dbOk) { try { await db.collection('groups').doc(docId).delete(); } catch(e){console.error(e);} }
+  renderGroups(); updateGroupSelects();
 }
 
 // INIT
