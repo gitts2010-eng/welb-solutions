@@ -279,7 +279,7 @@
           <div class="stat-card"><div class="stat-label">Total Disbursed</div><div class="stat-value" id="d-disbursed">KES 0</div><div class="stat-sub" id="d-lcount">0 active loans</div></div>
           <div class="stat-card"><div class="stat-label">Collections MTD</div><div class="stat-value" id="d-collected">KES 0</div><div class="stat-sub">Payments received</div></div>
           <div class="stat-card danger"><div class="stat-label">In Arrears</div><div class="stat-value" id="d-arrears">KES 0</div><div class="stat-sub" id="d-acount">0 overdue</div></div>
-          <div class="stat-card"><div class="stat-label">Share Capital Raised</div><div class="stat-value" id="d-cap">KES 0</div><div class="stat-sub">of KES 200,000 target</div></div>
+          <div class="stat-card"><div class="stat-label">Share Capital Raised</div><div class="stat-value" id="d-cap">KES 0</div><div class="stat-sub" id="d-cap-sub">of KES 150,000 target</div></div>
         </div>
         <div class="stats-grid">
           <div class="stat-card"><div class="stat-label">Total Clients</div><div class="stat-value" id="d-clients">0</div><div class="stat-sub" id="d-groups">0 groups</div></div>
@@ -470,7 +470,7 @@
       <div class="page" id="page-shareholders">
         <div class="card">
           <div class="card-header"><div class="card-title">Founders / Shareholders</div><button class="btn primary" onclick="openAddFounderModal()">+ Add Founder</button></div>
-          <div class="note" style="margin:12px 16px 0">10 founder slots. Each founder contributes towards KES 20,000 minimum share capital.</div>
+          <div class="note" style="margin:12px 16px 0">10 founder slots. Overall share capital target is <strong>KES 150,000</strong> — each founder's guide contribution is KES 15,000. No hard cap per person.</div>
           <table style="margin-top:12px"><thead><tr><th>#</th><th>Name</th><th>Phone</th><th>Role</th><th>Contributed</th><th>Progress</th><th>Status</th><th></th></tr></thead>
           <tbody id="ftbody"><tr><td colspan="8" style="text-align:center;padding:24px;color:var(--text2)">No founders added yet</td></tr></tbody></table>
         </div>
@@ -480,7 +480,7 @@
       <div class="page" id="page-contributions">
         <div class="card">
           <div class="card-header"><div class="card-title">Share Capital Contributions</div><button class="btn primary" onclick="openContribModal()">+ Record Contribution</button></div>
-          <div class="note" style="margin:12px 16px 0">Contributions can be made in any amount at any time until the KES 20,000 target is reached.</div>
+          <div class="note" style="margin:12px 16px 0">Overall share capital target is <strong>KES 150,000</strong> (KES 15,000 per founder as a guide). Contributions can be made in any amount at any time — no upper limit per person.</div>
           <div style="padding:12px 16px;border-bottom:1px solid var(--border)" id="contrib-sum-cards"></div>
           <table><thead><tr><th>Founder</th><th>Contributed</th><th>Target</th><th>Remaining</th><th>Progress</th><th>Status</th></tr></thead>
           <tbody id="conttbody"></tbody><tfoot><tr id="conttfoot"></tr></tfoot></table>
@@ -663,20 +663,32 @@ function runOffline() {
 async function loadAllData() {
   if(!dbOk) return;
   try {
-    const cols = ['clients','loans','founders','contributions','payments','groups','settings'];
-    for(const col of cols) {
-      if(col === 'settings') {
-        const doc = await db.collection('settings').doc('main').get();
-        if(doc.exists) {
-          const d = doc.data();
-          if(d.username) CREDENTIALS.username = d.username;
-          if(d.password) CREDENTIALS.password = d.password;
-          S.settings = d;
-        }
-      } else {
-        const snap = await db.collection(col).get();
-        S[col] = snap.docs.map(d => ({ ...d.data(), _id: d.id }));
+    // Load settings FIRST so credentials are ready before login
+    const settingsDoc = await db.collection('settings').doc('main').get();
+    if(settingsDoc.exists) {
+      const d = settingsDoc.data();
+      // Only load credentials if no one is logged in yet
+      if(!currentUser) {
+        if(d.username) CREDENTIALS.username = d.username;
+        if(d.password) CREDENTIALS.password = d.password;
       }
+      S.settings = d;
+      // Restore company/display name in UI if already logged in
+      if(d.company) {
+        const el = document.getElementById('set-company');
+        if(el) el.value = d.company;
+      }
+      if(d.displayName) {
+        const el = document.getElementById('set-dname');
+        if(el) el.value = d.displayName;
+      }
+    }
+
+    // Load all other collections
+    const cols = ['clients','loans','founders','contributions','payments','groups'];
+    for(const col of cols) {
+      const snap = await db.collection(col).get();
+      S[col] = snap.docs.map(d => ({ ...d.data(), _id: d.id }));
     }
     renderDashboard();
   } catch(e) { console.error('Load error', e); }
@@ -871,12 +883,13 @@ async function saveFounder() {
 }
 
 function renderFounders() {
+  const PER_FOUNDER_TARGET = 15000; // KES 150,000 total / 10 founders
   const tb = document.getElementById('ftbody');
   if(!S.founders.length) { tb.innerHTML='<tr><td colspan="8" style="text-align:center;padding:24px;color:var(--text2)">No founders yet</td></tr>'; return; }
   tb.innerHTML = S.founders.map((f,i) => {
-    const total = founderTotal(f.id), pct = Math.min(100, Math.round(total/20000*100));
+    const total = founderTotal(f.id), pct = Math.min(100, Math.round(total/PER_FOUNDER_TARGET*100));
     const barC = pct>=100?'':pct<50?'danger':'warn';
-    const status = pct>=100?'<span class="sb s-complete">Complete</span>':total>0?'<span class="sb s-pending">In Progress</span>':'<span class="sb s-overdue">Not Started</span>';
+    const status = pct>=100?'<span class="sb s-complete">At Target</span>':total>0?'<span class="sb s-pending">In Progress</span>':'<span class="sb s-overdue">Not Started</span>';
     return `<tr><td>${i+1}</td><td><strong>${f.name}</strong></td><td>${f.phone||'—'}</td><td>${f.role}</td><td>${fmtK(total)}</td><td><div style="display:flex;align-items:center;gap:6px"><div class="prog-wrap"><div class="prog-bar ${barC}" style="width:${pct}%"></div></div><span style="font-size:11px;color:var(--text2)">${pct}%</span></div></td><td>${status}</td><td style="display:flex;gap:4px"><button class="btn sm" onclick="quickContrib('${f.id}')">+ Contribute</button><button class="btn danger-sm" onclick="deleteFounder('${f._id||f.id}','${f.name}')">Delete</button></td></tr>`;
   }).join('');
 }
@@ -904,8 +917,7 @@ async function saveContrib() {
   const note = document.getElementById('c-note').value.trim();
   if(!fid) { alert('Select founder.'); return; }
   if(!amt||amt<=0) { alert('Enter valid amount.'); return; }
-  const prev = founderTotal(fid), newTotal = prev+amt;
-  if(newTotal > 20000) { alert('Exceeds target. Remaining: '+fmtK(20000-prev)); return; }
+  const prev = founderTotal(fid), newTotal = prev + amt;
   const founder = S.founders.find(f=>f.id===fid);
   const c = { id:'C-'+Date.now(), founderId:fid, founderName:founder.name, amount:amt, date:dt, note, runningTotal:newTotal };
   S.contributions.push(c); await saveDoc('contributions', c);
@@ -913,19 +925,29 @@ async function saveContrib() {
 }
 
 function renderContributions() {
+  const TOTAL_TARGET = 150000;
+  const PER_FOUNDER_TARGET = S.founders.length > 0 ? Math.round(TOTAL_TARGET / S.founders.length) : 15000;
   const total = S.contributions.reduce((s,c)=>s+c.amount,0);
-  const complete = S.founders.filter(f=>founderTotal(f.id)>=20000).length;
-  const target = S.founders.length * 20000;
-  document.getElementById('contrib-sum-cards').innerHTML = `<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px"><div class="mini-stat"><div class="mini-val">${fmtK(total)}</div><div class="mini-lbl">Total Raised</div></div><div class="mini-stat"><div class="mini-val">${fmtK(target)}</div><div class="mini-lbl">Total Target</div></div><div class="mini-stat"><div class="mini-val">${complete} / ${S.founders.length}</div><div class="mini-lbl">Founders Complete</div></div></div>`;
+  const complete = S.founders.filter(f=>founderTotal(f.id)>=PER_FOUNDER_TARGET).length;
+  const overallPct = Math.min(100, Math.round(total/TOTAL_TARGET*100));
+  document.getElementById('contrib-sum-cards').innerHTML = `<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+    <div class="mini-stat"><div class="mini-val">${fmtK(total)}</div><div class="mini-lbl">Total Raised</div></div>
+    <div class="mini-stat"><div class="mini-val">${fmtK(TOTAL_TARGET)}</div><div class="mini-lbl">Overall Target</div></div>
+    <div class="mini-stat"><div class="mini-val">${overallPct}%</div><div class="mini-lbl">Overall Progress</div></div>
+    <div class="mini-stat"><div class="mini-val">${complete} / ${S.founders.length}</div><div class="mini-lbl">Founders at Target</div></div>
+  </div>`;
   const tb = document.getElementById('conttbody'), tf = document.getElementById('conttfoot');
   if(!S.founders.length) { tb.innerHTML='<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text2)">No founders added</td></tr>'; return; }
   tb.innerHTML = S.founders.map(f => {
-    const tot = founderTotal(f.id), pct = Math.min(100,Math.round(tot/20000*100)), rem = Math.max(0,20000-tot);
+    const tot = founderTotal(f.id);
+    const pct = Math.min(100, Math.round(tot/PER_FOUNDER_TARGET*100));
+    const rem = Math.max(0, PER_FOUNDER_TARGET-tot);
     const barC = pct>=100?'':pct<50?'danger':'warn';
-    const status = pct>=100?'<span class="sb s-complete">Complete</span>':tot>0?'<span class="sb s-pending">In Progress</span>':'<span class="sb s-overdue">Not Started</span>';
-    return `<tr><td>${f.name}</td><td>${fmtK(tot)}</td><td>KES 20,000</td><td style="color:${rem>0?'var(--warn)':'var(--green)'}">${fmtK(rem)}</td><td><div style="display:flex;align-items:center;gap:6px"><div class="prog-wrap"><div class="prog-bar ${barC}" style="width:${pct}%"></div></div><span style="font-size:11px;color:var(--text2)">${pct}%</span></div></td><td>${status}</td></tr>`;
+    const status = pct>=100?'<span class="sb s-complete">At Target</span>':tot>0?'<span class="sb s-pending">In Progress</span>':'<span class="sb s-overdue">Not Started</span>';
+    return `<tr><td>${f.name}</td><td>${fmtK(tot)}</td><td>${fmtK(PER_FOUNDER_TARGET)}</td><td style="color:${rem>0?'var(--warn)':'var(--green)'}">${fmtK(rem)}</td><td><div style="display:flex;align-items:center;gap:6px"><div class="prog-wrap"><div class="prog-bar ${barC}" style="width:${pct}%"></div></div><span style="font-size:11px;color:var(--text2)">${pct}%</span></div></td><td>${status}</td></tr>`;
   }).join('');
-  tf.innerHTML = `<td>Totals</td><td>${fmtK(total)}</td><td>${fmtK(target)}</td><td>${fmtK(Math.max(0,target-total))}</td><td></td><td></td>`;
+  const target = S.founders.length * PER_FOUNDER_TARGET;
+  tf.innerHTML = `<td>Totals</td><td>${fmtK(total)}</td><td>${fmtK(TOTAL_TARGET)}</td><td>${fmtK(Math.max(0,TOTAL_TARGET-total))}</td><td></td><td></td>`;
   const ht = document.getElementById('conthtbody');
   if(!S.contributions.length) { ht.innerHTML='<tr><td colspan="5" style="text-align:center;padding:24px;color:var(--text2)">No contributions yet</td></tr>'; return; }
   ht.innerHTML = [...S.contributions].sort((a,b)=>b.date.localeCompare(a.date)).map(c=>`<tr><td>${dd(c.date)}</td><td>${c.founderName}</td><td>${fmtK(c.amount)}</td><td>${fmtK(c.runningTotal)}</td><td>${c.note||'—'}</td><td><button class="btn danger-sm" onclick="deleteContrib('${c._id||c.id}','${c.founderName}',${c.amount})">Delete</button></td></tr>`).join('');
@@ -1073,24 +1095,57 @@ function renderDashboard() {
   document.getElementById('d-clients').textContent=S.clients.length;
   document.getElementById('d-groups').textContent=S.groups.length+' group'+(S.groups.length!==1?'s':'');
   document.getElementById('d-founders').textContent=S.founders.length+' / 10';
+  // Update share capital stat subtitle to show KES 150,000 target
+  const capSub = document.getElementById('d-cap-sub');
+  if(capSub) capSub.textContent = 'of KES 150,000 target';
   const tb=document.getElementById('dash-tbody');
   if(!S.loans.length){tb.innerHTML='<tr><td colspan="8" style="text-align:center;padding:24px;color:var(--text2)">No loans yet</td></tr>';return;}
   tb.innerHTML=[...S.loans].reverse().slice(0,5).map(l=>{const paid=loanPaid(l.id),cr=l.totalPayable>0?((paid/l.totalPayable)*100).toFixed(1)+'%':'0%',crC=parseFloat(cr)>=5?'cr-good':parseFloat(cr)>0?'cr-warn':'cr-bad',sc=l.status==='Active'?'s-active':l.status==='Completed'?'s-complete':'s-overdue';return`<tr><td><strong>${l.id}</strong></td><td>${l.clientName}</td><td>${fmt(l.amount)}</td><td>${fmt(l.totalPayable)}</td><td>${fmt(paid)}</td><td>${dd(l.disbursedDate)}</td><td><span class="sb ${sc}">${l.status}</span></td><td class="${crC}">${cr}</td></tr>`;}).join('');
 }
 
 async function saveSettings() {
-  const u=document.getElementById('set-user').value.trim(), p=document.getElementById('set-pass').value.trim();
-  if(u) CREDENTIALS.username=u;
-  if(p) CREDENTIALS.password=p;
-  const settings={username:CREDENTIALS.username,password:CREDENTIALS.password,company:document.getElementById('set-company').value,displayName:document.getElementById('set-dname').value};
-  if(dbOk) await db.collection('settings').doc('main').set(settings);
-  document.getElementById('sb-user').textContent=settings.displayName||u;
-  document.getElementById('top-avatar').textContent=(settings.displayName||u).substring(0,2).toUpperCase();
-  alert('Settings saved!');
+  const u = document.getElementById('set-user').value.trim();
+  const p = document.getElementById('set-pass').value.trim();
+  const company = document.getElementById('set-company').value.trim();
+  const displayName = document.getElementById('set-dname').value.trim();
+
+  // Update in-memory credentials IMMEDIATELY so new password works right away
+  if(u) CREDENTIALS.username = u;
+  if(p) CREDENTIALS.password = p;
+
+  const settings = {
+    username: CREDENTIALS.username,
+    password: CREDENTIALS.password,
+    company: company || 'WELB Solutions Microfinance Ltd',
+    displayName: displayName || CREDENTIALS.username,
+  };
+
+  // Save to Firestore
+  if(dbOk) {
+    try {
+      await db.collection('settings').doc('main').set(settings);
+    } catch(e) { console.error('Settings save error', e); }
+  }
+
+  S.settings = settings;
+
+  // Update UI immediately
+  const dispName = settings.displayName || settings.username;
+  document.getElementById('sb-user').textContent = dispName.charAt(0).toUpperCase() + dispName.slice(1);
+  document.getElementById('top-avatar').textContent = dispName.substring(0,2).toUpperCase();
+
+  // Clear password field after saving
+  document.getElementById('set-pass').value = '';
+
+  alert('Settings saved! Your new password is active immediately.');
 }
 function loadSettings() {
-  document.getElementById('set-user').value=CREDENTIALS.username;
-  document.getElementById('set-pass').value='';
+  document.getElementById('set-user').value = CREDENTIALS.username || 'admin';
+  document.getElementById('set-pass').value = '';
+  // Restore company and display name from saved settings
+  const s = S.settings || {};
+  document.getElementById('set-company').value = s.company || 'WELB Solutions Microfinance Ltd';
+  document.getElementById('set-dname').value = s.displayName || CREDENTIALS.username || 'Admin';
 }
 
 // ============================================================
