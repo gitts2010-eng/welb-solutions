@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WELB Solutions — Microfinance System</title>
+<title>WELB</title>
 
 <!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
@@ -33,7 +33,6 @@
   .brand-row{display:flex;align-items:center;gap:10px}
   .brand-icon{width:38px;height:38px;border-radius:9px;background:var(--green);display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:700;flex-shrink:0;letter-spacing:0.5px}
   .brand-name{font-size:13px;font-weight:700;color:var(--text);line-height:1.2}
-  .brand-sub{font-size:10px;color:var(--text2)}
   .user-info{padding:10px 16px;border-bottom:1px solid var(--border)}
   .user-name{font-size:12px;font-weight:600;color:var(--text)}
   .user-online{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--green-mid);margin-top:2px}
@@ -44,7 +43,6 @@
   .nav-item:hover{background:#f9f9f7;color:var(--text)}
   .nav-item.active{background:var(--green-light);color:var(--green);font-weight:600;border-left-color:var(--green)}
   .ni{width:14px;height:14px;flex-shrink:0;opacity:0.8}
-  .nav-item.active .ni{opacity:1}
 
   /* TOPBAR */
   .topbar-title{font-size:14px;font-weight:600;color:var(--text)}
@@ -54,7 +52,6 @@
   .save-dot.saved{background:var(--green-mid)}
   .save-dot.saving{background:var(--warn);animation:pulse 1s infinite}
   @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
-  .avatar{width:30px;height:30px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;font-weight:700}
 
   /* CARDS & STATS */
   .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
@@ -62,7 +59,6 @@
   .stat-label{font-size:11px;color:var(--text2);margin-bottom:3px}
   .stat-value{font-size:20px;font-weight:700;color:var(--text);margin-bottom:2px;line-height:1.2}
   .stat-sub{font-size:11px;color:var(--green-mid)}
-  .stat-card.danger .stat-sub{color:var(--danger)}
   .card{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:14px}
   .card-header{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
   .card-title{font-size:13px;font-weight:600;color:var(--text)}
@@ -73,323 +69,163 @@
   table{width:100%;border-collapse:collapse;font-size:12px}
   th{background:#fafaf8;font-weight:600;color:var(--text2);padding:9px 12px;text-align:left;font-size:11px;white-space:nowrap;border-bottom:1px solid var(--border)}
   td{padding:9px 12px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle}
-  tr:last-child td{border-bottom:none}
-  tr:hover td{background:#fafaf8}
-  tfoot td{font-weight:700;background:#fafaf8;border-top:1px solid var(--border2)}
-  .cr-good{color:var(--green);font-weight:600}
-  .cr-warn{color:var(--warn);font-weight:600}
-  .cr-bad{color:var(--danger);font-weight:600}
 
   /* BUTTONS */
   .btn{font-size:12px;padding:6px 14px;border:1px solid var(--border2);border-radius:7px;background:var(--surface);color:var(--text);cursor:pointer;height:32px;white-space:nowrap;font-weight:500;transition:all 0.1s}
-  .btn:hover{background:#f5f5f2;border-color:#bbb}
   .btn.primary{background:var(--green);color:#fff;border-color:var(--green)}
-  .btn.primary:hover{background:#085041}
-  .btn.sm{height:26px;font-size:11px;padding:0 10px}
-  .btn.danger-sm{height:26px;font-size:11px;padding:0 10px;background:var(--danger-bg);color:var(--danger);border-color:#fca5a5}
-  .btn.danger-sm:hover{background:#fee2e2}
 
-  /* FILTERS */
-  .filters{display:flex;gap:8px;padding:10px 16px;border-bottom:1px solid var(--border);flex-wrap:wrap;align-items:center}
-  .fi{font-size:12px;padding:5px 9px;border:1px solid var(--border2);border-radius:7px;background:var(--surface);color:var(--text);height:32px}
-  .fi:focus{outline:none;border-color:var(--green-mid)}
-  .srch{width:200px}
-
-  /* FORM */
+  /* FORMS */
   .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
   .form-group{display:flex;flex-direction:column;gap:5px}
   .form-label{font-size:11px;color:var(--text2);font-weight:600}
   .form-input{font-size:12px;padding:8px 10px;border:1px solid var(--border2);border-radius:7px;background:var(--surface);color:var(--text)}
-  .form-input:focus{outline:none;border-color:var(--green-mid);box-shadow:0 0 0 3px rgba(29,158,117,0.1)}
   .form-actions{padding:12px 16px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;background:#fafaf8}
 
   /* BADGES */
-  .sb{font-size:10px;padding:3px 9px;border-radius:20px;font-weight:600;display:inline-block;white-space:nowrap}
+  .sb{font-size:10px;padding:3px 9px;border-radius:20px;font-weight:600;display:inline-block}
   .s-active{background:var(--green-light);color:var(--green)}
   .s-overdue{background:var(--danger-bg);color:var(--danger)}
   .s-pending{background:var(--warn-bg);color:var(--warn)}
   .s-complete{background:var(--info-bg);color:var(--info)}
-  .s-group{background:var(--purple-bg);color:var(--purple)}
-  .s-individual{background:#f5f5f2;color:var(--text2)}
 
-  /* PROGRESS */
+  /* PROGRESS BAR */
   .prog-wrap{background:#e5e5e0;border-radius:4px;height:7px;flex:1;min-width:60px}
   .prog-bar{height:7px;border-radius:4px;background:var(--green-mid);transition:width 0.3s}
   .prog-bar.warn{background:#f59e0b}
   .prog-bar.danger{background:#ef4444}
 
   /* PHOTO UPLOAD */
-  .upload-zone{border:1.5px dashed var(--border2);border-radius:9px;padding:14px 10px;text-align:center;cursor:pointer;background:#fafaf8;transition:border-color 0.15s}
-  .upload-zone:hover{border-color:var(--green-mid);background:var(--green-light)}
+  .upload-zone{border:1.5px dashed var(--border2);border-radius:9px;padding:14px 10px;text-align:center;cursor:pointer;background:#fafaf8}
   .upload-ph{width:64px;height:64px;border-radius:50%;background:#f0f0ec;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;margin:0 auto 6px}
-  .upload-ph.rect{border-radius:7px}
   .upload-ph img{width:100%;height:100%;object-fit:cover;border-radius:inherit}
-  .upload-hint{font-size:11px;color:var(--text2)}
-  .upload-hint2{font-size:10px;color:var(--text3);margin-top:2px}
   .client-av{width:30px;height:30px;border-radius:50%;object-fit:cover;flex-shrink:0}
-  .client-av-ph{width:30px;height:30px;border-radius:50%;background:var(--green-light);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--green);flex-shrink:0}
-
-  /* MINI STATS */
-  .mini-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:12px 16px;background:#fafaf8;border-top:1px solid var(--border)}
-  .mini-stat{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 12px;text-align:center}
-  .mini-val{font-size:16px;font-weight:700;color:var(--text)}
-  .mini-lbl{font-size:10px;color:var(--text2);margin-top:2px}
-
-  /* NOTE BOX */
-  .note{background:var(--green-light);border:1px solid #9fe1cb;border-radius:8px;padding:10px 13px;font-size:11px;color:#085041;margin-bottom:12px;line-height:1.6}
+  .client-av-ph{width:30px;height:30px;border-radius:50%;background:var(--green-light);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--green)}
 
   /* MODAL */
   .overlay{position:fixed;inset:0;background:rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;z-index:1000;backdrop-filter:blur(2px)}
-  .modal{background:var(--surface);border-radius:12px;border:1px solid var(--border);width:400px;max-width:95vw;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.15)}
-  .modal-hd{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--surface)}
-  .modal-title{font-size:13px;font-weight:700;color:var(--text)}
-  .modal-body{padding:16px;display:flex;flex-direction:column;gap:11px}
-  .modal-ft{padding:12px 18px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;background:#fafaf8;border-radius:0 0 12px 12px}
-  .close-x{background:none;border:none;font-size:20px;cursor:pointer;color:var(--text2);line-height:1;padding:2px 6px;border-radius:4px}
-  .close-x:hover{background:#f0f0ec}
+  .modal{background:var(--surface);border-radius:12px;width:400px;max-width:95vw;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.15)}
+  .modal-hd{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
 
-  /* LOGIN */
+  /* LOGIN SCREEN */
   #login-screen{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:2000}
-  .login-box{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:32px;width:340px;box-shadow:0 8px 40px rgba(0,0,0,0.08)}
-  .login-logo{width:52px;height:52px;border-radius:12px;background:var(--green);display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;font-weight:700;margin:0 auto 14px;letter-spacing:1px}
-  .login-title{font-size:18px;font-weight:700;color:var(--text);text-align:center;margin-bottom:4px}
-  .login-sub{font-size:12px;color:var(--text2);text-align:center;margin-bottom:24px}
-  .login-form{display:flex;flex-direction:column;gap:12px}
-  .login-err{color:var(--danger);font-size:11px;text-align:center;display:none}
-
-  /* FIREBASE STATUS */
-  #db-status{position:fixed;bottom:14px;right:14px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-size:11px;color:var(--text2);box-shadow:0 2px 12px rgba(0,0,0,0.08);z-index:500;display:flex;align-items:center;gap:6px}
-  .db-dot{width:7px;height:7px;border-radius:50%;background:#ccc;flex-shrink:0}
-  .db-dot.connected{background:var(--green-mid)}
-  .db-dot.error{background:var(--danger)}
-
-  @media(max-width:768px){
-    #sidebar{display:none}
-    .stats-grid{grid-template-columns:1fr 1fr}
-    .form-grid{grid-template-columns:1fr}
-  }
+  .login-box{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:32px;width:340px}
 </style>
 </head>
 <body>
 
-<!-- LOGIN SCREEN -->
+<!-- LOGIN -->
 <div id="login-screen">
   <div class="login-box">
-    <div class="login-logo">WS</div>
-    <div class="login-title">WELB Solutions</div>
-    <div class="login-sub">Microfinance Management System</div>
+    <div style="width:52px;height:52px;border-radius:12px;background:var(--green);display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;font-weight:700;margin:0 auto 14px;">W</div>
+    <div style="font-size:18px;font-weight:700;color:var(--text);text-align:center;margin-bottom:24px">WELB</div>
     <div class="login-form">
       <div class="form-group">
         <label class="form-label">Username</label>
-        <input class="form-input" id="login-user" placeholder="Enter username" autocomplete="username">
+        <input class="form-input" id="login-user" placeholder="Enter username">
       </div>
-      <div class="form-group">
+      <div class="form-group" style="margin-top:12px">
         <label class="form-label">Password</label>
-        <input class="form-input" type="password" id="login-pass" placeholder="Enter password" autocomplete="current-password">
+        <input class="form-input" type="password" id="login-pass" placeholder="Enter password">
       </div>
-      <div class="login-err" id="login-err">Invalid username or password</div>
-      <button class="btn primary" style="width:100%;height:38px;font-size:13px;margin-top:4px" onclick="doLogin()">Sign In</button>
-      <div style="font-size:10px;color:var(--text3);text-align:center;margin-top:8px">Password reset: Contact Admin</div>
+      <div id="login-err" style="color:var(--danger);font-size:11px;text-align:center;display:none;margin-top:8px">Invalid credentials</div>
+      <button class="btn primary" style="width:100%;height:38px;font-size:13px;margin-top:16px" onclick="doLogin()">Sign In</button>
     </div>
   </div>
 </div>
 
-<!-- MAIN APP -->
+<!-- APP -->
 <div id="app" style="display:none">
-
-  <!-- SIDEBAR -->
   <div id="sidebar">
     <div class="brand">
-      <div class="brand-row">
-        <div class="brand-icon">WS</div>
-        <div><div class="brand-name">WELB Solutions</div><div class="brand-sub">Microfinance Ltd</div></div>
-      </div>
+        <div class="brand-row"><div class="brand-icon">W</div><div class="brand-name">WELB</div></div>
     </div>
     <div class="user-info">
       <div class="user-name" id="sb-user">Admin</div>
       <div class="user-online"><div class="online-dot"></div>Online</div>
     </div>
     <div class="nav">
-      <div class="nav-item active" onclick="go('dashboard',this)">
-        <svg class="ni" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>Dashboard
-      </div>
+      <div class="nav-item active" onclick="go('dashboard',this)">Dashboard</div>
       <div class="nav-section">Clients</div>
-      <div class="nav-item" onclick="go('clients',this)">
-        <svg class="ni" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6" cy="5" r="3"/><path d="M1 13c0-3 2-5 5-5s5 2 5 5"/><circle cx="12" cy="5" r="2"/><path d="M15 13c0-2-1-3.5-3-4"/></svg>All Clients
-      </div>
-      <div class="nav-item" onclick="go('addclient',this)">
-        <svg class="ni" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6" cy="5" r="3"/><path d="M1 13c0-3 2-5 5-5"/><path d="M12 9v6M9 12h6"/></svg>Add Client
-      </div>
-      <div class="nav-item" onclick="go('groups',this)">
-        <svg class="ni" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="4" cy="6" r="2.5"/><circle cx="12" cy="6" r="2.5"/><circle cx="8" cy="4" r="2.5"/><path d="M5 14c0-2 1.5-3 3-3s3 1 3 3"/></svg>Groups
-      </div>
+      <div class="nav-item" onclick="go('clients',this)">All Clients</div>
+      <div class="nav-item" onclick="go('addclient',this)">Add Client</div>
+      <div class="nav-item" onclick="go('groups',this)">Groups</div>
       <div class="nav-section">Loanbook</div>
-      <div class="nav-item" onclick="go('disbursements',this)">
-        <svg class="ni" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8h12M8 2l4 6-4 6"/></svg>Loan Disbursements
-      </div>
-      <div class="nav-item" onclick="go('newloan',this)">
-        <svg class="ni" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2v12M2 8h12"/></svg>New Loan
-      </div>
-      <div class="nav-item" onclick="go('collections',this)">
-        <svg class="ni" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 11l4-4 3 3 5-6"/></svg>Collections MTD
-      </div>
-      <div class="nav-item" onclick="go('arrears',this)">
-        <svg class="ni" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><path d="M8 5v3l2 2"/></svg>Loan Arrears
-      </div>
-      <div class="nav-section">Reports</div>
-      <div class="nav-item" onclick="go('report',this)">
-        <svg class="ni" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="3" width="14" height="10" rx="1"/><path d="M1 7h14"/></svg>Progressive Report
-      </div>
+      <div class="nav-item" onclick="go('disbursements',this)">Disbursements</div>
+      <div class="nav-item" onclick="go('newloan',this)">New Loan</div>
+      <div class="nav-item" onclick="go('collections',this)">Collections</div>
       <div class="nav-section">Founders</div>
-      <div class="nav-item" onclick="go('shareholders',this)">
-        <svg class="ni" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 13V5l6-3 6 3v8"/><path d="M6 13V9h4v4"/></svg>Shareholders
-      </div>
-      <div class="nav-item" onclick="go('contributions',this)">
-        <svg class="ni" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><path d="M8 5v6M5 8h6"/></svg>Share Contributions
-      </div>
-      <div class="nav-section">Finance</div>
-      <div class="nav-item" onclick="go('accounting',this)">
-        <svg class="ni" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="12" height="12" rx="1"/><path d="M5 8h6M5 5h4M5 11h3"/></svg>Accounting
-      </div>
-      <div class="nav-section">System</div>
-      <div class="nav-item" onclick="go('settings',this)">
-        <svg class="ni" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="2.5"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.2 3.2l1.4 1.4M11.4 11.4l1.4 1.4M3.2 12.8l1.4-1.4M11.4 4.6l1.4-1.4"/></svg>Settings
-      </div>
-      <div class="nav-item" onclick="doLogout()">
-        <svg class="ni" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2H3a1 1 0 00-1 1v10a1 1 0 001 1h3M10 11l3-3-3-3M13 8H6"/></svg>Logout
-      </div>
+      <div class="nav-item" onclick="go('shareholders',this)">Shareholders</div>
+      <div class="nav-item" onclick="go('contributions',this)">Contributions</div>
+      <div class="nav-section">Other</div>
+      <div class="nav-item" onclick="go('accounting',this)">Accounting</div>
+      <div class="nav-item" onclick="go('settings',this)">Settings</div>
+      <div class="nav-item" onclick="doLogout()">Logout</div>
     </div>
   </div>
 
-  <!-- MAIN -->
   <div id="main">
     <div class="topbar">
       <div class="topbar-title" id="page-title">Dashboard</div>
       <div class="topbar-right">
         <div class="save-status"><div class="save-dot" id="save-dot"></div><span id="save-txt">Ready</span></div>
-        <span style="font-size:11px;color:var(--text2)" id="date-out"></span>
-        <div class="avatar" id="top-avatar">AD</div>
+        <div class="avatar" style="width:30px;height:30px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700">AD</div>
       </div>
     </div>
-    <div class="content">
 
+    <div class="content">
       <!-- DASHBOARD -->
       <div class="page active" id="page-dashboard">
         <div class="stats-grid">
           <div class="stat-card"><div class="stat-label">Total Disbursed</div><div class="stat-value" id="d-disbursed">KES 0</div><div class="stat-sub" id="d-lcount">0 active loans</div></div>
           <div class="stat-card"><div class="stat-label">Collections MTD</div><div class="stat-value" id="d-collected">KES 0</div><div class="stat-sub">Payments received</div></div>
-          <div class="stat-card danger"><div class="stat-label">In Arrears</div><div class="stat-value" id="d-arrears">KES 0</div><div class="stat-sub" id="d-acount">0 overdue</div></div>
-          <div class="stat-card"><div class="stat-label">Share Capital Raised</div><div class="stat-value" id="d-cap">KES 0</div><div class="stat-sub" id="d-cap-sub">of KES 150,000 target</div></div>
-        </div>
-        <div class="stats-grid">
-          <div class="stat-card"><div class="stat-label">Total Clients</div><div class="stat-value" id="d-clients">0</div><div class="stat-sub" id="d-groups">0 groups</div></div>
-          <div class="stat-card"><div class="stat-label">Interest Rate</div><div class="stat-value">12%</div><div class="stat-sub">Per annum flat</div></div>
-          <div class="stat-card"><div class="stat-label">Founders</div><div class="stat-value" id="d-founders">0 / 10</div><div class="stat-sub">Registered</div></div>
-          <div class="stat-card"><div class="stat-label">Min. Share Capital</div><div class="stat-value">KES 20K</div><div class="stat-sub">Per founder</div></div>
+          <div class="stat-card"><div class="stat-label">Share Capital</div><div class="stat-value" id="d-cap">KES 0</div><div class="stat-sub">of KES 20,000 target</div></div>
+          <div class="stat-card"><div class="stat-label">Total Clients</div><div class="stat-value" id="d-clients">0</div><div class="stat-sub">Registered</div></div>
         </div>
         <div class="card">
-          <div class="card-header"><div class="card-title">Recent Loans</div><button class="btn primary" onclick="go('newloan',null)">+ New Loan</button></div>
-          <table><thead><tr><th>Loan ID</th><th>Client</th><th>Amount</th><th>Total Payable</th><th>Paid</th><th>Date</th><th>Status</th><th>CR%</th></tr></thead>
-          <tbody id="dash-tbody"><tr><td colspan="8" style="text-align:center;padding:24px;color:var(--text2)">No loans yet</td></tr></tbody></table>
+          <div class="card-header"><div class="card-title">Recent Activity</div><button class="btn primary" onclick="go('newloan',null)">+ New Loan</button></div>
+          <table><thead><tr><th>Loan ID</th><th>Client</th><th>Amount</th><th>Status</th></tr></thead><tbody id="dash-tbody"></tbody></table>
         </div>
       </div>
 
-      <!-- ALL CLIENTS -->
+      <!-- CLIENTS -->
       <div class="page" id="page-clients">
         <div class="card">
-          <div class="card-header"><div class="card-title">All Clients</div><button class="btn primary" onclick="go('addclient',null)">+ Add Client</button></div>
-          <div class="filters">
-            <input class="fi srch" id="csearch" placeholder="Search name or ID..." oninput="renderClients()">
-            <select class="fi" id="cfilter" onchange="renderClients()"><option value="">All Types</option><option value="individual">Individual</option><option value="group">Group Member</option></select>
-          </div>
-          <table><thead><tr><th></th><th>ID</th><th>Full Name</th><th>Phone</th><th>Type</th><th>Group</th><th>Location</th><th>Outstanding</th><th>Status</th><th>Action</th></tr></thead>
-          <tbody id="ctbody"><tr><td colspan="10" style="text-align:center;padding:24px;color:var(--text2)">No clients yet</td></tr></tbody></table>
+          <div class="card-header"><div class="card-title">All Clients</div><button class="btn primary" onclick="go('addclient',null)">+ Register</button></div>
+          <div class="filters"><input class="fi srch" id="csearch" placeholder="Search..." oninput="renderClients()"></div>
+          <table><thead><tr><th>User</th><th>ID</th><th>Name</th><th>Phone</th><th>Outstanding</th><th>Action</th></tr></thead><tbody id="ctbody"></tbody></table>
         </div>
       </div>
 
       <!-- ADD CLIENT -->
       <div class="page" id="page-addclient">
         <div class="card">
-          <div class="card-header"><div class="card-title">Register New Client</div></div>
+          <div class="card-header"><div class="card-title">New Client Registration</div></div>
           <div class="card-section">
-            <div class="section-lbl">Photos &amp; ID Documents</div>
-            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
-              <div>
-                <div class="form-label" style="margin-bottom:6px">Passport Photo</div>
-                <div class="upload-zone" onclick="document.getElementById('up-pass').click()">
-                  <div class="upload-ph" id="ph-pass"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div>
-                  <div class="upload-hint">Upload photo</div><div class="upload-hint2">JPG or PNG</div>
-                </div>
-                <input type="file" id="up-pass" accept="image/*" style="display:none" onchange="prevImg(this,'ph-pass','pass')">
-              </div>
-              <div>
-                <div class="form-label" style="margin-bottom:6px">ID Front</div>
-                <div class="upload-zone" onclick="document.getElementById('up-idf').click()">
-                  <div class="upload-ph rect" id="ph-idf"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="1.5"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M6 9h4M6 13h8"/></svg></div>
-                  <div class="upload-hint">Upload ID front</div><div class="upload-hint2">JPG or PNG</div>
-                </div>
-                <input type="file" id="up-idf" accept="image/*" style="display:none" onchange="prevImg(this,'ph-idf','idf')">
-              </div>
-              <div>
-                <div class="form-label" style="margin-bottom:6px">ID Back</div>
-                <div class="upload-zone" onclick="document.getElementById('up-idb').click()">
-                  <div class="upload-ph rect" id="ph-idb"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="1.5"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M6 9h12M6 13h8"/></svg></div>
-                  <div class="upload-hint">Upload ID back</div><div class="upload-hint2">JPG or PNG</div>
-                </div>
-                <input type="file" id="up-idb" accept="image/*" style="display:none" onchange="prevImg(this,'ph-idb','idb')">
-              </div>
-            </div>
-          </div>
-          <div class="card-section">
-            <div class="section-lbl">Personal Details</div>
             <div class="form-grid">
-              <div class="form-group"><label class="form-label">Full Name *</label><input class="form-input" id="nc-name" placeholder="e.g. Grace Muthoni"></div>
-              <div class="form-group"><label class="form-label">National ID *</label><input class="form-input" id="nc-nid" placeholder="ID number"></div>
-              <div class="form-group"><label class="form-label">Phone *</label><input class="form-input" id="nc-phone" placeholder="07XX-XXX-XXX"></div>
-              <div class="form-group"><label class="form-label">Alt Phone</label><input class="form-input" id="nc-phone2" placeholder="07XX-XXX-XXX"></div>
-              <div class="form-group"><label class="form-label">Location</label><input class="form-input" id="nc-loc" placeholder="e.g. Nairobi, Thika"></div>
-              <div class="form-group"><label class="form-label">Occupation</label><input class="form-input" id="nc-occ" placeholder="e.g. Trader, Farmer"></div>
+              <div class="form-group"><label class="form-label">Full Name *</label><input class="form-input" id="nc-name"></div>
+              <div class="form-group"><label class="form-label">Phone *</label><input class="form-input" id="nc-phone"></div>
+              <div class="form-group"><label class="form-label">National ID</label><input class="form-input" id="nc-nid"></div>
+              <div class="form-group"><label class="form-label">Location</label><input class="form-input" id="nc-loc"></div>
             </div>
           </div>
-          <div class="card-section">
-            <div class="section-lbl">Next of Kin</div>
-            <div class="form-grid">
-              <div class="form-group"><label class="form-label">Next of Kin Name</label><input class="form-input" id="nc-kin" placeholder="Full name"></div>
-              <div class="form-group"><label class="form-label">Next of Kin Phone</label><input class="form-input" id="nc-kinp" placeholder="07XX-XXX-XXX"></div>
-              <div class="form-group" style="grid-column:span 2"><label class="form-label">Collateral / Guarantee</label><input class="form-input" id="nc-coll" placeholder="e.g. Logbook, Title deed"></div>
-            </div>
-          </div>
-          <div class="card-section">
-            <div class="section-lbl">Group Membership</div>
-            <div class="form-grid">
-              <div class="form-group">
-                <label class="form-label">Client Type</label>
-                <select class="form-input" id="nc-type" onchange="toggleGroup()"><option value="individual">Individual</option><option value="group">Group Member</option></select>
-              </div>
-              <div class="form-group" id="grp-sel-wrap" style="display:none">
-                <label class="form-label">Assign to Group</label>
-                <select class="form-input" id="nc-grp"><option value="">-- Select Group --</option></select>
-              </div>
-              <div class="form-group" id="grp-new-wrap" style="display:none;grid-column:span 2">
-                <label class="form-label">Or create new group</label>
-                <input class="form-input" id="nc-newgrp" placeholder="e.g. Umoja Women Group">
-              </div>
-            </div>
-          </div>
-          <div class="form-actions">
-            <button class="btn" onclick="go('clients',null)">Cancel</button>
-            <button class="btn primary" onclick="saveClient()">Save Client</button>
-          </div>
+          <div class="form-actions"><button class="btn primary" onclick="saveClient()">Save Client</button></div>
         </div>
       </div>
 
-      <!-- GROUPS -->
-      <div class="page" id="page-groups">
+      <!-- SHAREHOLDERS -->
+      <div class="page" id="page-shareholders">
         <div class="card">
-          <div class="card-header"><div class="card-title">Loan Groups</div><button class="btn primary" onclick="openModal('modal-group')">+ Create Group</button></div>
-          <div class="note">Groups allow multiple clients to borrow under one umbrella. Each member is individually registered and tracked.</div>
-          <table><thead><tr><th>Group ID</th><th>Group Name</th><th>Leader</th><th>Members</th><th>Created</th><th>Action</th></tr></thead>
-          <tbody id="gtbody"><tr><td colspan="5" style="text-align:center;padding:24px;color:var(--text2)">No groups yet</td></tr></tbody></table>
+          <div class="card-header"><div class="card-title">Shareholders</div><button class="btn primary" onclick="openModal('modal-founder')">+ Add</button></div>
+          <div style="padding:16px;font-size:11px;background:var(--green-light)">Target Share Capital: <strong>KES 20,000</strong></div>
+          <table><thead><tr><th>#</th><th>Name</th><th>Contributed</th><th>Progress</th><th>Action</th></tr></thead><tbody id="ftbody"></tbody></table>
+        </div>
+      </div>
+
+      <!-- DISBURSEMENTS -->
+      <div class="page" id="page-disbursements">
+        <div class="card">
+          <div class="card-header"><div class="card-title">Loan Disbursements</div></div>
+          <table><thead><tr><th>ID</th><th>Client</th><th>Amount</th><th>Payable</th><th>Paid</th><th>Status</th><th>Action</th></tr></thead><tbody id="dtbody"></tbody></table>
         </div>
       </div>
 
@@ -398,202 +234,41 @@
         <div class="card">
           <div class="card-header"><div class="card-title">New Loan Application</div></div>
           <div class="card-section">
-            <div class="section-lbl">Loan Details</div>
             <div class="form-grid">
-              <div class="form-group"><label class="form-label">Loan Type</label>
-                <select class="form-input" id="nl-type" onchange="toggleLoanType()"><option value="individual">Individual Loan</option><option value="group">Group Loan</option></select>
-              </div>
-              <div class="form-group" id="nl-cw"><label class="form-label">Client *</label><select class="form-input" id="nl-client"><option value="">-- Select Client --</option></select></div>
-              <div class="form-group" id="nl-gw" style="display:none"><label class="form-label">Group *</label><select class="form-input" id="nl-group"><option value="">-- Select Group --</option></select></div>
-              <div class="form-group"><label class="form-label">Loans Officer</label><select class="form-input" id="nl-officer"><option value="">-- Select --</option></select></div>
-              <div class="form-group"><label class="form-label">Amount (KES) *</label><input class="form-input" type="number" id="nl-amt" placeholder="e.g. 50000" oninput="calcLoan()"></div>
-              <div class="form-group"><label class="form-label">Interest Rate</label><input class="form-input" value="12%" disabled style="opacity:0.6"></div>
-              <div class="form-group"><label class="form-label">Repayment Period</label>
-                <select class="form-input" id="nl-period" onchange="calcLoan()"><option value="1">1 Month</option><option value="3">3 Months</option><option value="6" selected>6 Months</option><option value="12">12 Months</option></select>
-              </div>
-              <div class="form-group"><label class="form-label">Disbursement Date</label><input class="form-input" type="date" id="nl-date"></div>
-              <div class="form-group"><label class="form-label">Purpose</label><input class="form-input" id="nl-purpose" placeholder="e.g. Business capital"></div>
-              <div class="form-group"><label class="form-label">Collateral</label><input class="form-input" id="nl-coll" placeholder="e.g. Logbook"></div>
+                <div class="form-group"><label class="form-label">Client *</label><select class="form-input" id="nl-client"></select></div>
+                <div class="form-group"><label class="form-label">Amount (KES) *</label><input class="form-input" type="number" id="nl-amt" oninput="calcLoan()"></div>
+                <div class="form-group"><label class="form-label">Period (Months)</label><select class="form-input" id="nl-period" onchange="calcLoan()"><option value="1">1 Month</option><option value="3">3 Months</option><option value="6" selected>6 Months</option></select></div>
+                <div class="form-group"><label class="form-label">Total Payable</label><input class="form-input" id="nl-total" disabled></div>
             </div>
           </div>
-          <div class="mini-stats">
-            <div class="mini-stat"><div class="mini-val" id="s-p">KES 0</div><div class="mini-lbl">Principal</div></div>
-            <div class="mini-stat"><div class="mini-val" id="s-i">KES 0</div><div class="mini-lbl">Interest</div></div>
-            <div class="mini-stat"><div class="mini-val" id="s-t">KES 0</div><div class="mini-lbl">Total Payable</div></div>
-            <div class="mini-stat"><div class="mini-val" id="s-m">KES 0</div><div class="mini-lbl">Monthly Instalment</div></div>
-          </div>
-          <div class="form-actions">
-            <button class="btn" onclick="go('disbursements',null)">Cancel</button>
-            <button class="btn primary" onclick="saveLoan()">Submit Loan</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- DISBURSEMENTS -->
-      <div class="page" id="page-disbursements">
-        <div class="card">
-          <div class="card-header"><div class="card-title">Loan Disbursements</div><button class="btn primary" onclick="go('newloan',null)">+ New Loan</button></div>
-          <table><thead><tr><th>Loan ID</th><th>Client</th><th>Type</th><th>Disbursed</th><th>Total Payable</th><th>Paid</th><th>Arrears</th><th>Bal 95%</th><th>Date</th><th>Status</th><th>CR%</th><th>Action</th></tr></thead>
-          <tbody id="dtbody"></tbody><tfoot><tr id="dtfoot"></tr></tfoot></table>
-        </div>
-      </div>
-
-      <!-- COLLECTIONS -->
-      <div class="page" id="page-collections">
-        <div class="card">
-          <div class="card-header"><div class="card-title">Collections — Month to Date</div><button class="btn primary" onclick="openPayModal()">+ Record Payment</button></div>
-          <table><thead><tr><th>Loan ID</th><th>Client</th><th>Expected</th><th>Paid</th><th>Balance</th><th>Last Payment</th><th>CR%</th></tr></thead>
-          <tbody id="coltbody"></tbody><tfoot><tr id="coltfoot"></tr></tfoot></table>
-        </div>
-      </div>
-
-      <!-- ARREARS -->
-      <div class="page" id="page-arrears">
-        <div class="card">
-          <div class="card-header"><div class="card-title">Loan Arrears</div></div>
-          <table><thead><tr><th>Loan ID</th><th>Client</th><th>Phone</th><th>Loan Amt</th><th>Overdue</th><th>Status</th></tr></thead>
-          <tbody id="arrtbody"><tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text2)">No arrears</td></tr></tbody></table>
-        </div>
-      </div>
-
-      <!-- REPORT -->
-      <div class="page" id="page-report">
-        <div class="card">
-          <div class="card-header"><div class="card-title">Progressive Report — WELB Solutions</div></div>
-          <div style="padding:12px 16px;background:#fafaf8;border-bottom:1px solid var(--border)"><div style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px" id="rep-sum"></div></div>
-          <table><thead><tr><th>Loan ID</th><th>Client</th><th>Disbursed</th><th>Loan+Charges</th><th>Paid</th><th>Arrears</th><th>Bal 95%</th><th>CR%</th></tr></thead>
-          <tbody id="reptbody"></tbody><tfoot><tr id="reptfoot"></tr></tfoot></table>
-        </div>
-      </div>
-
-      <!-- SHAREHOLDERS -->
-      <div class="page" id="page-shareholders">
-        <div class="card">
-          <div class="card-header"><div class="card-title">Founders / Shareholders</div><button class="btn primary" onclick="openAddFounderModal()">+ Add Founder</button></div>
-          <div class="note" style="margin:12px 16px 0">10 founder slots. Overall share capital target is <strong>KES 150,000</strong> — each founder's guide contribution is KES 15,000. No hard cap per person.</div>
-          <table style="margin-top:12px"><thead><tr><th>#</th><th>Name</th><th>Phone</th><th>Role</th><th>Contributed</th><th>Progress</th><th>Status</th><th></th></tr></thead>
-          <tbody id="ftbody"><tr><td colspan="8" style="text-align:center;padding:24px;color:var(--text2)">No founders added yet</td></tr></tbody></table>
-        </div>
-      </div>
-
-      <!-- CONTRIBUTIONS -->
-      <div class="page" id="page-contributions">
-        <div class="card">
-          <div class="card-header"><div class="card-title">Share Capital Contributions</div><button class="btn primary" onclick="openContribModal()">+ Record Contribution</button></div>
-          <div class="note" style="margin:12px 16px 0">Overall share capital target is <strong>KES 150,000</strong> (KES 15,000 per founder as a guide). Contributions can be made in any amount at any time — no upper limit per person.</div>
-          <div style="padding:12px 16px;border-bottom:1px solid var(--border)" id="contrib-sum-cards"></div>
-          <table><thead><tr><th>Founder</th><th>Contributed</th><th>Target</th><th>Remaining</th><th>Progress</th><th>Status</th></tr></thead>
-          <tbody id="conttbody"></tbody><tfoot><tr id="conttfoot"></tr></tfoot></table>
-        </div>
-        <div class="card">
-          <div class="card-header"><div class="card-title">Contribution History</div></div>
-          <table><thead><tr><th>Date</th><th>Founder</th><th>Amount</th><th>Running Total</th><th>Note</th><th>Action</th></tr></thead>
-          <tbody id="conthtbody"><tr><td colspan="5" style="text-align:center;padding:24px;color:var(--text2)">No contributions yet</td></tr></tbody></table>
+          <div class="form-actions"><button class="btn primary" onclick="saveLoan()">Submit Loan</button></div>
         </div>
       </div>
 
       <!-- ACCOUNTING -->
       <div class="page" id="page-accounting">
-        <div class="stats-grid">
-          <div class="stat-card"><div class="stat-label">Share Capital</div><div class="stat-value" id="ac-cap">KES 0</div><div class="stat-sub">From founders</div></div>
-          <div class="stat-card"><div class="stat-label">Total Disbursed</div><div class="stat-value" id="ac-disb">KES 0</div><div class="stat-sub">Loans issued</div></div>
-          <div class="stat-card"><div class="stat-label">Total Collected</div><div class="stat-value" id="ac-coll">KES 0</div><div class="stat-sub">All repayments</div></div>
-          <div class="stat-card"><div class="stat-label">Est. Balance</div><div class="stat-value" id="ac-bal">KES 0</div><div class="stat-sub">Capital − disbursed + collected</div></div>
-        </div>
-        <div class="card">
-          <div class="card-header"><div class="card-title">Transaction Ledger</div></div>
-          <table><thead><tr><th>Date</th><th>Description</th><th>Type</th><th>Amount (KES)</th></tr></thead>
-          <tbody id="ledgertbody"><tr><td colspan="4" style="text-align:center;padding:24px;color:var(--text2)">No transactions yet</td></tr></tbody></table>
-        </div>
+        <div class="card"><div class="card-header">Ledger</div><table><thead><tr><th>Date</th><th>Description</th><th>Amount</th></tr></thead><tbody id="ledgertbody"></tbody></table></div>
       </div>
 
       <!-- SETTINGS -->
       <div class="page" id="page-settings">
-        <div class="card">
-          <div class="card-header"><div class="card-title">System Settings</div></div>
-          <div class="card-section">
-            <div class="section-lbl">Users / Login Credentials</div>
-            <div class="note">Change the default password before going live. Share credentials only with trusted founders.</div>
-            <div class="form-grid">
-              <div class="form-group"><label class="form-label">Admin Username</label><input class="form-input" id="set-user" value="admin"></div>
-              <div class="form-group"><label class="form-label">Admin Password</label><input class="form-input" type="password" id="set-pass" placeholder="New password"></div>
-            </div>
-          </div>
-          <div class="card-section">
-            <div class="section-lbl">System Info</div>
-            <div class="form-grid">
-              <div class="form-group"><label class="form-label">Company Name</label><input class="form-input" id="set-company" value="WELB Solutions Microfinance Ltd"></div>
-              <div class="form-group"><label class="form-label">Admin Display Name</label><input class="form-input" id="set-dname" value="Admin"></div>
-            </div>
-          </div>
-          <div class="form-actions"><button class="btn primary" onclick="saveSettings()">Save Settings</button></div>
-        </div>
+        <div class="card"><div class="card-header">System Settings</div><div class="card-section"><div class="form-grid"><div class="form-group"><label class="form-label">Company Name</label><input class="form-input" id="set-company" value="WELB"></div></div></div></div>
       </div>
 
-    </div><!-- /content -->
-  </div><!-- /main -->
-</div><!-- /app -->
-
-<!-- DB STATUS -->
-<div id="db-status"><div class="db-dot" id="db-dot"></div><span id="db-txt">Connecting...</span></div>
+    </div>
+  </div>
+</div>
 
 <!-- MODALS -->
 <div class="overlay" id="modal-founder" style="display:none">
   <div class="modal">
-    <div class="modal-hd"><div class="modal-title">Add Founder</div><button class="close-x" onclick="closeModal('modal-founder')">&times;</button></div>
-    <div class="modal-body">
-      <div class="form-group"><label class="form-label">Full Name *</label><input class="form-input" id="f-name" placeholder="Founder full name"></div>
-      <div class="form-group"><label class="form-label">Phone</label><input class="form-input" id="f-phone" placeholder="07XX-XXX-XXX"></div>
-      <div class="form-group"><label class="form-label">Role</label>
-        <select class="form-input" id="f-role"><option>Founder</option><option>Founder / Manager</option><option>Founder / Treasurer</option><option>Founder / Loans Officer</option><option>Founder / Secretary</option></select>
-      </div>
-    </div>
-    <div class="modal-ft"><button class="btn" onclick="closeModal('modal-founder')">Cancel</button><button class="btn primary" onclick="saveFounder()">Add Founder</button></div>
-  </div>
-</div>
-
-<div class="overlay" id="modal-group" style="display:none">
-  <div class="modal">
-    <div class="modal-hd"><div class="modal-title">Create Group</div><button class="close-x" onclick="closeModal('modal-group')">&times;</button></div>
-    <div class="modal-body">
-      <div class="form-group"><label class="form-label">Group Name *</label><input class="form-input" id="g-name" placeholder="e.g. Umoja Women Group"></div>
-      <div class="form-group"><label class="form-label">Group Leader</label><input class="form-input" id="g-leader" placeholder="Full name"></div>
-      <div class="form-group"><label class="form-label">Leader Phone</label><input class="form-input" id="g-phone" placeholder="07XX-XXX-XXX"></div>
-      <div class="form-group"><label class="form-label">Description</label><input class="form-input" id="g-desc" placeholder="Optional"></div>
-    </div>
-    <div class="modal-ft"><button class="btn" onclick="closeModal('modal-group')">Cancel</button><button class="btn primary" onclick="saveGroup()">Create Group</button></div>
-  </div>
-</div>
-
-<div class="overlay" id="modal-contrib" style="display:none">
-  <div class="modal">
-    <div class="modal-hd"><div class="modal-title">Record Share Contribution</div><button class="close-x" onclick="closeModal('modal-contrib')">&times;</button></div>
-    <div class="modal-body">
-      <div class="form-group"><label class="form-label">Founder *</label><select class="form-input" id="c-founder"><option value="">-- Select --</option></select></div>
-      <div class="form-group"><label class="form-label">Amount (KES) *</label><input class="form-input" type="number" id="c-amt" placeholder="e.g. 5000"></div>
-      <div class="form-group"><label class="form-label">Date</label><input class="form-input" type="date" id="c-date"></div>
-      <div class="form-group"><label class="form-label">Note</label><input class="form-input" id="c-note" placeholder="e.g. Cash, M-Pesa"></div>
-    </div>
-    <div class="modal-ft"><button class="btn" onclick="closeModal('modal-contrib')">Cancel</button><button class="btn primary" onclick="saveContrib()">Save</button></div>
-  </div>
-</div>
-
-<div class="overlay" id="modal-payment" style="display:none">
-  <div class="modal">
-    <div class="modal-hd"><div class="modal-title">Record Loan Payment</div><button class="close-x" onclick="closeModal('modal-payment')">&times;</button></div>
-    <div class="modal-body">
-      <div class="form-group"><label class="form-label">Loan *</label><select class="form-input" id="p-loan"><option value="">-- Select Loan --</option></select></div>
-      <div class="form-group"><label class="form-label">Amount Paid (KES) *</label><input class="form-input" type="number" id="p-amt" placeholder="e.g. 5000"></div>
-      <div class="form-group"><label class="form-label">Date</label><input class="form-input" type="date" id="p-date"></div>
-    </div>
-    <div class="modal-ft"><button class="btn" onclick="closeModal('modal-payment')">Cancel</button><button class="btn primary" onclick="savePayment()">Save Payment</button></div>
+    <div class="modal-hd"><div>Add Founder</div><button onclick="closeModal('modal-founder')">&times;</button></div>
+    <div style="padding:16px" class="form-group"><label class="form-label">Name</label><input class="form-input" id="f-name"></div>
+    <div style="padding:16px" class="form-actions"><button class="btn primary" onclick="saveFounder()">Add</button></div>
   </div>
 </div>
 
 <script>
-// ============================================================
-// FIREBASE CONFIG — REPLACE WITH YOUR OWN FROM firebase console
-// ============================================================
 const FIREBASE_CONFIG = {
   apiKey: "AIzaSyCQJSAhF_H7J1rsl6hKMPPgiOA-0QqjaVQ",
   authDomain: "welb-solutions.firebaseapp.com",
@@ -603,290 +278,163 @@ const FIREBASE_CONFIG = {
   appId: "1:226538094767:web:6a8e9815c2b69d64fc945a"
 };
 
-let CREDENTIALS = { username: 'admin', password: 'Welb@2026' };
-let currentUser = null;
+const TARGET_CAPITAL = 20000;
 let S = { clients:[], loans:[], founders:[], contributions:[], payments:[], groups:[], settings:{} };
 let db = null;
-let dbOk = false;
-let nc_imgs = { pass:null, idf:null, idb:null };
+let currentUser = null;
 
-// HELPERS
-const fmt = n => Math.round(n).toLocaleString('en-KE');
-const fmtK = n => 'KES ' + fmt(n);
-const today = () => new Date().toISOString().split('T')[0];
-const dd = d => { if(!d) return '—'; const p=d.split('-'); return p[2]+'/'+p[1]+'/'+p[0]; };
-const loanPaid = id => S.payments.filter(p=>p.loanId===id).reduce((s,p)=>s+p.amount,0);
-const founderTotal = id => S.contributions.filter(c=>c.founderId===id).reduce((s,c)=>s+c.amount,0);
-const TITLES = {dashboard:'Dashboard',clients:'All Clients',addclient:'Add New Client',groups:'Loan Groups',newloan:'New Loan Application',disbursements:'Loan Disbursements',collections:'Collections MTD',arrears:'Loan Arrears',report:'Progressive Report',shareholders:'Founders / Shareholders',contributions:'Share Contributions',accounting:'Accounting',settings:'Settings'};
-
-// ============================================================
-// BUG FIX: FIREBASE PERSISTENCE & INIT
-// ============================================================
+// INIT
 function initFirebase() {
-  try {
-    firebase.initializeApp(FIREBASE_CONFIG);
-    db = firebase.firestore();
-
-    // Enable Offline Persistence (Data stays on phone/PC if internet drops)
-    db.enablePersistence().catch(err => { console.warn("Persistence failed", err.code); });
-
-    dbOk = true; 
-    setDbStatus(true);
-    loadAllData();
-  } catch(e) { 
-    console.error("Init failed", e);
-    setDbStatus(false); 
-  }
+  firebase.initializeApp(FIREBASE_CONFIG);
+  db = firebase.firestore();
+  db.enablePersistence().catch(()=>{});
+  loadAllData();
 }
 
 async function loadAllData() {
-  if(!dbOk) return;
-  const cols = ['clients','loans','founders','contributions','payments','groups','settings'];
-  
-  // REAL-TIME DATA SYNCING
+  const cols = ['clients','loans','founders','contributions','payments','settings'];
   cols.forEach(col => {
     db.collection(col).onSnapshot(snap => {
-      const docs = snap.docs.map(d => ({ ...d.data(), _id: d.id }));
-      if (col === 'settings') {
-          const main = docs.find(d => d._id === 'main');
-          if (main) {
-              S.settings = main;
-              if (main.credentialsCustomized) {
-                  CREDENTIALS.username = main.username || CREDENTIALS.username;
-                  CREDENTIALS.password = main.password || CREDENTIALS.password;
-              }
-          }
-      } else {
-          S[col] = docs;
-      }
+      S[col] = snap.docs.map(d => ({ ...d.data(), _id: d.id }));
       refreshActivePageUI();
     });
   });
 }
 
 async function saveDoc(col, data) {
-  if(!dbOk) { alert("Database not ready!"); return data; }
   setSaveStatus('saving');
   try {
-    const d = JSON.parse(JSON.stringify(data)); 
-    if(d._id) {
-      const id = d._id; delete d._id;
-      await db.collection(col).doc(id).set(d);
+    const raw = JSON.parse(JSON.stringify(data));
+    if(raw._id) {
+      const id = raw._id; delete raw._id;
+      await db.collection(col).doc(id).set(raw, {merge:true});
     } else {
-      const ref = await db.collection(col).add(d);
+      const ref = await db.collection(col).add(raw);
       data._id = ref.id;
     }
     setSaveStatus('saved');
     setTimeout(() => setSaveStatus('ready'), 2000);
-  } catch(e) { console.error('Save error', e); setSaveStatus('ready'); }
-  return data;
+  } catch(e) { console.error(e); }
 }
 
-function refreshActivePageUI() {
-    const pg = document.querySelector('.page.active');
-    if (!pg) return;
-    const id = pg.id.replace('page-', '');
-    const renders = { dashboard: renderDashboard, clients: renderClients, disbursements: renderDisbursements, collections: renderCollections, arrears: renderArrears, report: renderReport, shareholders: renderFounders, contributions: renderContributions, accounting: renderAccounting, groups: renderGroups };
-    if (renders[id]) renders[id]();
-    updateGroupSelects();
-    updateFounderSelects();
+async function deleteDoc(col, id) {
+    if(confirm("Confirm Delete?")) await db.collection(col).doc(id).delete();
 }
 
-function setDbStatus(ok) {
-  document.getElementById('db-dot').className = 'db-dot ' + (ok ? 'connected' : 'error');
-  document.getElementById('db-txt').textContent = ok ? 'Database Connected & Persistent' : 'Offline Mode';
-}
-
-function setSaveStatus(state) {
-  const dot = document.getElementById('save-dot');
-  const txt = document.getElementById('save-txt');
-  if(state === 'saving') { dot.className='save-dot saving'; txt.textContent='Saving...'; }
-  else if(state === 'saved') { dot.className='save-dot saved'; txt.textContent='Saved'; }
-  else { dot.className='save-dot'; txt.textContent='Ready'; }
-}
-
-// REST OF LOGIC (Login, Nav, Renderers)
+// LOGIC
 function doLogin() {
-  const u = document.getElementById('login-user').value.trim();
+  const u = document.getElementById('login-user').value;
   const p = document.getElementById('login-pass').value;
-  if(u === CREDENTIALS.username && p === CREDENTIALS.password) {
+  if(u === 'admin' && p === 'Welb@2026') {
     currentUser = u;
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('app').style.display = 'flex';
-    document.getElementById('sb-user').textContent = u.charAt(0).toUpperCase()+u.slice(1);
-    document.getElementById('top-avatar').textContent = u.substring(0,2).toUpperCase();
-    renderDashboard();
+    go('dashboard');
   } else {
     document.getElementById('login-err').style.display = 'block';
   }
 }
 
-function doLogout() {
-  currentUser = null;
-  document.getElementById('app').style.display = 'none';
-  document.getElementById('login-screen').style.display = 'flex';
-}
+function doLogout() { location.reload(); }
 
 function go(id, el) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  const pg = document.getElementById('page-' + id);
-  if(pg) pg.classList.add('active');
-  document.getElementById('page-title').textContent = TITLES[id] || id;
-  if(el) el.classList.add('active');
+  document.getElementById('page-' + id).classList.add('active');
+  document.getElementById('page-title').textContent = id.toUpperCase();
+  if(el) {
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+      el.classList.add('active');
+  }
   refreshActivePageUI();
+}
+
+function refreshActivePageUI() {
+    const active = document.querySelector('.page.active').id.replace('page-','');
+    if(active === 'dashboard') renderDashboard();
+    if(active === 'clients') renderClients();
+    if(active === 'shareholders') renderFounders();
+    if(active === 'disbursements') renderDisbursements();
+    if(active === 'newloan') {
+        const sel = document.getElementById('nl-client');
+        sel.innerHTML = S.clients.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+    }
+}
+
+// RENDERERS
+function renderDashboard() {
+  const tD = S.loans.reduce((a,b)=>a+b.amount,0);
+  const tC = S.contributions.reduce((a,b)=>a+b.amount,0);
+  document.getElementById('d-disbursed').textContent = 'KES ' + tD.toLocaleString();
+  document.getElementById('d-cap').textContent = 'KES ' + tC.toLocaleString();
+  document.getElementById('d-clients').textContent = S.clients.length;
+  
+  const tb = document.getElementById('dash-tbody');
+  tb.innerHTML = S.loans.slice(-5).map(l => `<tr><td>${l.id}</td><td>${l.clientName}</td><td>${l.amount}</td><td>${l.status}</td></tr>`).join('');
+}
+
+function renderClients() {
+  const tb = document.getElementById('ctbody');
+  tb.innerHTML = S.clients.map(c => `<tr><td><div class="client-av-ph">${c.name[0]}</div></td><td>${c.id}</td><td>${c.name}</td><td>${c.phone}</td><td>0</td><td><button onclick="deleteDoc('clients','${c._id}')">Del</button></td></tr>`).join('');
+}
+
+function renderFounders() {
+  const tb = document.getElementById('ftbody');
+  tb.innerHTML = S.founders.map(f => {
+    const paid = S.contributions.filter(c=>c.founderId===f.id).reduce((a,b)=>a+b.amount,0);
+    const pct = Math.min(100, (paid / 2000) * 100);
+    return `<tr><td>#</td><td>${f.name}</td><td>${paid}</td><td><div class="prog-wrap"><div class="prog-bar" style="width:${pct}%"></div></div></td><td><button class="btn sm" onclick="quickContrib('${f.id}','${f.name}')">+ KES</button></td></tr>`;
+  }).join('');
+}
+
+function renderDisbursements() {
+    const tb = document.getElementById('dtbody');
+    tb.innerHTML = S.loans.map(l => `<tr><td>${l.id}</td><td>${l.clientName}</td><td>${l.amount}</td><td>${l.totalPayable}</td><td>0</td><td>${l.status}</td><td><button onclick="deleteDoc('loans','${l._id}')">Del</button></td></tr>`).join('');
+}
+
+// SAVING
+async function saveClient() {
+    const name = document.getElementById('nc-name').value;
+    if(!name) return alert('Name required');
+    const c = { id: 'C'+Date.now().toString().slice(-4), name, phone: document.getElementById('nc-phone').value, location: document.getElementById('nc-loc').value };
+    await saveDoc('clients', c);
+    go('clients');
+}
+
+async function saveFounder() {
+    const name = document.getElementById('f-name').value;
+    await saveDoc('founders', { id: 'F'+Date.now().slice(-3), name });
+    closeModal('modal-founder');
+}
+
+async function quickContrib(fid, fname) {
+    const amt = prompt("Amount for " + fname);
+    if(amt) await saveDoc('contributions', { founderId: fid, amount: parseFloat(amt), date: new Date().toISOString() });
+}
+
+function calcLoan() {
+    const amt = parseFloat(document.getElementById('nl-amt').value) || 0;
+    const months = parseInt(document.getElementById('nl-period').value);
+    const total = amt + (amt * 0.12 * (months/12));
+    document.getElementById('nl-total').value = total.toFixed(0);
+}
+
+async function saveLoan() {
+    const amt = parseFloat(document.getElementById('nl-amt').value);
+    const cid = document.getElementById('nl-client').value;
+    const loan = { id: 'WS'+Date.now().toString().slice(-3), clientId: cid, clientName: S.clients.find(c=>c.id===cid)?.name, amount: amt, totalPayable: document.getElementById('nl-total').value, status: 'Active' };
+    await saveDoc('loans', loan);
+    go('disbursements');
+}
+
+function setSaveStatus(s) {
+  const d = document.getElementById('save-dot');
+  d.style.background = s==='saving'?'orange':s==='saved'?'green':'#ccc';
+  document.getElementById('save-txt').textContent = s;
 }
 
 function openModal(id) { document.getElementById(id).style.display='flex'; }
 function closeModal(id) { document.getElementById(id).style.display='none'; }
 
-function prevImg(input, phId, key) {
-  const file = input.files[0]; if(!file) return;
-  const r = new FileReader();
-  r.onload = e => {
-    const ph = document.getElementById(phId);
-    const isRound = !ph.classList.contains('rect');
-    ph.innerHTML = `<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;border-radius:${isRound?'50%':'7px'}">`;
-    nc_imgs[key] = e.target.result;
-  };
-  r.readAsDataURL(file);
-}
-
-// GROUPS
-function saveGroup() {
-  const name = document.getElementById('g-name').value.trim();
-  if(!name) { alert('Enter group name.'); return; }
-  const grp = { id:'GRP-'+(S.groups.length+1).toString().padStart(3,'0'), name, leader:document.getElementById('g-leader').value.trim(), phone:document.getElementById('g-phone').value.trim(), desc:document.getElementById('g-desc').value.trim(), created:today() };
-  saveDoc('groups', grp); closeModal('modal-group');
-  ['g-name','g-leader','g-phone','g-desc'].forEach(id => document.getElementById(id).value='');
-}
-
-function renderGroups() {
-  const tb = document.getElementById('gtbody');
-  if(!S.groups.length) { tb.innerHTML='<tr><td colspan="5" style="text-align:center;padding:24px;color:var(--text2)">No groups yet</td></tr>'; return; }
-  tb.innerHTML = S.groups.map(g => {
-    const members = S.clients.filter(c=>c.groupId===g.id).length;
-    return `<tr><td>${g.id}</td><td><strong>${g.name}</strong></td><td>${g.leader||'—'}</td><td>${members}</td><td>${dd(g.created)}</td><td><button class="btn danger-sm" onclick="deleteDoc('groups','${g._id}')">Delete</button></td></tr>`;
-  }).join('');
-}
-
-function updateGroupSelects() {
-  const opts = '<option value="">-- Select Group --</option>' + S.groups.map(g=>`<option value="${g.id}">${g.name}</option>`).join('');
-  ['nc-grp','nl-group'].forEach(id => { const el=document.getElementById(id); if(el) el.innerHTML=opts; });
-}
-
-function toggleGroup() {
-  const isGrp = document.getElementById('nc-type').value === 'group';
-  document.getElementById('grp-sel-wrap').style.display = isGrp ? 'block' : 'none';
-  document.getElementById('grp-new-wrap').style.display = isGrp ? 'block' : 'none';
-}
-
-// CLIENTS
-async function saveClient() {
-  const name = document.getElementById('nc-name').value.trim();
-  const phone = document.getElementById('nc-phone').value.trim();
-  if(!name||!phone) { alert('Name and phone are required.'); return; }
-  const type = document.getElementById('nc-type').value;
-  let groupId = null, groupName = null;
-  
-  if(type === 'group') {
-    groupId = document.getElementById('nc-grp').value;
-    const newGName = document.getElementById('nc-newgrp').value.trim();
-    if(newGName && !groupId) {
-       const gid = 'GRP-'+(S.groups.length+1).toString().padStart(3,'0');
-       const newG = {id:gid,name:newGName,created:today()};
-       const saved = await saveDoc('groups', newG); groupId=gid;
-    }
-    if(groupId) groupName = S.groups.find(g=>g.id===groupId)?.name || '';
-  }
-
-  const client = { id:'C-'+(S.clients.length+1).toString().padStart(4,'0'), name, phone, type, groupId, groupName, photo:nc_imgs.pass, idFront:nc_imgs.idf, idBack:nc_imgs.idb, createdAt:today(), location: document.getElementById('nc-loc').value };
-  await saveDoc('clients', client);
-  alert('Client Registered!'); go('clients');
-}
-
-function renderClients() {
-  const tb = document.getElementById('ctbody');
-  const search = (document.getElementById('csearch')||{value:''}).value.toLowerCase();
-  let list = S.clients.filter(c => !search || c.name.toLowerCase().includes(search) || c.id.toLowerCase().includes(search));
-  if(!list.length) { tb.innerHTML='<tr><td colspan="10" style="text-align:center;padding:24px;">No clients found</td></tr>'; return; }
-  tb.innerHTML = list.map(c => {
-    const av = c.photo ? `<img src="${c.photo}" class="client-av">` : `<div class="client-av-ph">${c.name.charAt(0)}</div>`;
-    return `<tr><td>${av}</td><td>${c.id}</td><td><strong>${c.name}</strong></td><td>${c.phone}</td><td>${c.type}</td><td>${c.groupName||'—'}</td><td>${c.location||'—'}</td><td>0</td><td><span class="sb s-active">Active</span></td><td><button class="btn danger-sm" onclick="deleteDoc('clients','${c._id}')">Delete</button></td></tr>`;
-  }).join('');
-}
-
-// LOANS
-function calcLoan() {
-  const amt = parseFloat(document.getElementById('nl-amt').value)||0;
-  const months = parseInt(document.getElementById('nl-period').value)||6;
-  const interest = amt*0.12*(months/12), total = amt+interest;
-  document.getElementById('s-p').textContent = fmtK(amt);
-  document.getElementById('s-i').textContent = fmtK(interest);
-  document.getElementById('s-t').textContent = fmtK(total);
-  document.getElementById('s-m').textContent = fmtK(months>0?total/months:0);
-}
-
-async function saveLoan() {
-  const amt = parseFloat(document.getElementById('nl-amt').value);
-  if(!amt) return alert('Enter amount');
-  const ltype = document.getElementById('nl-type').value;
-  const cid = ltype === 'individual' ? document.getElementById('nl-client').value : document.getElementById('nl-group').value;
-  const months = parseInt(document.getElementById('nl-period').value);
-  const interest = amt*0.12*(months/12);
-  const loan = { id:'WS-'+(S.loans.length+1).toString().padStart(3,'0'), clientId: cid, clientName: S.clients.find(c=>c.id===cid)?.name || cid, amount:amt, months, totalPayable:amt+interest, monthlyInstalment:(amt+interest)/months, disbursedDate:today(), status:'Active' };
-  await saveDoc('loans', loan); go('disbursements');
-}
-
-function renderDisbursements() {
-  const tb=document.getElementById('dtbody');
-  tb.innerHTML = S.loans.map(l => {
-    const paid=loanPaid(l.id);
-    return `<tr><td><strong>${l.id}</strong></td><td>${l.clientName}</td><td>${l.type||'Ind'}</td><td>${fmt(l.amount)}</td><td>${fmt(l.totalPayable)}</td><td>${fmt(paid)}</td><td>0</td><td>0</td><td>${dd(l.disbursedDate)}</td><td><span class="sb s-active">Active</span></td><td>0%</td><td><button class="btn danger-sm" onclick="deleteDoc('loans','${l._id}')">Delete</button></td></tr>`;
-  }).join('');
-}
-
-// FOUNDERS
-function openAddFounderModal() { openModal('modal-founder'); }
-async function saveFounder() {
-  const f = { id:'F-'+(S.founders.length+1).toString().padStart(3,'0'), name: document.getElementById('f-name').value, phone: document.getElementById('f-phone').value, role: document.getElementById('f-role').value };
-  await saveDoc('founders', f); closeModal('modal-founder');
-}
-function renderFounders() {
-  const tb = document.getElementById('ftbody');
-  tb.innerHTML = S.founders.map(f => `<tr><td>#</td><td>${f.name}</td><td>${f.phone}</td><td>${f.role}</td><td>0</td><td>0%</td><td><span class="sb">No data</span></td><td><button class="btn danger-sm" onclick="deleteDoc('founders','${f._id}')">Delete</button></td></tr>`).join('');
-}
-
-function updateFounderSelects() {
-    const opts = '<option value="">-- Select --</option>' + S.founders.map(f=>`<option value="${f.id}">${f.name}</option>`).join('');
-    ['c-founder'].forEach(id => { const el=document.getElementById(id); if(el) el.innerHTML=opts; });
-}
-
-// MISC
-async function deleteDoc(col, id) {
-    if(!confirm("Delete this record?")) return;
-    await db.collection(col).doc(id).delete();
-}
-
-function renderDashboard() {
-  document.getElementById('d-clients').textContent = S.clients.length;
-  document.getElementById('d-disbursed').textContent = fmtK(S.loans.reduce((a,b)=>a+b.amount,0));
-}
-
-// ACCOUNTING, COLLECTIONS & REPORT Logic remains as per original mapping
-function renderCollections() { document.getElementById('coltbody').innerHTML = '<tr><td colspan="7" style="text-align:center">No collections logged.</td></tr>'; }
-function renderArrears() { document.getElementById('arrtbody').innerHTML = '<tr><td colspan="6" style="text-align:center">All clear.</td></tr>'; }
-function renderReport() { document.getElementById('reptbody').innerHTML = '<tr><td colspan="8" style="text-align:center">No report data.</td></tr>'; }
-function renderContributions() { document.getElementById('conttbody').innerHTML = '<tr><td colspan="6" style="text-align:center">No contributions.</td></tr>'; }
-function renderAccounting() { document.getElementById('ledgertbody').innerHTML = '<tr><td colspan="4" style="text-align:center">No history.</td></tr>'; }
-function toggleLoanType() {
-    const isG = document.getElementById('nl-type').value === 'group';
-    document.getElementById('nl-cw').style.display = isG ? 'none' : 'block';
-    document.getElementById('nl-gw').style.display = isG ? 'block' : 'none';
-}
-
-// INIT
-document.getElementById('date-out').textContent = new Date().toLocaleDateString('en-KE',{weekday:'short',day:'numeric',month:'short'});
 initFirebase();
 </script>
 </body>
