@@ -605,8 +605,11 @@ const FIREBASE_CONFIG = {
 // ============================================================
 
 // AUTH (simple credential check — stored in Firestore settings)
-let CREDENTIALS = { username: 'admin', password: 'welb2024' };
+let CREDENTIALS = { username: 'admin', password: 'Welb@2026' };
 let currentUser = null;
+// Track whether user has ever saved a custom password via Settings
+// If yes, Firebase password takes priority. If no, use hardcoded default.
+let credentialsCustomized = false;
 
 // LOCAL STATE (loaded from Firestore)
 let S = { clients:[], loans:[], founders:[], contributions:[], payments:[], groups:[], settings:{} };
@@ -667,21 +670,19 @@ async function loadAllData() {
     const settingsDoc = await db.collection('settings').doc('main').get();
     if(settingsDoc.exists) {
       const d = settingsDoc.data();
-      // Only load credentials if no one is logged in yet
       if(!currentUser) {
-        if(d.username) CREDENTIALS.username = d.username;
-        if(d.password) CREDENTIALS.password = d.password;
+        // Only override hardcoded credentials if user saved custom ones via Settings
+        // We detect this by checking if a 'customized' flag exists in Firestore
+        if(d.credentialsCustomized) {
+          if(d.username) CREDENTIALS.username = d.username;
+          if(d.password) CREDENTIALS.password = d.password;
+          credentialsCustomized = true;
+        }
+        // If not customized, keep hardcoded CREDENTIALS as-is
       }
       S.settings = d;
-      // Restore company/display name in UI if already logged in
-      if(d.company) {
-        const el = document.getElementById('set-company');
-        if(el) el.value = d.company;
-      }
-      if(d.displayName) {
-        const el = document.getElementById('set-dname');
-        if(el) el.value = d.displayName;
-      }
+      if(d.company) { const el=document.getElementById('set-company'); if(el) el.value=d.company; }
+      if(d.displayName) { const el=document.getElementById('set-dname'); if(el) el.value=d.displayName; }
     }
 
     // Load all other collections
@@ -1118,6 +1119,7 @@ async function saveSettings() {
     password: CREDENTIALS.password,
     company: company || 'WELB Solutions Microfinance Ltd',
     displayName: displayName || CREDENTIALS.username,
+    credentialsCustomized: true, // flag so future page loads use Firebase password
   };
 
   // Save to Firestore
