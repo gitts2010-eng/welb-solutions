@@ -31,84 +31,57 @@
   /* SIDEBAR */
   .brand{padding:16px;border-bottom:1px solid var(--border)}
   .brand-row{display:flex;align-items:center;gap:10px}
-  .brand-icon{width:38px;height:38px;border-radius:9px;background:var(--green);display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:700;flex-shrink:0;letter-spacing:0.5px}
-  .brand-name{font-size:13px;font-weight:700;color:var(--text);line-height:1.2}
+  .brand-icon{width:38px;height:38px;border-radius:9px;background:var(--green);display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:700;flex-shrink:0}
+  .brand-name{font-size:13px;font-weight:700;color:var(--text)}
   .user-info{padding:10px 16px;border-bottom:1px solid var(--border)}
   .user-name{font-size:12px;font-weight:600;color:var(--text)}
-  .user-online{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--green-mid);margin-top:2px}
-  .online-dot{width:6px;height:6px;border-radius:50%;background:var(--green-mid)}
+  .online-dot{width:6px;height:6px;border-radius:50%;background:var(--green-mid);display:inline-block;margin-right:5px}
   .nav{flex:1;padding:8px 0}
-  .nav-section{font-size:10px;font-weight:600;color:var(--text3);padding:10px 16px 4px;text-transform:uppercase;letter-spacing:0.6px}
+  .nav-section{font-size:10px;font-weight:600;color:var(--text3);padding:10px 16px 4px;text-transform:uppercase}
   .nav-item{display:flex;align-items:center;gap:9px;padding:8px 16px;font-size:12px;color:var(--text2);cursor:pointer;transition:all 0.1s;border-left:2px solid transparent}
   .nav-item:hover{background:#f9f9f7;color:var(--text)}
   .nav-item.active{background:var(--green-light);color:var(--green);font-weight:600;border-left-color:var(--green)}
-  .ni{width:14px;height:14px;flex-shrink:0;opacity:0.8}
+  .ni{width:14px;height:14px;flex-shrink:0}
 
-  /* TOPBAR */
-  .topbar-title{font-size:14px;font-weight:600;color:var(--text)}
-  .topbar-right{display:flex;align-items:center;gap:12px}
+  /* TABLES */
+  table{width:100%;border-collapse:collapse;font-size:12px}
+  th{background:#fafaf8;font-weight:600;color:var(--text2);padding:9px 12px;text-align:left;border-bottom:1px solid var(--border)}
+  td{padding:9px 12px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle}
+
+  /* BUTTONS */
+  .btn{font-size:12px;padding:6px 14px;border:1px solid var(--border2);border-radius:7px;background:var(--surface);cursor:pointer}
+  .btn.primary{background:var(--green);color:#fff;border-color:var(--green)}
+  .btn.danger-sm{height:26px;font-size:11px;padding:0 10px;background:var(--danger-bg);color:var(--danger);border-color:#fca5a5}
+
+  /* FORMS & UPLOADS */
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .form-group{display:flex;flex-direction:column;gap:5px}
+  .form-label{font-size:11px;color:var(--text2);font-weight:600}
+  .form-input{font-size:12px;padding:8px 10px;border:1px solid var(--border2);border-radius:7px}
+  .upload-zone{border:1.5px dashed var(--border2);border-radius:9px;padding:14px 10px;text-align:center;cursor:pointer;background:#fafaf8}
+  .upload-ph{width:64px;height:64px;border-radius:50%;background:#f0f0ec;margin:0 auto 6px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+  .upload-ph.rect{border-radius:7px}
+  .upload-ph img{width:100%;height:100%;object-fit:cover}
+
+  /* STATUS BAR */
   .save-status{font-size:11px;color:var(--text3);display:flex;align-items:center;gap:4px}
   .save-dot{width:6px;height:6px;border-radius:50%;background:#ccc}
   .save-dot.saved{background:var(--green-mid)}
   .save-dot.saving{background:var(--warn);animation:pulse 1s infinite}
   @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
 
-  /* CARDS & STATS */
-  .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
-  .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px}
-  .stat-label{font-size:11px;color:var(--text2);margin-bottom:3px}
-  .stat-value{font-size:20px;font-weight:700;color:var(--text);margin-bottom:2px;line-height:1.2}
-  .stat-sub{font-size:11px;color:var(--green-mid)}
-  .card{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:14px}
-  .card-header{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
-  .card-title{font-size:13px;font-weight:600;color:var(--text)}
-  .card-section{padding:14px 16px;border-bottom:1px solid var(--border)}
-  .section-lbl{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px}
-
-  /* TABLES */
-  table{width:100%;border-collapse:collapse;font-size:12px}
-  th{background:#fafaf8;font-weight:600;color:var(--text2);padding:9px 12px;text-align:left;font-size:11px;white-space:nowrap;border-bottom:1px solid var(--border)}
-  td{padding:9px 12px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle}
-
-  /* BUTTONS */
-  .btn{font-size:12px;padding:6px 14px;border:1px solid var(--border2);border-radius:7px;background:var(--surface);color:var(--text);cursor:pointer;height:32px;white-space:nowrap;font-weight:500;transition:all 0.1s}
-  .btn.primary{background:var(--green);color:#fff;border-color:var(--green)}
-
-  /* FORMS */
-  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-  .form-group{display:flex;flex-direction:column;gap:5px}
-  .form-label{font-size:11px;color:var(--text2);font-weight:600}
-  .form-input{font-size:12px;padding:8px 10px;border:1px solid var(--border2);border-radius:7px;background:var(--surface);color:var(--text)}
-  .form-actions{padding:12px 16px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;background:#fafaf8}
-
-  /* BADGES */
-  .sb{font-size:10px;padding:3px 9px;border-radius:20px;font-weight:600;display:inline-block}
-  .s-active{background:var(--green-light);color:var(--green)}
-  .s-overdue{background:var(--danger-bg);color:var(--danger)}
-  .s-pending{background:var(--warn-bg);color:var(--warn)}
-  .s-complete{background:var(--info-bg);color:var(--info)}
-
-  /* PROGRESS BAR */
-  .prog-wrap{background:#e5e5e0;border-radius:4px;height:7px;flex:1;min-width:60px}
-  .prog-bar{height:7px;border-radius:4px;background:var(--green-mid);transition:width 0.3s}
-  .prog-bar.warn{background:#f59e0b}
-  .prog-bar.danger{background:#ef4444}
-
-  /* PHOTO UPLOAD */
-  .upload-zone{border:1.5px dashed var(--border2);border-radius:9px;padding:14px 10px;text-align:center;cursor:pointer;background:#fafaf8}
-  .upload-ph{width:64px;height:64px;border-radius:50%;background:#f0f0ec;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;margin:0 auto 6px}
-  .upload-ph img{width:100%;height:100%;object-fit:cover;border-radius:inherit}
-  .client-av{width:30px;height:30px;border-radius:50%;object-fit:cover;flex-shrink:0}
-  .client-av-ph{width:30px;height:30px;border-radius:50%;background:var(--green-light);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--green)}
-
-  /* MODAL */
-  .overlay{position:fixed;inset:0;background:rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;z-index:1000;backdrop-filter:blur(2px)}
-  .modal{background:var(--surface);border-radius:12px;width:400px;max-width:95vw;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.15)}
-  .modal-hd{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
-
-  /* LOGIN SCREEN */
+  /* LOGIN */
   #login-screen{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:2000}
   .login-box{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:32px;width:340px}
+
+  /* CARDS */
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:14px}
+  .card-header{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+  .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+  .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px}
+  .stat-value{font-size:20px;font-weight:700}
+  .prog-wrap{background:#e5e5e0;border-radius:4px;height:7px;margin-top:5px}
+  .prog-bar{height:7px;border-radius:4px;background:var(--green-mid)}
 </style>
 </head>
 <body>
@@ -121,14 +94,14 @@
     <div class="login-form">
       <div class="form-group">
         <label class="form-label">Username</label>
-        <input class="form-input" id="login-user" placeholder="Enter username">
+        <input class="form-input" id="login-user" placeholder="Type username...">
       </div>
       <div class="form-group" style="margin-top:12px">
         <label class="form-label">Password</label>
-        <input class="form-input" type="password" id="login-pass" placeholder="Enter password">
+        <input class="form-input" type="password" id="login-pass" placeholder="Type password...">
       </div>
       <div id="login-err" style="color:var(--danger);font-size:11px;text-align:center;display:none;margin-top:8px">Invalid credentials</div>
-      <button class="btn primary" style="width:100%;height:38px;font-size:13px;margin-top:16px" onclick="doLogin()">Sign In</button>
+      <button class="btn primary" style="width:100%;height:38px;margin-top:16px" onclick="doLogin()">Sign In</button>
     </div>
   </div>
 </div>
@@ -136,13 +109,8 @@
 <!-- APP -->
 <div id="app" style="display:none">
   <div id="sidebar">
-    <div class="brand">
-        <div class="brand-row"><div class="brand-icon">W</div><div class="brand-name">WELB</div></div>
-    </div>
-    <div class="user-info">
-      <div class="user-name" id="sb-user">Admin</div>
-      <div class="user-online"><div class="online-dot"></div>Online</div>
-    </div>
+    <div class="brand"><div class="brand-row"><div class="brand-icon">W</div><div class="brand-name">WELB</div></div></div>
+    <div class="user-info"><div class="user-name" id="sb-user">Admin</div><div><small><span class="online-dot"></span>Online</small></div></div>
     <div class="nav">
       <div class="nav-item active" onclick="go('dashboard',this)">Dashboard</div>
       <div class="nav-section">Clients</div>
@@ -152,60 +120,83 @@
       <div class="nav-section">Loanbook</div>
       <div class="nav-item" onclick="go('disbursements',this)">Disbursements</div>
       <div class="nav-item" onclick="go('newloan',this)">New Loan</div>
-      <div class="nav-item" onclick="go('collections',this)">Collections</div>
       <div class="nav-section">Founders</div>
       <div class="nav-item" onclick="go('shareholders',this)">Shareholders</div>
       <div class="nav-item" onclick="go('contributions',this)">Contributions</div>
-      <div class="nav-section">Other</div>
-      <div class="nav-item" onclick="go('accounting',this)">Accounting</div>
-      <div class="nav-item" onclick="go('settings',this)">Settings</div>
-      <div class="nav-item" onclick="doLogout()">Logout</div>
     </div>
   </div>
 
   <div id="main">
     <div class="topbar">
-      <div class="topbar-title" id="page-title">Dashboard</div>
-      <div class="topbar-right">
-        <div class="save-status"><div class="save-dot" id="save-dot"></div><span id="save-txt">Ready</span></div>
-        <div class="avatar" style="width:30px;height:30px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700">AD</div>
-      </div>
+      <div id="page-title" style="font-weight:700">Dashboard</div>
+      <div class="save-status"><div class="save-dot" id="save-dot"></div><span id="save-txt">Ready</span></div>
     </div>
 
     <div class="content">
       <!-- DASHBOARD -->
       <div class="page active" id="page-dashboard">
         <div class="stats-grid">
-          <div class="stat-card"><div class="stat-label">Total Disbursed</div><div class="stat-value" id="d-disbursed">KES 0</div><div class="stat-sub" id="d-lcount">0 active loans</div></div>
-          <div class="stat-card"><div class="stat-label">Collections MTD</div><div class="stat-value" id="d-collected">KES 0</div><div class="stat-sub">Payments received</div></div>
-          <div class="stat-card"><div class="stat-label">Share Capital</div><div class="stat-value" id="d-cap">KES 0</div><div class="stat-sub">of KES 20,000 target</div></div>
-          <div class="stat-card"><div class="stat-label">Total Clients</div><div class="stat-value" id="d-clients">0</div><div class="stat-sub">Registered</div></div>
+          <div class="stat-card"><div>Total Disbursed</div><div class="stat-value" id="d-disbursed">KES 0</div></div>
+          <div class="stat-card"><div>Collections MTD</div><div class="stat-value" id="d-collected">KES 0</div></div>
+          <div class="stat-card"><div>Share Capital</div><div class="stat-value" id="d-cap">KES 0</div><div style="font-size:10px">Target: KES 20,000</div></div>
+          <div class="stat-card"><div>Clients</div><div class="stat-value" id="d-clients">0</div></div>
         </div>
         <div class="card">
-          <div class="card-header"><div class="card-title">Recent Activity</div><button class="btn primary" onclick="go('newloan',null)">+ New Loan</button></div>
-          <table><thead><tr><th>Loan ID</th><th>Client</th><th>Amount</th><th>Status</th></tr></thead><tbody id="dash-tbody"></tbody></table>
+            <div class="card-header">Recent Loans</div>
+            <table><thead><tr><th>ID</th><th>Client</th><th>Amount</th><th>Status</th></tr></thead><tbody id="dash-tbody"></tbody></table>
         </div>
       </div>
 
-      <!-- CLIENTS -->
+      <!-- ALL CLIENTS -->
       <div class="page" id="page-clients">
         <div class="card">
-          <div class="card-header"><div class="card-title">All Clients</div><button class="btn primary" onclick="go('addclient',null)">+ Register</button></div>
-          <div class="filters"><input class="fi srch" id="csearch" placeholder="Search..." oninput="renderClients()"></div>
-          <table><thead><tr><th>User</th><th>ID</th><th>Name</th><th>Phone</th><th>Outstanding</th><th>Action</th></tr></thead><tbody id="ctbody"></tbody></table>
+          <div class="card-header">All Clients <button class="btn primary" onclick="go('addclient',null)">+ Add</button></div>
+          <table><thead><tr><th>Photo</th><th>ID</th><th>Name</th><th>Phone</th><th>Outstanding</th><th>Action</th></tr></thead><tbody id="ctbody"></tbody></table>
         </div>
       </div>
 
-      <!-- ADD CLIENT -->
+      <!-- ADD CLIENT (RESTORED ATTACHMENTS) -->
       <div class="page" id="page-addclient">
         <div class="card">
-          <div class="card-header"><div class="card-title">New Client Registration</div></div>
-          <div class="card-section">
+          <div class="card-header">Register New Client</div>
+          <div class="card-section" style="padding:16px">
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px">
+              <div>
+                <label class="form-label">Passport Photo</label>
+                <div class="upload-zone" onclick="document.getElementById('up-pass').click()">
+                  <div class="upload-ph" id="ph-pass">PH</div>
+                </div>
+                <input type="file" id="up-pass" accept="image/*" style="display:none" onchange="prevImg(this,'ph-pass','pass')">
+              </div>
+              <div>
+                <label class="form-label">ID Front</label>
+                <div class="upload-zone" onclick="document.getElementById('up-idf').click()">
+                  <div class="upload-ph rect" id="ph-idf">ID Front</div>
+                </div>
+                <input type="file" id="up-idf" accept="image/*" style="display:none" onchange="prevImg(this,'ph-idf','idf')">
+              </div>
+              <div>
+                <label class="form-label">ID Back</label>
+                <div class="upload-zone" onclick="document.getElementById('up-idb').click()">
+                  <div class="upload-ph rect" id="ph-idb">ID Back</div>
+                </div>
+                <input type="file" id="up-idb" accept="image/*" style="display:none" onchange="prevImg(this,'ph-idb','idb')">
+              </div>
+            </div>
+
             <div class="form-grid">
               <div class="form-group"><label class="form-label">Full Name *</label><input class="form-input" id="nc-name"></div>
-              <div class="form-group"><label class="form-label">Phone *</label><input class="form-input" id="nc-phone"></div>
               <div class="form-group"><label class="form-label">National ID</label><input class="form-input" id="nc-nid"></div>
+              <div class="form-group"><label class="form-label">Phone *</label><input class="form-input" id="nc-phone"></div>
               <div class="form-group"><label class="form-label">Location</label><input class="form-input" id="nc-loc"></div>
+            </div>
+
+            <div style="margin-top:20px">
+              <div style="font-weight:700;margin-bottom:10px">Next of Kin</div>
+              <div class="form-grid">
+                <div class="form-group"><label class="form-label">Kin Name</label><input class="form-input" id="nc-kin"></div>
+                <div class="form-group"><label class="form-label">Kin Phone</label><input class="form-input" id="nc-kinp"></div>
+              </div>
             </div>
           </div>
           <div class="form-actions"><button class="btn primary" onclick="saveClient()">Save Client</button></div>
@@ -215,56 +206,22 @@
       <!-- SHAREHOLDERS -->
       <div class="page" id="page-shareholders">
         <div class="card">
-          <div class="card-header"><div class="card-title">Shareholders</div><button class="btn primary" onclick="openModal('modal-founder')">+ Add</button></div>
-          <div style="padding:16px;font-size:11px;background:var(--green-light)">Target Share Capital: <strong>KES 20,000</strong></div>
-          <table><thead><tr><th>#</th><th>Name</th><th>Contributed</th><th>Progress</th><th>Action</th></tr></thead><tbody id="ftbody"></tbody></table>
+          <div class="card-header">Founder Shareholders <button class="btn primary" onclick="openModal('modal-founder')">+ Add</button></div>
+          <table style="margin-top:10px"><thead><tr><th>Name</th><th>Contributed</th><th>Progress</th><th>Action</th></tr></thead><tbody id="ftbody"></tbody></table>
         </div>
-      </div>
-
-      <!-- DISBURSEMENTS -->
-      <div class="page" id="page-disbursements">
-        <div class="card">
-          <div class="card-header"><div class="card-title">Loan Disbursements</div></div>
-          <table><thead><tr><th>ID</th><th>Client</th><th>Amount</th><th>Payable</th><th>Paid</th><th>Status</th><th>Action</th></tr></thead><tbody id="dtbody"></tbody></table>
-        </div>
-      </div>
-
-      <!-- NEW LOAN -->
-      <div class="page" id="page-newloan">
-        <div class="card">
-          <div class="card-header"><div class="card-title">New Loan Application</div></div>
-          <div class="card-section">
-            <div class="form-grid">
-                <div class="form-group"><label class="form-label">Client *</label><select class="form-input" id="nl-client"></select></div>
-                <div class="form-group"><label class="form-label">Amount (KES) *</label><input class="form-input" type="number" id="nl-amt" oninput="calcLoan()"></div>
-                <div class="form-group"><label class="form-label">Period (Months)</label><select class="form-input" id="nl-period" onchange="calcLoan()"><option value="1">1 Month</option><option value="3">3 Months</option><option value="6" selected>6 Months</option></select></div>
-                <div class="form-group"><label class="form-label">Total Payable</label><input class="form-input" id="nl-total" disabled></div>
-            </div>
-          </div>
-          <div class="form-actions"><button class="btn primary" onclick="saveLoan()">Submit Loan</button></div>
-        </div>
-      </div>
-
-      <!-- ACCOUNTING -->
-      <div class="page" id="page-accounting">
-        <div class="card"><div class="card-header">Ledger</div><table><thead><tr><th>Date</th><th>Description</th><th>Amount</th></tr></thead><tbody id="ledgertbody"></tbody></table></div>
-      </div>
-
-      <!-- SETTINGS -->
-      <div class="page" id="page-settings">
-        <div class="card"><div class="card-header">System Settings</div><div class="card-section"><div class="form-grid"><div class="form-group"><label class="form-label">Company Name</label><input class="form-input" id="set-company" value="WELB"></div></div></div></div>
       </div>
 
     </div>
   </div>
 </div>
 
-<!-- MODALS -->
 <div class="overlay" id="modal-founder" style="display:none">
   <div class="modal">
-    <div class="modal-hd"><div>Add Founder</div><button onclick="closeModal('modal-founder')">&times;</button></div>
-    <div style="padding:16px" class="form-group"><label class="form-label">Name</label><input class="form-input" id="f-name"></div>
-    <div style="padding:16px" class="form-actions"><button class="btn primary" onclick="saveFounder()">Add</button></div>
+    <div class="modal-hd">Add Founder <button onclick="closeModal('modal-founder')">&times;</button></div>
+    <div style="padding:16px">
+        <div class="form-group"><label class="form-label">Full Name</label><input class="form-input" id="f-name"></div>
+        <button class="btn primary" style="width:100%;margin-top:15px" onclick="saveFounder()">Add Founder</button>
+    </div>
   </div>
 </div>
 
@@ -278,12 +235,10 @@ const FIREBASE_CONFIG = {
   appId: "1:226538094767:web:6a8e9815c2b69d64fc945a"
 };
 
-const TARGET_CAPITAL = 20000;
-let S = { clients:[], loans:[], founders:[], contributions:[], payments:[], groups:[], settings:{} };
+let S = { clients:[], loans:[], founders:[], contributions:[], payments:[] };
+let nc_imgs = { pass:null, idf:null, idb:null };
 let db = null;
-let currentUser = null;
 
-// INIT
 function initFirebase() {
   firebase.initializeApp(FIREBASE_CONFIG);
   db = firebase.firestore();
@@ -291,12 +246,13 @@ function initFirebase() {
   loadAllData();
 }
 
+// REAL-TIME SYNC: This makes sure data appears immediately on all tabs/reloads
 async function loadAllData() {
-  const cols = ['clients','loans','founders','contributions','payments','settings'];
-  cols.forEach(col => {
+  const collections = ['clients', 'loans', 'founders', 'contributions', 'payments'];
+  collections.forEach(col => {
     db.collection(col).onSnapshot(snap => {
       S[col] = snap.docs.map(d => ({ ...d.data(), _id: d.id }));
-      refreshActivePageUI();
+      refreshActiveUI();
     });
   });
 }
@@ -307,133 +263,115 @@ async function saveDoc(col, data) {
     const raw = JSON.parse(JSON.stringify(data));
     if(raw._id) {
       const id = raw._id; delete raw._id;
-      await db.collection(col).doc(id).set(raw, {merge:true});
+      await db.collection(col).doc(id).set(raw);
     } else {
-      const ref = await db.collection(col).add(raw);
-      data._id = ref.id;
+      await db.collection(col).add(raw);
     }
     setSaveStatus('saved');
     setTimeout(() => setSaveStatus('ready'), 2000);
   } catch(e) { console.error(e); }
 }
 
-async function deleteDoc(col, id) {
-    if(confirm("Confirm Delete?")) await db.collection(col).doc(id).delete();
-}
-
-// LOGIC
-function doLogin() {
-  const u = document.getElementById('login-user').value;
-  const p = document.getElementById('login-pass').value;
-  if(u === 'admin' && p === 'Welb@2026') {
-    currentUser = u;
-    document.getElementById('login-screen').style.display = 'none';
-    document.getElementById('app').style.display = 'flex';
-    go('dashboard');
-  } else {
-    document.getElementById('login-err').style.display = 'block';
-  }
-}
-
-function doLogout() { location.reload(); }
-
+// NAVIGATION
 function go(id, el) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-' + id).classList.add('active');
-  document.getElementById('page-title').textContent = id.toUpperCase();
+  document.getElementById('page-title').textContent = id.charAt(0).toUpperCase() + id.slice(1);
   if(el) {
-      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-      el.classList.add('active');
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    el.classList.add('active');
   }
-  refreshActivePageUI();
+  refreshActiveUI();
 }
 
-function refreshActivePageUI() {
+function refreshActiveUI() {
     const active = document.querySelector('.page.active').id.replace('page-','');
     if(active === 'dashboard') renderDashboard();
     if(active === 'clients') renderClients();
     if(active === 'shareholders') renderFounders();
-    if(active === 'disbursements') renderDisbursements();
-    if(active === 'newloan') {
-        const sel = document.getElementById('nl-client');
-        sel.innerHTML = S.clients.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
-    }
 }
 
 // RENDERERS
 function renderDashboard() {
-  const tD = S.loans.reduce((a,b)=>a+b.amount,0);
-  const tC = S.contributions.reduce((a,b)=>a+b.amount,0);
-  document.getElementById('d-disbursed').textContent = 'KES ' + tD.toLocaleString();
-  document.getElementById('d-cap').textContent = 'KES ' + tC.toLocaleString();
-  document.getElementById('d-clients').textContent = S.clients.length;
-  
-  const tb = document.getElementById('dash-tbody');
-  tb.innerHTML = S.loans.slice(-5).map(l => `<tr><td>${l.id}</td><td>${l.clientName}</td><td>${l.amount}</td><td>${l.status}</td></tr>`).join('');
+    const tD = S.loans.reduce((a,b)=>a+b.amount,0);
+    const tC = S.contributions.reduce((a,b)=>a+b.amount,0);
+    document.getElementById('d-disbursed').textContent = 'KES ' + tD.toLocaleString();
+    document.getElementById('d-cap').textContent = 'KES ' + tC.toLocaleString();
+    document.getElementById('d-clients').textContent = S.clients.length;
+    document.getElementById('dash-tbody').innerHTML = S.loans.slice(-5).map(l => `<tr><td>${l.id}</td><td>${l.clientName}</td><td>${l.amount}</td><td>${l.status}</td></tr>`).join('');
 }
 
 function renderClients() {
-  const tb = document.getElementById('ctbody');
-  tb.innerHTML = S.clients.map(c => `<tr><td><div class="client-av-ph">${c.name[0]}</div></td><td>${c.id}</td><td>${c.name}</td><td>${c.phone}</td><td>0</td><td><button onclick="deleteDoc('clients','${c._id}')">Del</button></td></tr>`).join('');
+    document.getElementById('ctbody').innerHTML = S.clients.map(c => {
+        const av = c.photo ? `<img src="${c.photo}" style="width:30px;height:30px;border-radius:50%">` : 'PH';
+        return `<tr><td>${av}</td><td>${c.id}</td><td>${c.name}</td><td>${c.phone}</td><td>0</td><td><button class="btn danger-sm" onclick="delDoc('clients','${c._id}')">Del</button></td></tr>`
+    }).join('');
 }
 
 function renderFounders() {
-  const tb = document.getElementById('ftbody');
-  tb.innerHTML = S.founders.map(f => {
-    const paid = S.contributions.filter(c=>c.founderId===f.id).reduce((a,b)=>a+b.amount,0);
-    const pct = Math.min(100, (paid / 2000) * 100);
-    return `<tr><td>#</td><td>${f.name}</td><td>${paid}</td><td><div class="prog-wrap"><div class="prog-bar" style="width:${pct}%"></div></div></td><td><button class="btn sm" onclick="quickContrib('${f.id}','${f.name}')">+ KES</button></td></tr>`;
-  }).join('');
+    document.getElementById('ftbody').innerHTML = S.founders.map(f => {
+        const paid = S.contributions.filter(c=>c.founderId===f.id).reduce((a,b)=>a+b.amount,0);
+        const pct = Math.min(100, (paid / 2000) * 100);
+        return `<tr><td>${f.name}</td><td>${paid}</td><td><div class="prog-wrap"><div class="prog-bar" style="width:${pct}%"></div></div></td><td><button class="btn" onclick="quickCap('${f.id}','${f.name}')">+ KES</button></td></tr>`;
+    }).join('');
 }
 
-function renderDisbursements() {
-    const tb = document.getElementById('dtbody');
-    tb.innerHTML = S.loans.map(l => `<tr><td>${l.id}</td><td>${l.clientName}</td><td>${l.amount}</td><td>${l.totalPayable}</td><td>0</td><td>${l.status}</td><td><button onclick="deleteDoc('loans','${l._id}')">Del</button></td></tr>`).join('');
-}
-
-// SAVING
+// LOGIC
 async function saveClient() {
     const name = document.getElementById('nc-name').value;
-    if(!name) return alert('Name required');
-    const c = { id: 'C'+Date.now().toString().slice(-4), name, phone: document.getElementById('nc-phone').value, location: document.getElementById('nc-loc').value };
-    await saveDoc('clients', c);
+    if(!name) return alert('Name Required');
+    const client = { 
+        id: 'C'+Date.now().toString().slice(-4), 
+        name, 
+        phone: document.getElementById('nc-phone').value,
+        nid: document.getElementById('nc-nid').value,
+        location: document.getElementById('nc-loc').value,
+        kin: document.getElementById('nc-kin').value,
+        photo: nc_imgs.pass, idFront: nc_imgs.idf, idBack: nc_imgs.idb
+    };
+    await saveDoc('clients', client);
     go('clients');
+}
+
+async function quickCap(fid, fname) {
+    const amt = prompt("Contribution Amount for " + fname);
+    if(amt) await saveDoc('contributions', { founderId: fid, amount: parseFloat(amt), date: new Date().toISOString() });
 }
 
 async function saveFounder() {
     const name = document.getElementById('f-name').value;
-    await saveDoc('founders', { id: 'F'+Date.now().slice(-3), name });
+    await saveDoc('founders', { id: 'F'+Date.now().toString().slice(-3), name });
     closeModal('modal-founder');
 }
 
-async function quickContrib(fid, fname) {
-    const amt = prompt("Amount for " + fname);
-    if(amt) await saveDoc('contributions', { founderId: fid, amount: parseFloat(amt), date: new Date().toISOString() });
+function prevImg(input, phId, key) {
+    const file = input.files[0]; if(!file) return;
+    const r = new FileReader();
+    r.onload = e => {
+        document.getElementById(phId).innerHTML = `<img src="${e.target.result}">`;
+        nc_imgs[key] = e.target.result;
+    };
+    r.readAsDataURL(file);
 }
 
-function calcLoan() {
-    const amt = parseFloat(document.getElementById('nl-amt').value) || 0;
-    const months = parseInt(document.getElementById('nl-period').value);
-    const total = amt + (amt * 0.12 * (months/12));
-    document.getElementById('nl-total').value = total.toFixed(0);
+function doLogin() {
+  const u = document.getElementById('login-user').value;
+  const p = document.getElementById('login-pass').value;
+  if(u==='admin' && p==='Welb@2026') {
+      document.getElementById('login-screen').style.display='none';
+      document.getElementById('app').style.display='flex';
+      go('dashboard');
+  } else { document.getElementById('login-err').style.display='block'; }
 }
 
-async function saveLoan() {
-    const amt = parseFloat(document.getElementById('nl-amt').value);
-    const cid = document.getElementById('nl-client').value;
-    const loan = { id: 'WS'+Date.now().toString().slice(-3), clientId: cid, clientName: S.clients.find(c=>c.id===cid)?.name, amount: amt, totalPayable: document.getElementById('nl-total').value, status: 'Active' };
-    await saveDoc('loans', loan);
-    go('disbursements');
+async function delDoc(col, id) { if(confirm("Delete?")) await db.collection(col).doc(id).delete(); }
+function setSaveStatus(s) { 
+    const d = document.getElementById('save-dot');
+    d.className = 'save-dot ' + (s==='saving'?'saving':s==='saved'?'saved':'');
+    document.getElementById('save-txt').textContent = s;
 }
-
-function setSaveStatus(s) {
-  const d = document.getElementById('save-dot');
-  d.style.background = s==='saving'?'orange':s==='saved'?'green':'#ccc';
-  document.getElementById('save-txt').textContent = s;
-}
-
-function openModal(id) { document.getElementById(id).style.display='flex'; }
-function closeModal(id) { document.getElementById(id).style.display='none'; }
+function openModal(id){ document.getElementById(id).style.display='flex'; }
+function closeModal(id){ document.getElementById(id).style.display='none'; }
 
 initFirebase();
 </script>
