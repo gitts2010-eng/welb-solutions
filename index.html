@@ -6,14 +6,6 @@
 <title>WELB Solutions — Microfinance System</title>
 
 <!-- Firebase -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WELB Solutions — Microfinance System</title>
-
-<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
@@ -97,6 +89,7 @@
   .btn.sm{height:26px;font-size:11px;padding:0 10px}
   .btn.danger-sm{height:26px;font-size:11px;padding:0 10px;background:var(--danger-bg);color:var(--danger);border-color:#fca5a5}
   .btn.danger-sm:hover{background:#fee2e2}
+  .btn:disabled{opacity:0.6;cursor:not-allowed}
 
   /* FILTERS */
   .filters{display:flex;gap:8px;padding:10px 16px;border-bottom:1px solid var(--border);flex-wrap:wrap;align-items:center}
@@ -164,7 +157,7 @@
   .login-title{font-size:18px;font-weight:700;color:var(--text);text-align:center;margin-bottom:4px}
   .login-sub{font-size:12px;color:var(--text2);text-align:center;margin-bottom:24px}
   .login-form{display:flex;flex-direction:column;gap:12px}
-  .login-err{color:var(--danger);font-size:11px;text-align:center;display:none;padding:5px;background:var(--danger-bg);border-radius:4px}
+  .login-err{color:var(--danger);font-size:11px;text-align:center;display:none;padding:6px 10px;background:var(--danger-bg);border-radius:6px;border:1px solid #fca5a5}
 
   /* FIREBASE STATUS */
   #db-status{position:fixed;bottom:14px;right:14px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-size:11px;color:var(--text2);box-shadow:0 2px 12px rgba(0,0,0,0.08);z-index:500;display:flex;align-items:center;gap:6px}
@@ -190,13 +183,13 @@
     <div class="login-form">
       <div class="form-group">
         <label class="form-label">Email Address</label>
-        <input class="form-input" id="login-user" type="email" placeholder="email@example.com" autocomplete="email">
+        <input class="form-input" id="login-email" type="email" placeholder="you@example.com" autocomplete="email">
       </div>
       <div class="form-group">
         <label class="form-label">Password</label>
         <input class="form-input" type="password" id="login-pass" placeholder="Enter password" autocomplete="current-password">
       </div>
-      <div class="login-err" id="login-err">Invalid login credentials</div>
+      <div class="login-err" id="login-err"></div>
       <button class="btn primary" id="login-btn" style="width:100%;height:38px;font-size:13px;margin-top:4px" onclick="doLogin()">Sign In</button>
       <div style="font-size:10px;color:var(--text3);text-align:center;margin-top:8px">Forgot password? Contact Administrator</div>
     </div>
@@ -216,218 +209,7 @@
     </div>
     <div class="user-info">
       <div class="user-name" id="sb-user">Admin</div>
-      <div class="user-online"><div class="online-dot"></div>Online</div>
-    </div>
-    <div class="nav">
-      <div class="nav-item active" onclick="go('dashboard',this)">
-        <svg class="ni" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>Dashboard
-      </div>
-      <div class="nav-section">Clients</div>
-      <div class="nav-item" onclick="go('clients',this)">
-        <svg class="ni" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6" cy="5" r="3"/><path d="M1 13c0-3 2-5 5-5s5 2 5 5"/><circle cx="12" cy="5" r="2"/><path d="M15 13c0-2-1-3.5-3-4"/></svg>All Clients
-      </div>
-      <div class="nav-item" onclick="go('addclient',this)">
-        <svg class="ni" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6" cy="5" r="3"/><path d="M1 13c0-3 2-5 5-5"/><path d="M12 9v6M9 12h6"/></svg>Add Client
-      </div>
-      <div class="nav-item" onclick="go('groups',this)">
-        <svg class="ni" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="4" cy="6" r="2.5"/><circle cx="12" cy="6" r="2.5"/><circle cx="8" cy="4" r="2.5"/><path d="M5 14c0-2 1.5-3 3-3s3 1 3 3"/></svg>Groups
-      </div>
-      <div class="nav-section">Loanbook</div>
-      <div class="nav-item" onclick="go('disbursements',this)">
-        <svg class="ni" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8h12M8 2l4 6-4 6"/></svg>Loan Disbursements
-      </div>
-      <div class="nav-item" onclick="go('newloan',this)">
-        <svg class="ni" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2v12M2 8h12"/></svg>New Loan
-      </div>
-      <div class="nav-item" onclick="go('collections',this)">
-        <svg class="ni" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 11l4-4 3 3 5-6"/></svg>Collections MTD
-      </div>
-      <div class="nav-item" onclick="go('arrears',this)">
-        <svg class="ni" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><path d="M8 5v3l2 2"/></svg>Loan Arrears
-      </div>
-      <div class="nav-section">Reports</div>
-      <div class="nav-item" onclick="go('report',this)">
-        <svg class="ni" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="3" width="14" height="10" rx="1"/><path d="M1 7h14"/></svg>Progressive Report
-      </div>
-      <div class="nav-section">Founders</div>
-      <div class="nav-item" onclick="go('shareholders',this)">
-        <svg class="ni" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 13V5l6-3 6 3v8"/><path d="M6 13V9h4v4"/></svg>Shareholders
-      </div>
-      <div class="nav-item" onclick="go('contributions',this)">
-        <svg class="ni" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><path d="M8 5v6M5 8h6"/></svg>Share Contributions
-      </div>
-      <div class="nav-section">Finance</div>
-      <div class="nav-item" onclick="go('accounting',this)">
-        <svg class="ni" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="12" height="12" rx="1"/><path d="M5 8h6M5 5h4M5 11h3"/></svg>Accounting
-      </div>
-      <div class="nav-section">System</div>
-      <div class="nav-item" onclick="go('settings',this)">
-        <svg class="ni" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="2.5"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.2 3.2l1.4 1.4M11.4 11.4l1.4 1.4M3.2 12.8l1.4-1.4M11.4 4.6l1.4-1.4"/></svg>Settings
-      </div>
-      <div class="nav-item" onclick="doLogout()">
-        <svg class="ni" viewBox="0 0
-
-  /* TOPBAR */
-  .topbar-title{font-size:14px;font-weight:600;color:var(--text)}
-  .topbar-right{display:flex;align-items:center;gap:12px}
-  .save-status{font-size:11px;color:var(--text3);display:flex;align-items:center;gap:4px}
-  .save-dot{width:6px;height:6px;border-radius:50%;background:#ccc}
-  .save-dot.saved{background:var(--green-mid)}
-  .save-dot.saving{background:var(--warn);animation:pulse 1s infinite}
-  @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
-  .avatar{width:30px;height:30px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;font-weight:700}
-
-  /* CARDS & STATS */
-  .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
-  .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px}
-  .stat-label{font-size:11px;color:var(--text2);margin-bottom:3px}
-  .stat-value{font-size:20px;font-weight:700;color:var(--text);margin-bottom:2px;line-height:1.2}
-  .stat-sub{font-size:11px;color:var(--green-mid)}
-  .stat-card.danger .stat-sub{color:var(--danger)}
-  .card{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:14px}
-  .card-header{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
-  .card-title{font-size:13px;font-weight:600;color:var(--text)}
-  .card-section{padding:14px 16px;border-bottom:1px solid var(--border)}
-  .section-lbl{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px}
-
-  /* TABLES */
-  table{width:100%;border-collapse:collapse;font-size:12px}
-  th{background:#fafaf8;font-weight:600;color:var(--text2);padding:9px 12px;text-align:left;font-size:11px;white-space:nowrap;border-bottom:1px solid var(--border)}
-  td{padding:9px 12px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle}
-  tr:last-child td{border-bottom:none}
-  tr:hover td{background:#fafaf8}
-  tfoot td{font-weight:700;background:#fafaf8;border-top:1px solid var(--border2)}
-  .cr-good{color:var(--green);font-weight:600}
-  .cr-warn{color:var(--warn);font-weight:600}
-  .cr-bad{color:var(--danger);font-weight:600}
-
-  /* BUTTONS */
-  .btn{font-size:12px;padding:6px 14px;border:1px solid var(--border2);border-radius:7px;background:var(--surface);color:var(--text);cursor:pointer;height:32px;white-space:nowrap;font-weight:500;transition:all 0.1s}
-  .btn:hover{background:#f5f5f2;border-color:#bbb}
-  .btn.primary{background:var(--green);color:#fff;border-color:var(--green)}
-  .btn.primary:hover{background:#085041}
-  .btn.sm{height:26px;font-size:11px;padding:0 10px}
-  .btn.danger-sm{height:26px;font-size:11px;padding:0 10px;background:var(--danger-bg);color:var(--danger);border-color:#fca5a5}
-  .btn.danger-sm:hover{background:#fee2e2}
-
-  /* FILTERS */
-  .filters{display:flex;gap:8px;padding:10px 16px;border-bottom:1px solid var(--border);flex-wrap:wrap;align-items:center}
-  .fi{font-size:12px;padding:5px 9px;border:1px solid var(--border2);border-radius:7px;background:var(--surface);color:var(--text);height:32px}
-  .fi:focus{outline:none;border-color:var(--green-mid)}
-  .srch{width:200px}
-
-  /* FORM */
-  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-  .form-group{display:flex;flex-direction:column;gap:5px}
-  .form-label{font-size:11px;color:var(--text2);font-weight:600}
-  .form-input{font-size:12px;padding:8px 10px;border:1px solid var(--border2);border-radius:7px;background:var(--surface);color:var(--text)}
-  .form-input:focus{outline:none;border-color:var(--green-mid);box-shadow:0 0 0 3px rgba(29,158,117,0.1)}
-  .form-actions{padding:12px 16px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;background:#fafaf8}
-
-  /* BADGES */
-  .sb{font-size:10px;padding:3px 9px;border-radius:20px;font-weight:600;display:inline-block;white-space:nowrap}
-  .s-active{background:var(--green-light);color:var(--green)}
-  .s-overdue{background:var(--danger-bg);color:var(--danger)}
-  .s-pending{background:var(--warn-bg);color:var(--warn)}
-  .s-complete{background:var(--info-bg);color:var(--info)}
-  .s-group{background:var(--purple-bg);color:var(--purple)}
-  .s-individual{background:#f5f5f2;color:var(--text2)}
-
-  /* PROGRESS */
-  .prog-wrap{background:#e5e5e0;border-radius:4px;height:7px;flex:1;min-width:60px}
-  .prog-bar{height:7px;border-radius:4px;background:var(--green-mid);transition:width 0.3s}
-  .prog-bar.warn{background:#f59e0b}
-  .prog-bar.danger{background:#ef4444}
-
-  /* PHOTO UPLOAD */
-  .upload-zone{border:1.5px dashed var(--border2);border-radius:9px;padding:14px 10px;text-align:center;cursor:pointer;background:#fafaf8;transition:border-color 0.15s}
-  .upload-zone:hover{border-color:var(--green-mid);background:var(--green-light)}
-  .upload-ph{width:64px;height:64px;border-radius:50%;background:#f0f0ec;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;margin:0 auto 6px}
-  .upload-ph.rect{border-radius:7px}
-  .upload-ph img{width:100%;height:100%;object-fit:cover;border-radius:inherit}
-  .upload-hint{font-size:11px;color:var(--text2)}
-  .upload-hint2{font-size:10px;color:var(--text3);margin-top:2px}
-  .client-av{width:30px;height:30px;border-radius:50%;object-fit:cover;flex-shrink:0}
-  .client-av-ph{width:30px;height:30px;border-radius:50%;background:var(--green-light);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--green);flex-shrink:0}
-
-  /* MINI STATS */
-  .mini-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:12px 16px;background:#fafaf8;border-top:1px solid var(--border)}
-  .mini-stat{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 12px;text-align:center}
-  .mini-val{font-size:16px;font-weight:700;color:var(--text)}
-  .mini-lbl{font-size:10px;color:var(--text2);margin-top:2px}
-
-  /* NOTE BOX */
-  .note{background:var(--green-light);border:1px solid #9fe1cb;border-radius:8px;padding:10px 13px;font-size:11px;color:#085041;margin-bottom:12px;line-height:1.6}
-
-  /* MODAL */
-  .overlay{position:fixed;inset:0;background:rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;z-index:1000;backdrop-filter:blur(2px)}
-  .modal{background:var(--surface);border-radius:12px;border:1px solid var(--border);width:400px;max-width:95vw;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.15)}
-  .modal-hd{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--surface)}
-  .modal-title{font-size:13px;font-weight:700;color:var(--text)}
-  .modal-body{padding:16px;display:flex;flex-direction:column;gap:11px}
-  .modal-ft{padding:12px 18px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;background:#fafaf8;border-radius:0 0 12px 12px}
-  .close-x{background:none;border:none;font-size:20px;cursor:pointer;color:var(--text2);line-height:1;padding:2px 6px;border-radius:4px}
-  .close-x:hover{background:#f0f0ec}
-
-  /* LOGIN */
-  #login-screen{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:2000}
-  .login-box{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:32px;width:340px;box-shadow:0 8px 40px rgba(0,0,0,0.08)}
-  .login-logo{width:52px;height:52px;border-radius:12px;background:var(--green);display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;font-weight:700;margin:0 auto 14px;letter-spacing:1px}
-  .login-title{font-size:18px;font-weight:700;color:var(--text);text-align:center;margin-bottom:4px}
-  .login-sub{font-size:12px;color:var(--text2);text-align:center;margin-bottom:24px}
-  .login-form{display:flex;flex-direction:column;gap:12px}
-  .login-err{color:var(--danger);font-size:11px;text-align:center;display:none}
-
-  /* FIREBASE STATUS */
-  #db-status{position:fixed;bottom:14px;right:14px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-size:11px;color:var(--text2);box-shadow:0 2px 12px rgba(0,0,0,0.08);z-index:500;display:flex;align-items:center;gap:6px}
-  .db-dot{width:7px;height:7px;border-radius:50%;background:#ccc;flex-shrink:0}
-  .db-dot.connected{background:var(--green-mid)}
-  .db-dot.error{background:var(--danger)}
-
-  @media(max-width:768px){
-    #sidebar{display:none}
-    .stats-grid{grid-template-columns:1fr 1fr}
-    .form-grid{grid-template-columns:1fr}
-  }
-</style>
-</head>
-<body>
-
-<!-- LOGIN SCREEN -->
-<div id="login-screen">
-  <div class="login-box">
-    <div class="login-logo">WS</div>
-    <div class="login-title">WELB Solutions</div>
-    <div class="login-sub">Microfinance Management System</div>
-    <div class="login-form">
-      <div class="form-group">
-        <label class="form-label">Username</label>
-        <input class="form-input" id="login-user" placeholder="Enter username" autocomplete="username">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Password</label>
-        <input class="form-input" type="password" id="login-pass" placeholder="Enter password" autocomplete="current-password">
-      </div>
-      <div class="login-err" id="login-err">Invalid username or password</div>
-      <button class="btn primary" style="width:100%;height:38px;font-size:13px;margin-top:4px" onclick="doLogin()">Sign In</button>
-      <div style="font-size:10px;color:var(--text3);text-align:center;margin-top:8px">Password reset:Contact Admin </div>
-    </div>
-  </div>
-</div>
-
-<!-- MAIN APP -->
-<div id="app" style="display:none">
-
-  <!-- SIDEBAR -->
-  <div id="sidebar">
-    <div class="brand">
-      <div class="brand-row">
-        <div class="brand-icon">WS</div>
-        <div><div class="brand-name">WELB Solutions</div><div class="brand-sub">Microfinance Ltd</div></div>
-      </div>
-    </div>
-    <div class="user-info">
-      <div class="user-name" id="sb-user">Admin</div>
+      <div class="user-email" id="sb-email" style="font-size:10px;color:var(--text3);margin-top:1px"></div>
       <div class="user-online"><div class="online-dot"></div>Online</div>
     </div>
     <div class="nav">
@@ -610,7 +392,7 @@
           <div class="card-header"><div class="card-title">Loan Groups</div><button class="btn primary" onclick="openModal('modal-group')">+ Create Group</button></div>
           <div class="note">Groups allow multiple clients to borrow under one umbrella. Each member is individually registered and tracked.</div>
           <table><thead><tr><th>Group ID</th><th>Group Name</th><th>Leader</th><th>Members</th><th>Created</th><th>Action</th></tr></thead>
-          <tbody id="gtbody"><tr><td colspan="5" style="text-align:center;padding:24px;color:var(--text2)">No groups yet</td></tr></tbody></table>
+          <tbody id="gtbody"><tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text2)">No groups yet</td></tr></tbody></table>
         </div>
       </div>
 
@@ -709,7 +491,7 @@
         <div class="card">
           <div class="card-header"><div class="card-title">Contribution History</div></div>
           <table><thead><tr><th>Date</th><th>Founder</th><th>Amount</th><th>Running Total</th><th>Note</th><th>Action</th></tr></thead>
-          <tbody id="conthtbody"><tr><td colspan="5" style="text-align:center;padding:24px;color:var(--text2)">No contributions yet</td></tr></tbody></table>
+          <tbody id="conthtbody"><tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text2)">No contributions yet</td></tr></tbody></table>
         </div>
       </div>
 
@@ -733,18 +515,17 @@
         <div class="card">
           <div class="card-header"><div class="card-title">System Settings</div></div>
           <div class="card-section">
-            <div class="section-lbl">Users / Login Credentials</div>
-            <div class="note">Change the default password before going live. Share credentials only with trusted founders.</div>
+            <div class="section-lbl">Account Info</div>
+            <div class="note">To change your password, use Firebase Authentication Console or request an admin to send a password reset email.</div>
             <div class="form-grid">
-              <div class="form-group"><label class="form-label">Admin Username</label><input class="form-input" id="set-user" value="admin"></div>
-              <div class="form-group"><label class="form-label">Admin Password</label><input class="form-input" type="password" id="set-pass" placeholder="New password"></div>
+              <div class="form-group"><label class="form-label">Logged-in Email</label><input class="form-input" id="set-email" disabled style="opacity:0.7"></div>
+              <div class="form-group"><label class="form-label">Display Name</label><input class="form-input" id="set-dname" placeholder="e.g. Admin"></div>
             </div>
           </div>
           <div class="card-section">
             <div class="section-lbl">System Info</div>
             <div class="form-grid">
-              <div class="form-group"><label class="form-label">Company Name</label><input class="form-input" id="set-company" value="WELB Solutions Microfinance Ltd"></div>
-              <div class="form-group"><label class="form-label">Admin Display Name</label><input class="form-input" id="set-dname" value="Admin"></div>
+              <div class="form-group" style="grid-column:span 2"><label class="form-label">Company Name</label><input class="form-input" id="set-company" value="WELB Solutions Microfinance Ltd"></div>
             </div>
           </div>
           <div class="form-actions"><button class="btn primary" onclick="saveSettings()">Save Settings</button></div>
@@ -813,7 +594,7 @@
 
 <script>
 // ============================================================
-// FIREBASE CONFIG — REPLACE WITH YOUR OWN FROM firebase console
+// FIREBASE CONFIG
 // ============================================================
 const FIREBASE_CONFIG = {
   apiKey: "AIzaSyCQJSAhF_H7J1rsl6hKMPPgiOA-0QqjaVQ",
@@ -823,19 +604,13 @@ const FIREBASE_CONFIG = {
   messagingSenderId: "226538094767",
   appId: "1:226538094767:web:6a8e9815c2b69d64fc945a"
 };
-// ============================================================
 
-// AUTH (simple credential check — stored in Firestore settings)
-let CREDENTIALS = { username: 'admin', password: 'Welb@2026' };
-let currentUser = null;
-// Track whether user has ever saved a custom password via Settings
-// If yes, Firebase password takes priority. If no, use hardcoded default.
-let credentialsCustomized = false;
-
-// LOCAL STATE (loaded from Firestore)
+// LOCAL STATE
 let S = { clients:[], loans:[], founders:[], contributions:[], payments:[], groups:[], settings:{} };
 let db = null;
+let auth = null;
 let dbOk = false;
+let currentUser = null;
 let nc_imgs = { pass:null, idf:null, idb:null };
 
 // HELPERS
@@ -846,7 +621,6 @@ const dd = d => { if(!d) return '—'; const p=d.split('-'); return p[2]+'/'+p[1
 const loanPaid = id => S.payments.filter(p=>p.loanId===id).reduce((s,p)=>s+p.amount,0);
 const founderTotal = id => S.contributions.filter(c=>c.founderId===id).reduce((s,c)=>s+c.amount,0);
 
-// PAGE TITLES
 const TITLES = {dashboard:'Dashboard',clients:'All Clients',addclient:'Add New Client',groups:'Loan Groups',newloan:'New Loan Application',disbursements:'Loan Disbursements',collections:'Collections MTD',arrears:'Loan Arrears',report:'Progressive Report',shareholders:'Founders / Shareholders',contributions:'Share Contributions',accounting:'Accounting',settings:'Settings'};
 
 // ============================================================
@@ -856,14 +630,32 @@ function initFirebase() {
   try {
     firebase.initializeApp(FIREBASE_CONFIG);
     db = firebase.firestore();
+    auth = firebase.auth();
+
+    // Listen for auth state changes — this is the single source of truth
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        // User is signed in
+        currentUser = user;
+        onLoginSuccess(user);
+      } else {
+        // User is signed out — show login screen
+        currentUser = null;
+        document.getElementById('app').style.display = 'none';
+        document.getElementById('login-screen').style.display = 'flex';
+        setLoginLoading(false);
+      }
+    });
+
+    // Test Firestore connection
     db.collection('_ping').doc('test').set({ ts: Date.now() })
-      .then(() => {
-        dbOk = true;
-        setDbStatus(true);
-        loadAllData();
-      })
-      .catch(() => { setDbStatus(false); runOffline(); });
-  } catch(e) { setDbStatus(false); runOffline(); }
+      .then(() => { dbOk = true; setDbStatus(true); })
+      .catch(() => { setDbStatus(false); });
+
+  } catch(e) {
+    console.error('Firebase init error:', e);
+    setDbStatus(false);
+  }
 }
 
 function setDbStatus(ok) {
@@ -879,45 +671,132 @@ function setSaveStatus(state) {
   else { dot.className='save-dot'; txt.textContent='Ready'; }
 }
 
-function runOffline() {
-  // Run with empty local state if no DB
-  dbOk = false;
+// ============================================================
+// AUTH — Firebase Email/Password
+// ============================================================
+
+// Map Firebase auth error codes to friendly messages
+function friendlyAuthError(code) {
+  const map = {
+    'auth/invalid-email':           'Please enter a valid email address.',
+    'auth/user-not-found':          'No account found for this email.',
+    'auth/wrong-password':          'Incorrect password. Please try again.',
+    'auth/invalid-credential':      'Invalid email or password. Please check and try again.',
+    'auth/too-many-requests':       'Too many failed attempts. Please wait a moment and try again.',
+    'auth/user-disabled':           'This account has been disabled. Contact the administrator.',
+    'auth/network-request-failed':  'Network error. Check your internet connection.',
+    'auth/email-already-in-use':    'This email is already in use.',
+  };
+  return map[code] || 'Sign-in failed. Please check your credentials and try again.';
 }
 
-async function loadAllData() {
-  if(!dbOk) return;
+function setLoginLoading(loading) {
+  const btn = document.getElementById('login-btn');
+  const emailInput = document.getElementById('login-email');
+  const passInput = document.getElementById('login-pass');
+  btn.disabled = loading;
+  btn.textContent = loading ? 'Signing in…' : 'Sign In';
+  emailInput.disabled = loading;
+  passInput.disabled = loading;
+}
+
+function showLoginError(msg) {
+  const err = document.getElementById('login-err');
+  err.textContent = msg;
+  err.style.display = 'block';
+}
+
+function hideLoginError() {
+  document.getElementById('login-err').style.display = 'none';
+}
+
+async function doLogin() {
+  const email = document.getElementById('login-email').value.trim();
+  const pass  = document.getElementById('login-pass').value;
+
+  hideLoginError();
+
+  if (!email) { showLoginError('Please enter your email address.'); return; }
+  if (!pass)  { showLoginError('Please enter your password.'); return; }
+
+  setLoginLoading(true);
+
   try {
-    // Load settings FIRST so credentials are ready before login
+    await auth.signInWithEmailAndPassword(email, pass);
+    // onAuthStateChanged will handle the rest
+  } catch (err) {
+    console.error('Login error:', err.code, err.message);
+    showLoginError(friendlyAuthError(err.code));
+    setLoginLoading(false);
+  }
+}
+
+function onLoginSuccess(user) {
+  // Hide login, show app
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'flex';
+  setLoginLoading(false);
+
+  // Set display name (use displayName, or part before @ in email)
+  const displayName = user.displayName || user.email.split('@')[0];
+  const initials = displayName.substring(0, 2).toUpperCase();
+
+  document.getElementById('sb-user').textContent = displayName.charAt(0).toUpperCase() + displayName.slice(1);
+  document.getElementById('sb-email').textContent = user.email;
+  document.getElementById('top-avatar').textContent = initials;
+
+  // Update settings page
+  const emailEl = document.getElementById('set-email');
+  if (emailEl) emailEl.value = user.email;
+  const dnameEl = document.getElementById('set-dname');
+  if (dnameEl) dnameEl.value = displayName;
+
+  // Load all data then render dashboard
+  loadAllData();
+}
+
+function doLogout() {
+  auth.signOut().catch(e => console.error('Logout error:', e));
+  // onAuthStateChanged will handle hiding the app
+}
+
+// Enter key support on login form
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('login-pass').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
+  document.getElementById('login-email').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
+});
+
+// ============================================================
+// DATA LOADING
+// ============================================================
+async function loadAllData() {
+  if(!db) return;
+  try {
+    // Load settings
     const settingsDoc = await db.collection('settings').doc('main').get();
     if(settingsDoc.exists) {
-      const d = settingsDoc.data();
-      if(!currentUser) {
-        // Only override hardcoded credentials if user saved custom ones via Settings
-        // We detect this by checking if a 'customized' flag exists in Firestore
-        if(d.credentialsCustomized) {
-          if(d.username) CREDENTIALS.username = d.username;
-          if(d.password) CREDENTIALS.password = d.password;
-          credentialsCustomized = true;
-        }
-        // If not customized, keep hardcoded CREDENTIALS as-is
-      }
-      S.settings = d;
-      if(d.company) { const el=document.getElementById('set-company'); if(el) el.value=d.company; }
-      if(d.displayName) { const el=document.getElementById('set-dname'); if(el) el.value=d.displayName; }
+      S.settings = settingsDoc.data();
+      const s = S.settings;
+      if(s.company) { const el=document.getElementById('set-company'); if(el) el.value=s.company; }
+      if(s.displayName) { const el=document.getElementById('set-dname'); if(el) el.value=s.displayName; }
     }
-
-    // Load all other collections
+    // Load all collections
     const cols = ['clients','loans','founders','contributions','payments','groups'];
     for(const col of cols) {
       const snap = await db.collection(col).get();
       S[col] = snap.docs.map(d => ({ ...d.data(), _id: d.id }));
     }
+    dbOk = true;
+    setDbStatus(true);
     renderDashboard();
-  } catch(e) { console.error('Load error', e); }
+  } catch(e) {
+    console.error('Load error', e);
+    setDbStatus(false);
+  }
 }
 
 async function saveDoc(col, data) {
-  if(!dbOk) return data;
+  if(!db) return data;
   setSaveStatus('saving');
   try {
     if(data._id) {
@@ -930,34 +809,6 @@ async function saveDoc(col, data) {
     setTimeout(() => setSaveStatus('ready'), 2000);
   } catch(e) { console.error('Save error', e); setSaveStatus('ready'); }
   return data;
-}
-
-// ============================================================
-// AUTH
-// ============================================================
-function doLogin() {
-  const u = document.getElementById('login-user').value.trim();
-  const p = document.getElementById('login-pass').value;
-  if(u === CREDENTIALS.username && p === CREDENTIALS.password) {
-    currentUser = u;
-    document.getElementById('login-screen').style.display = 'none';
-    document.getElementById('app').style.display = 'flex';
-    document.getElementById('sb-user').textContent = u.charAt(0).toUpperCase()+u.slice(1);
-    document.getElementById('top-avatar').textContent = u.substring(0,2).toUpperCase();
-    renderDashboard();
-  } else {
-    document.getElementById('login-err').style.display = 'block';
-  }
-}
-document.getElementById('login-pass').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
-document.getElementById('login-user').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
-
-function doLogout() {
-  currentUser = null;
-  document.getElementById('app').style.display = 'none';
-  document.getElementById('login-screen').style.display = 'flex';
-  document.getElementById('login-user').value = '';
-  document.getElementById('login-pass').value = '';
 }
 
 // ============================================================
@@ -1013,7 +864,7 @@ function saveGroup() {
 
 function renderGroups() {
   const tb = document.getElementById('gtbody');
-  if(!S.groups.length) { tb.innerHTML='<tr><td colspan="5" style="text-align:center;padding:24px;color:var(--text2)">No groups yet</td></tr>'; return; }
+  if(!S.groups.length) { tb.innerHTML='<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text2)">No groups yet</td></tr>'; return; }
   tb.innerHTML = S.groups.map(g => {
     const members = S.clients.filter(c=>c.groupId===g.id).length;
     return `<tr><td>${g.id}</td><td><strong>${g.name}</strong>${g.desc?`<div style="font-size:10px;color:var(--text2)">${g.desc}</div>`:''}</td><td>${g.leader||'—'}</td><td>${members}</td><td>${dd(g.created)}</td><td><button class="btn danger-sm" onclick="deleteGroup('${g._id||g.id}','${g.name}')">Delete</button></td></tr>`;
@@ -1105,7 +956,7 @@ async function saveFounder() {
 }
 
 function renderFounders() {
-  const PER_FOUNDER_TARGET = 15000; // KES 150,000 total / 10 founders
+  const PER_FOUNDER_TARGET = 15000;
   const tb = document.getElementById('ftbody');
   if(!S.founders.length) { tb.innerHTML='<tr><td colspan="8" style="text-align:center;padding:24px;color:var(--text2)">No founders yet</td></tr>'; return; }
   tb.innerHTML = S.founders.map((f,i) => {
@@ -1168,10 +1019,9 @@ function renderContributions() {
     const status = pct>=100?'<span class="sb s-complete">At Target</span>':tot>0?'<span class="sb s-pending">In Progress</span>':'<span class="sb s-overdue">Not Started</span>';
     return `<tr><td>${f.name}</td><td>${fmtK(tot)}</td><td>${fmtK(PER_FOUNDER_TARGET)}</td><td style="color:${rem>0?'var(--warn)':'var(--green)'}">${fmtK(rem)}</td><td><div style="display:flex;align-items:center;gap:6px"><div class="prog-wrap"><div class="prog-bar ${barC}" style="width:${pct}%"></div></div><span style="font-size:11px;color:var(--text2)">${pct}%</span></div></td><td>${status}</td></tr>`;
   }).join('');
-  const target = S.founders.length * PER_FOUNDER_TARGET;
   tf.innerHTML = `<td>Totals</td><td>${fmtK(total)}</td><td>${fmtK(TOTAL_TARGET)}</td><td>${fmtK(Math.max(0,TOTAL_TARGET-total))}</td><td></td><td></td>`;
   const ht = document.getElementById('conthtbody');
-  if(!S.contributions.length) { ht.innerHTML='<tr><td colspan="5" style="text-align:center;padding:24px;color:var(--text2)">No contributions yet</td></tr>'; return; }
+  if(!S.contributions.length) { ht.innerHTML='<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text2)">No contributions yet</td></tr>'; return; }
   ht.innerHTML = [...S.contributions].sort((a,b)=>b.date.localeCompare(a.date)).map(c=>`<tr><td>${dd(c.date)}</td><td>${c.founderName}</td><td>${fmtK(c.amount)}</td><td>${fmtK(c.runningTotal)}</td><td>${c.note||'—'}</td><td><button class="btn danger-sm" onclick="deleteContrib('${c._id||c.id}','${c.founderName}',${c.amount})">Delete</button></td></tr>`).join('');
 }
 
@@ -1224,7 +1074,7 @@ async function saveLoan() {
 
 function renderDisbursements() {
   const tb=document.getElementById('dtbody'), tf=document.getElementById('dtfoot');
-  if(!S.loans.length) { tb.innerHTML='<tr><td colspan="11" style="text-align:center;padding:24px;color:var(--text2)">No loans yet</td></tr>'; tf.innerHTML=''; return; }
+  if(!S.loans.length) { tb.innerHTML='<tr><td colspan="12" style="text-align:center;padding:24px;color:var(--text2)">No loans yet</td></tr>'; tf.innerHTML=''; return; }
   let tD=0,tC=0,tP=0,tA=0,tB=0;
   tb.innerHTML = S.loans.map(l => {
     const paid=loanPaid(l.id), arr=Math.max(0,l.monthlyInstalment-paid), bal=Math.max(0,l.totalPayable*0.95-paid);
@@ -1236,7 +1086,7 @@ function renderDisbursements() {
     return `<tr><td><strong>${l.id}</strong></td><td>${l.clientName}</td><td>${tt}</td><td>${fmt(l.amount)}</td><td>${fmt(l.totalPayable)}</td><td>${fmt(paid)}</td><td>${fmt(arr)}</td><td>${fmt(bal)}</td><td>${dd(l.disbursedDate)}</td><td><span class="sb ${sc}">${l.status}</span></td><td class="${crC}">${cr}</td><td><button class="btn danger-sm" onclick="deleteLoan('${l._id||l.id}','${l.id}')">Delete</button></td></tr>`;
   }).join('');
   const cr=tC>0?((tP/tC)*100).toFixed(1)+'%':'0%';
-  tf.innerHTML=`<td colspan="3"><strong>Totals</strong></td><td>${fmt(tD)}</td><td>${fmt(tC)}</td><td>${fmt(tP)}</td><td>${fmt(tA)}</td><td>${fmt(tB)}</td><td></td><td></td><td class="cr-warn">${cr}</td>`;
+  tf.innerHTML=`<td colspan="3"><strong>Totals</strong></td><td>${fmt(tD)}</td><td>${fmt(tC)}</td><td>${fmt(tP)}</td><td>${fmt(tA)}</td><td>${fmt(tB)}</td><td></td><td></td><td class="cr-warn">${cr}</td><td></td>`;
 }
 
 function renderCollections() {
@@ -1317,58 +1167,34 @@ function renderDashboard() {
   document.getElementById('d-clients').textContent=S.clients.length;
   document.getElementById('d-groups').textContent=S.groups.length+' group'+(S.groups.length!==1?'s':'');
   document.getElementById('d-founders').textContent=S.founders.length+' / 10';
-  // Update share capital stat subtitle to show KES 150,000 target
-  const capSub = document.getElementById('d-cap-sub');
-  if(capSub) capSub.textContent = 'of KES 150,000 target';
   const tb=document.getElementById('dash-tbody');
   if(!S.loans.length){tb.innerHTML='<tr><td colspan="8" style="text-align:center;padding:24px;color:var(--text2)">No loans yet</td></tr>';return;}
   tb.innerHTML=[...S.loans].reverse().slice(0,5).map(l=>{const paid=loanPaid(l.id),cr=l.totalPayable>0?((paid/l.totalPayable)*100).toFixed(1)+'%':'0%',crC=parseFloat(cr)>=5?'cr-good':parseFloat(cr)>0?'cr-warn':'cr-bad',sc=l.status==='Active'?'s-active':l.status==='Completed'?'s-complete':'s-overdue';return`<tr><td><strong>${l.id}</strong></td><td>${l.clientName}</td><td>${fmt(l.amount)}</td><td>${fmt(l.totalPayable)}</td><td>${fmt(paid)}</td><td>${dd(l.disbursedDate)}</td><td><span class="sb ${sc}">${l.status}</span></td><td class="${crC}">${cr}</td></tr>`;}).join('');
 }
 
 async function saveSettings() {
-  const u = document.getElementById('set-user').value.trim();
-  const p = document.getElementById('set-pass').value.trim();
   const company = document.getElementById('set-company').value.trim();
   const displayName = document.getElementById('set-dname').value.trim();
-
-  // Update in-memory credentials IMMEDIATELY so new password works right away
-  if(u) CREDENTIALS.username = u;
-  if(p) CREDENTIALS.password = p;
-
-  const settings = {
-    username: CREDENTIALS.username,
-    password: CREDENTIALS.password,
-    company: company || 'WELB Solutions Microfinance Ltd',
-    displayName: displayName || CREDENTIALS.username,
-    credentialsCustomized: true, // flag so future page loads use Firebase password
-  };
-
-  // Save to Firestore
-  if(dbOk) {
-    try {
-      await db.collection('settings').doc('main').set(settings);
-    } catch(e) { console.error('Settings save error', e); }
-  }
-
+  const settings = { company: company || 'WELB Solutions Microfinance Ltd', displayName: displayName || (currentUser?.email||'Admin') };
   S.settings = settings;
-
-  // Update UI immediately
-  const dispName = settings.displayName || settings.username;
-  document.getElementById('sb-user').textContent = dispName.charAt(0).toUpperCase() + dispName.slice(1);
-  document.getElementById('top-avatar').textContent = dispName.substring(0,2).toUpperCase();
-
-  // Clear password field after saving
-  document.getElementById('set-pass').value = '';
-
-  alert('Settings saved! Your new password is active immediately.');
+  if(db) {
+    try { await db.collection('settings').doc('main').set(settings); } catch(e) { console.error(e); }
+  }
+  if(displayName) {
+    document.getElementById('sb-user').textContent = displayName.charAt(0).toUpperCase() + displayName.slice(1);
+    document.getElementById('top-avatar').textContent = displayName.substring(0,2).toUpperCase();
+  }
+  alert('Settings saved!');
 }
+
 function loadSettings() {
-  document.getElementById('set-user').value = CREDENTIALS.username || 'admin';
-  document.getElementById('set-pass').value = '';
-  // Restore company and display name from saved settings
+  if(currentUser) {
+    const emailEl = document.getElementById('set-email');
+    if(emailEl) emailEl.value = currentUser.email;
+  }
   const s = S.settings || {};
   document.getElementById('set-company').value = s.company || 'WELB Solutions Microfinance Ltd';
-  document.getElementById('set-dname').value = s.displayName || CREDENTIALS.username || 'Admin';
+  document.getElementById('set-dname').value = s.displayName || (currentUser?.displayName || currentUser?.email?.split('@')[0] || 'Admin');
 }
 
 // ============================================================
@@ -1377,7 +1203,7 @@ function loadSettings() {
 async function deleteClient(docId, name) {
   if(!confirm(`Delete client "${name}"?\n\nThis will permanently remove them from the system.`)) return;
   S.clients = S.clients.filter(c => (c._id||c.id) !== docId);
-  if(dbOk) { try { await db.collection('clients').doc(docId).delete(); } catch(e){console.error(e);} }
+  if(db) { try { await db.collection('clients').doc(docId).delete(); } catch(e){console.error(e);} }
   renderClients(); renderDashboard();
 }
 
@@ -1385,44 +1211,43 @@ async function deleteFounder(docId, name) {
   if(!confirm(`Delete founder "${name}"?\n\nThis will also remove all their share contributions.`)) return;
   const founder = S.founders.find(f=>(f._id||f.id)===docId);
   if(founder) {
-    // delete contributions too
     const contribs = S.contributions.filter(c=>c.founderId===founder.id);
     for(const c of contribs) {
-      if(dbOk && c._id) { try { await db.collection('contributions').doc(c._id).delete(); } catch(e){} }
+      if(db && c._id) { try { await db.collection('contributions').doc(c._id).delete(); } catch(e){} }
     }
     S.contributions = S.contributions.filter(c=>c.founderId!==founder.id);
   }
   S.founders = S.founders.filter(f=>(f._id||f.id) !== docId);
-  if(dbOk) { try { await db.collection('founders').doc(docId).delete(); } catch(e){console.error(e);} }
+  if(db) { try { await db.collection('founders').doc(docId).delete(); } catch(e){console.error(e);} }
   renderFounders(); renderContributions(); renderDashboard();
 }
 
 async function deleteLoan(docId, loanId) {
   if(!confirm(`Delete loan "${loanId}"?\n\nThis will also remove all payments recorded for this loan.`)) return;
-  // delete related payments
   const pays = S.payments.filter(p=>p.loanId===loanId);
   for(const p of pays) {
-    if(dbOk && p._id) { try { await db.collection('payments').doc(p._id).delete(); } catch(e){} }
+    if(db && p._id) { try { await db.collection('payments').doc(p._id).delete(); } catch(e){} }
   }
   S.payments = S.payments.filter(p=>p.loanId!==loanId);
   S.loans = S.loans.filter(l=>(l._id||l.id) !== docId);
-  if(dbOk) { try { await db.collection('loans').doc(docId).delete(); } catch(e){console.error(e);} }
+  if(db) { try { await db.collection('loans').doc(docId).delete(); } catch(e){console.error(e);} }
   renderDisbursements(); renderCollections(); renderArrears(); renderDashboard();
 }
 
 async function deleteContrib(docId, founderName, amount) {
   if(!confirm(`Delete contribution of ${fmtK(amount)} from "${founderName}"?`)) return;
   S.contributions = S.contributions.filter(c=>(c._id||c.id) !== docId);
-  if(dbOk) { try { await db.collection('contributions').doc(docId).delete(); } catch(e){console.error(e);} }
+  if(db) { try { await db.collection('contributions').doc(docId).delete(); } catch(e){console.error(e);} }
   renderContributions(); renderFounders(); renderDashboard();
 }
 
 async function deleteGroup(docId, name) {
-  const members = S.clients.filter(c=>c.groupId === S.groups.find(g=>(g._id||g.id)===docId)?.id).length;
+  const grp = S.groups.find(g=>(g._id||g.id)===docId);
+  const members = S.clients.filter(c=>c.groupId === grp?.id).length;
   if(members > 0) { alert(`Cannot delete group "${name}" — it has ${members} client(s) assigned to it. Remove or reassign those clients first.`); return; }
   if(!confirm(`Delete group "${name}"?`)) return;
   S.groups = S.groups.filter(g=>(g._id||g.id) !== docId);
-  if(dbOk) { try { await db.collection('groups').doc(docId).delete(); } catch(e){console.error(e);} }
+  if(db) { try { await db.collection('groups').doc(docId).delete(); } catch(e){console.error(e);} }
   renderGroups(); updateGroupSelects();
 }
 
