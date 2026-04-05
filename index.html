@@ -1,407 +1,184 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WELB — Management System</title>
+<title>WELB Solutions — Microfinance System</title>
 
-<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
 <style>
-  *{box-sizing:border-box;margin:0;padding:0}
-  :root{
-    --green:#0f6e56;--green-mid:#1d9e75;--green-light:#e1f5ee;
-    --bg:#f5f5f2;--surface:#ffffff;--border:#e5e5e0;--border2:#d0d0c8;
-    --text:#1a1a18;--text2:#6b6b65;--text3:#9b9b95;
-    --danger-bg:#fef2f2;--danger:#c53030;--warn-bg:#fffbeb;--warn:#b45309;
-    --info-bg:#eff6ff;--info:#1e40af;--purple-bg:#f5f3ff;--purple:#5b21b6;
-  }
-  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:13px;line-height:1.5}
-
-  /* LAYOUT */
-  #app{display:flex;min-height:100vh}
-  #sidebar{width:215px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;position:sticky;top:0;height:100vh;overflow-y:auto}
-  #main{flex:1;display:flex;flex-direction:column;min-width:0;overflow:hidden}
-  .topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 20px;height:50px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;position:sticky;top:0;z-index:10}
-  .content{flex:1;padding:16px;overflow-y:auto}
-  .page{display:none}.page.active{display:block}
-
-  /* SIDEBAR */
-  .brand{padding:16px;border-bottom:1px solid var(--border)}
-  .brand-row{display:flex;align-items:center;gap:10px}
-  .brand-icon{width:38px;height:38px;border-radius:9px;background:var(--green);display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:700;flex-shrink:0}
-  .brand-name{font-size:13px;font-weight:700;color:var(--text)}
-  .user-info{padding:10px 16px;border-bottom:1px solid var(--border)}
-  .user-name{font-size:12px;font-weight:600;color:var(--text)}
-  .online-dot{width:6px;height:6px;border-radius:50%;background:var(--green-mid);display:inline-block;margin-right:5px}
-  .nav{flex:1;padding:8px 0}
-  .nav-section{font-size:10px;font-weight:600;color:var(--text3);padding:10px 16px 4px;text-transform:uppercase}
-  .nav-item{display:flex;align-items:center;gap:9px;padding:8px 16px;font-size:12px;color:var(--text2);cursor:pointer;transition:all 0.1s;border-left:2px solid transparent}
-  .nav-item:hover{background:#f9f9f7;color:var(--text)}
-  .nav-item.active{background:var(--green-light);color:var(--green);font-weight:600;border-left-color:var(--green)}
-
-  /* TABLES & CARDS */
-  .card{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:14px}
-  .card-header{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
-  table{width:100%;border-collapse:collapse;font-size:12px}
-  th{background:#fafaf8;font-weight:600;color:var(--text2);padding:9px 12px;text-align:left;border-bottom:1px solid var(--border)}
-  td{padding:9px 12px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle}
-
-  /* BUTTONS */
-  .btn{font-size:12px;padding:6px 14px;border:1px solid var(--border2);border-radius:7px;background:var(--surface);cursor:pointer;font-weight:500}
-  .btn.primary{background:var(--green);color:#fff;border-color:var(--green)}
-  .btn.danger-sm{height:26px;font-size:11px;padding:0 10px;background:var(--danger-bg);color:var(--danger);border-color:#fca5a5}
-
-  /* FORMS & UPLOADS */
-  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-  .form-group{display:flex;flex-direction:column;gap:5px}
-  .form-label{font-size:11px;color:var(--text2);font-weight:600}
-  .form-input{font-size:12px;padding:8px 10px;border:1px solid var(--border2);border-radius:7px}
-  .upload-zone{border:1.5px dashed var(--border2);border-radius:9px;padding:14px 10px;text-align:center;cursor:pointer;background:#fafaf8}
-  .upload-ph{width:64px;height:64px;border-radius:50%;background:#f0f0ec;margin:0 auto 6px;display:flex;align-items:center;justify-content:center;overflow:hidden;border:1px solid var(--border)}
-  .upload-ph.rect{border-radius:7px}
-  .upload-ph img{width:100%;height:100%;object-fit:cover}
-
-  /* BADGES & STATS */
-  .sb{font-size:10px;padding:3px 9px;border-radius:20px;font-weight:600;display:inline-block}
-  .s-active{background:var(--green-light);color:var(--green)}
-  .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
-  .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px}
-  .stat-value{font-size:20px;font-weight:700}
-  .prog-wrap{background:#e5e5e0;border-radius:4px;height:7px;margin-top:5px}
-  .prog-bar{height:7px;border-radius:4px;background:var(--green-mid)}
-
-  /* SAVE STATUS */
-  .save-status{font-size:11px;color:var(--text3);display:flex;align-items:center;gap:4px}
-  .save-dot{width:6px;height:6px;border-radius:50%;background:#ccc}
-  .save-dot.saved{background:var(--green-mid)}
-  .save-dot.saving{background:var(--warn);animation:pulse 1s infinite}
-  @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
-
-  /* LOGIN */
-  #login-screen{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:2000}
-  .login-box{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:32px;width:340px;box-shadow:0 8px 40px rgba(0,0,0,0.08)}
-
-  /* MODAL */
-  .overlay{position:fixed;inset:0;background:rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;z-index:1000;backdrop-filter:blur(2px)}
-  .modal{background:var(--surface);border-radius:12px;width:400px;max-width:95vw;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.15)}
-  .modal-hd{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+body{font-family:Arial;background:#f5f5f2}
+.btn{padding:8px 14px;background:#0f6e56;color:#fff;border:none;border-radius:6px;cursor:pointer}
+.card{background:#fff;padding:15px;margin:10px;border-radius:10px}
 </style>
+
 </head>
+
 <body>
 
-<!-- LOGIN SCREEN -->
-<div id="login-screen">
-  <div class="login-box">
-    <div style="width:52px;height:52px;border-radius:12px;background:var(--green);display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;font-weight:700;margin:0 auto 14px;">W</div>
-    <div style="font-size:18px;font-weight:700;color:var(--text);text-align:center;margin-bottom:24px">WELB</div>
-    <div class="login-form">
-      <div class="form-group">
-        <label class="form-label">Username</label>
-        <input class="form-input" id="login-user" placeholder="Type username...">
-      </div>
-      <div class="form-group" style="margin-top:12px">
-        <label class="form-label">Password</label>
-        <input class="form-input" type="password" id="login-pass" placeholder="Type password...">
-      </div>
-      <div id="login-err" style="color:var(--danger);font-size:11px;text-align:center;display:none;margin-top:8px">Invalid credentials</div>
-      <button class="btn primary" style="width:100%;height:38px;margin-top:16px" onclick="doLogin()">Sign In</button>
-    </div>
-  </div>
+<h2>WELB Microfinance Dashboard</h2>
+
+<div class="card">
+  <h3>Profit Dashboard</h3>
+  <div id="profit"></div>
 </div>
 
-<!-- MAIN APP -->
-<div id="app" style="display:none">
-  <div id="sidebar">
-    <div class="brand"><div class="brand-row"><div class="brand-icon">W</div><div class="brand-name">WELB</div></div></div>
-    <div class="user-info">
-        <div class="user-name" id="sb-user">Admin</div>
-        <div><small><span class="online-dot"></span>Online</small></div>
-    </div>
-    <div class="nav">
-      <div class="nav-item active" onclick="go('dashboard',this)">Dashboard</div>
-      <div class="nav-section">Registration</div>
-      <div class="nav-item" onclick="go('clients',this)">All Clients</div>
-      <div class="nav-item" onclick="go('addclient',this)">Add New Client</div>
-      <div class="nav-item" onclick="go('groups',this)">Loan Groups</div>
-      <div class="nav-section">Finance</div>
-      <div class="nav-item" onclick="go('disbursements',this)">Disbursements</div>
-      <div class="nav-item" onclick="go('newloan',this)">New Loan</div>
-      <div class="nav-item" onclick="go('shareholders',this)">Founders / Shareholders</div>
-      <div class="nav-item" onclick="go('contributions',this)">Share Contributions</div>
-      <div class="nav-section">System</div>
-      <div class="nav-item" onclick="go('accounting',this)">Accounting</div>
-      <div class="nav-item" onclick="go('settings',this)">Settings</div>
-      <div class="nav-item" onclick="doLogout()">Logout</div>
-    </div>
-  </div>
-
-  <div id="main">
-    <div class="topbar">
-      <div class="topbar-title" id="page-title">Dashboard</div>
-      <div class="save-status"><div class="save-dot" id="save-dot"></div><span id="save-txt">Ready</span></div>
-    </div>
-
-    <div class="content">
-
-      <!-- DASHBOARD -->
-      <div class="page active" id="page-dashboard">
-        <div class="stats-grid">
-          <div class="stat-card"><div>Total Disbursed</div><div class="stat-value" id="d-disbursed">KES 0</div></div>
-          <div class="stat-card"><div>Collections MTD</div><div class="stat-value" id="d-collected">KES 0</div></div>
-          <div class="stat-card"><div>Share Capital</div><div class="stat-value" id="d-cap">KES 0</div><div style="font-size:10px">Target: KES 20,000</div></div>
-          <div class="stat-card"><div>Total Clients</div><div class="stat-value" id="d-clients">0</div></div>
-        </div>
-        <div class="card">
-            <div class="card-header">Recent Loans</div>
-            <table><thead><tr><th>ID</th><th>Client</th><th>Amount</th><th>Status</th></tr></thead><tbody id="dash-tbody"></tbody></table>
-        </div>
-      </div>
-
-      <!-- ADD CLIENT (WITH PHOTO UPLOADS) -->
-      <div class="page" id="page-addclient">
-        <div class="card">
-          <div class="card-header">Register New Client</div>
-          <div class="card-section" style="padding:16px">
-            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px">
-              <div>
-                <label class="form-label">Passport Photo</label>
-                <div class="upload-zone" onclick="document.getElementById('up-pass').click()">
-                  <div class="upload-ph" id="ph-pass">Click to Upload</div>
-                </div>
-                <input type="file" id="up-pass" accept="image/*" style="display:none" onchange="prevImg(this,'ph-pass','pass')">
-              </div>
-              <div>
-                <label class="form-label">ID Front</label>
-                <div class="upload-zone" onclick="document.getElementById('up-idf').click()">
-                  <div class="upload-ph rect" id="ph-idf">Click to Upload</div>
-                </div>
-                <input type="file" id="up-idf" accept="image/*" style="display:none" onchange="prevImg(this,'ph-idf','idf')">
-              </div>
-              <div>
-                <label class="form-label">ID Back</label>
-                <div class="upload-zone" onclick="document.getElementById('up-idb').click()">
-                  <div class="upload-ph rect" id="ph-idb">Click to Upload</div>
-                </div>
-                <input type="file" id="up-idb" accept="image/*" style="display:none" onchange="prevImg(this,'ph-idb','idb')">
-              </div>
-            </div>
-
-            <div class="form-grid">
-              <div class="form-group"><label class="form-label">Full Name *</label><input class="form-input" id="nc-name"></div>
-              <div class="form-group"><label class="form-label">National ID #</label><input class="form-input" id="nc-nid"></div>
-              <div class="form-group"><label class="form-label">Phone *</label><input class="form-input" id="nc-phone"></div>
-              <div class="form-group"><label class="form-label">Location</label><input class="form-input" id="nc-loc"></div>
-            </div>
-
-            <div style="margin-top:20px">
-              <div style="font-weight:700;margin-bottom:10px">Next of Kin</div>
-              <div class="form-grid">
-                <div class="form-group"><label class="form-label">Kin Name</label><input class="form-input" id="nc-kin"></div>
-                <div class="form-group"><label class="form-label">Kin Phone</label><input class="form-input" id="nc-kinp"></div>
-                <div class="form-group" style="grid-column:span 2"><label class="form-label">Collateral Details</label><input class="form-input" id="nc-coll"></div>
-              </div>
-            </div>
-          </div>
-          <div class="form-actions"><button class="btn primary" onclick="saveClient()">Save Client</button></div>
-        </div>
-      </div>
-
-      <!-- CLIENT LIST -->
-      <div class="page" id="page-clients">
-        <div class="card">
-          <div class="card-header">All Clients <button class="btn primary" onclick="go('addclient',null)">+ Add Client</button></div>
-          <table><thead><tr><th>Photo</th><th>ID</th><th>Name</th><th>Phone</th><th>Outstanding</th><th>Action</th></tr></thead><tbody id="ctbody"></tbody></table>
-        </div>
-      </div>
-
-      <!-- SHAREHOLDERS -->
-      <div class="page" id="page-shareholders">
-        <div class="card">
-          <div class="card-header">Founders / Shareholders <button class="btn primary" onclick="openModal('modal-founder')">+ Add Person</button></div>
-          <div style="padding:16px;font-size:11px;background:var(--green-light)">Target Share Capital: <strong>KES 20,000</strong> (Not limited to founders)</div>
-          <table><thead><tr><th>Name</th><th>Contributed</th><th>Target Progress</th><th>Action</th></tr></thead><tbody id="ftbody"></tbody></table>
-        </div>
-      </div>
-
-    </div>
-  </div>
+<div class="card">
+  <h3>Contributions</h3>
+  <table border="1" width="100%">
+    <thead><tr><th>Date</th><th>Name</th><th>Amount</th></tr></thead>
+    <tbody id="contributions"></tbody>
+  </table>
 </div>
 
-<!-- MODALS -->
-<div class="overlay" id="modal-founder" style="display:none">
-  <div class="modal">
-    <div class="modal-hd">Add Person <button onclick="closeModal('modal-founder')">&times;</button></div>
-    <div style="padding:16px">
-        <div class="form-group"><label class="form-label">Full Name</label><input class="form-input" id="f-name"></div>
-        <button class="btn primary" style="width:100%;margin-top:15px" onclick="saveFounder()">Register Person</button>
-    </div>
-  </div>
+<div class="card">
+  <button class="btn" onclick="sendSMSReminders()">Send SMS Reminders</button>
+  <button class="btn" onclick="checkArrears()">Check Arrears</button>
 </div>
 
 <script>
-// FIREBASE CONFIG
-const FIREBASE_CONFIG = {
+
+// ================= FIREBASE =================
+const firebaseConfig = {
   apiKey: "AIzaSyCQJSAhF_H7J1rsl6hKMPPgiOA-0QqjaVQ",
   authDomain: "welb-solutions.firebaseapp.com",
-  projectId: "welb-solutions",
-  storageBucket: "welb-solutions.firebasestorage.app",
-  messagingSenderId: "226538094767",
-  appId: "1:226538094767:web:6a8e9815c2b69d64fc945a"
+  projectId: "welb-solutions"
 };
 
-const SHARE_TARGET = 20000;
-let S = { clients:[], loans:[], founders:[], contributions:[], payments:[] };
-let nc_imgs = { pass:null, idf:null, idb:null };
-let db = null;
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
 
-// FIREBASE INITIALIZATION & PERSISTENCE
-function initFirebase() {
-  firebase.initializeApp(FIREBASE_CONFIG);
-  db = firebase.firestore();
-  
-  // Enable offline storage so data is never lost
-  db.enablePersistence().catch(err => console.warn(err.code));
+// ================= STATE =================
+let S = {
+  loans: [],
+  payments: [],
+  contributions: []
+};
 
-  loadAllData();
-}
+// ================= LOAD REALTIME =================
+function initRealtime() {
 
-async function loadAllData() {
-  const collections = ['clients', 'loans', 'founders', 'contributions', 'payments'];
-  collections.forEach(col => {
-    // Real-time listener: Auto-updates UI whenever data changes or reloads
-    db.collection(col).onSnapshot(snap => {
-      S[col] = snap.docs.map(d => ({ ...d.data(), _id: d.id }));
-      refreshUI();
-    });
+  db.collection("contributions").onSnapshot(snap => {
+    S.contributions = snap.docs.map(d => d.data());
+    renderContributions();
   });
+
+  db.collection("loans").onSnapshot(snap => {
+    S.loans = snap.docs.map(d => d.data());
+    calcProfit();
+  });
+
+  db.collection("payments").onSnapshot(snap => {
+    S.payments = snap.docs.map(d => d.data());
+    calcProfit();
+  });
+
 }
 
-async function saveDoc(col, data) {
-  setSaveStatus('saving');
-  try {
-    const raw = JSON.parse(JSON.stringify(data)); // Clean for Firestore
-    if(raw._id) {
-      const id = raw._id; delete raw._id;
-      await db.collection(col).doc(id).set(raw, {merge:true});
-    } else {
-      await db.collection(col).add(raw);
-    }
-    setSaveStatus('saved');
-    setTimeout(() => setSaveStatus('ready'), 2000);
-  } catch(e) { console.error("Save error:", e); setSaveStatus('ready'); }
+// ================= RENDER =================
+function renderContributions() {
+  const tb = document.getElementById("contributions");
+
+  tb.innerHTML = S.contributions.map(c => `
+    <tr>
+      <td>${c.date}</td>
+      <td>${c.founderName}</td>
+      <td>${c.amount}</td>
+    </tr>
+  `).join('');
 }
 
-// LOGIC & NAVIGATION
-function go(id, el) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById('page-' + id).classList.add('active');
-  document.getElementById('page-title').textContent = id.charAt(0).toUpperCase() + id.slice(1);
-  if(el) {
-    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-    el.classList.add('active');
-  }
+// ================= PROFIT =================
+function calcProfit() {
+
+  let disbursed = S.loans.reduce((s,l)=>s+l.amount,0);
+  let collected = S.payments.reduce((s,p)=>s+p.amount,0);
+  let capital = S.contributions.reduce((s,c)=>s+c.amount,0);
+
+  let profit = collected - disbursed;
+
+  document.getElementById("profit").innerHTML = `
+    Capital: KES ${capital}<br>
+    Disbursed: KES ${disbursed}<br>
+    Collected: KES ${collected}<br>
+    <b>Profit: KES ${profit}</b>
+  `;
 }
 
-function refreshUI() {
-    renderDashboard();
-    renderClients();
-    renderFounders();
-}
+// ================= ARREARS =================
+function checkArrears() {
 
-// RENDERERS
-function renderDashboard() {
-    const tD = S.loans.reduce((a,b)=>a+b.amount,0);
-    const tC = S.contributions.reduce((a,b)=>a+b.amount,0);
-    document.getElementById('d-disbursed').textContent = 'KES ' + tD.toLocaleString();
-    document.getElementById('d-cap').textContent = 'KES ' + tC.toLocaleString();
-    document.getElementById('d-clients').textContent = S.clients.length;
-    document.getElementById('dash-tbody').innerHTML = S.loans.slice(-5).map(l => `<tr><td>${l.id}</td><td>${l.clientName}</td><td>${l.amount}</td><td>${l.status}</td></tr>`).join('');
-}
+  let today = new Date();
 
-function renderClients() {
-    document.getElementById('ctbody').innerHTML = S.clients.map(c => {
-        const av = c.photo ? `<img src="${c.photo}" style="width:30px;height:30px;border-radius:50%">` : 'PH';
-        return `<tr><td style="width:40px">${av}</td><td>${c.id}</td><td><strong>${c.name}</strong></td><td>${c.phone}</td><td>0</td><td><button class="btn danger-sm" onclick="delDoc('clients','${c._id}')">Delete</button></td></tr>`
-    }).join('');
-}
+  S.loans.forEach(l => {
 
-function renderFounders() {
-    document.getElementById('ftbody').innerHTML = S.founders.map(f => {
-        const paid = S.contributions.filter(c=>c.founderId===f.id).reduce((a,b)=>a+b.amount,0);
-        const pct = Math.min(100, (paid / SHARE_TARGET) * 100);
-        return `<tr><td>${f.name}</td><td>KES ${paid.toLocaleString()}</td><td><div class="prog-wrap"><div class="prog-bar" style="width:${pct}%"></div></div></td><td><button class="btn" onclick="addContrib('${f.id}','${f.name}')">+ Contribute</button></td></tr>`;
-    }).join('');
-}
+    let paid = S.payments
+      .filter(p=>p.loanId===l.id)
+      .reduce((s,p)=>s+p.amount,0);
 
-// SAVE ACTIONS
-async function saveClient() {
-    const name = document.getElementById('nc-name').value;
-    const phone = document.getElementById('nc-phone').value;
-    if(!name || !phone) return alert("Name and Phone required");
+    if(paid < l.totalPayable) {
 
-    const client = {
-        id: 'C'+Math.random().toString().slice(2,6),
-        name, phone,
-        nid: document.getElementById('nc-nid').value,
-        location: document.getElementById('nc-loc').value,
-        kin: document.getElementById('nc-kin').value,
-        kinPhone: document.getElementById('nc-kinp').value,
-        collateral: document.getElementById('nc-coll').value,
-        photo: nc_imgs.pass, idFront: nc_imgs.idf, idBack: nc_imgs.idb,
+      console.log("ARREARS:", l.clientName);
+
+      // optional: save alert
+      db.collection("alerts").add({
+        loanId: l.id,
+        client: l.clientName,
+        message: "Loan overdue",
         date: new Date().toISOString()
-    };
-    await saveDoc('clients', client);
-    go('clients');
-}
+      });
 
-async function addContrib(fid, name) {
-    const amt = prompt("Enter contribution amount for " + name);
-    if(amt && !isNaN(amt)) {
-       await saveDoc('contributions', { founderId: fid, amount: parseFloat(amt), date: new Date().toISOString() });
     }
+
+  });
+
+  alert("Arrears check complete");
 }
 
-async function saveFounder() {
-    const name = document.getElementById('f-name').value;
-    if(!name) return;
-    await saveDoc('founders', { id: 'F'+Math.random().toString().slice(2,5), name });
-    closeModal('modal-founder');
+// ================= SMS =================
+function sendSMS(phone, message) {
+  console.log("Sending SMS to", phone, message);
+
+  // 🔴 CONNECT YOUR SMS API HERE
+  // Example: Africa's Talking / Twilio
 }
 
-function prevImg(input, phId, key) {
-    const file = input.files[0]; if(!file) return;
-    const r = new FileReader();
-    r.onload = e => {
-        document.getElementById(phId).innerHTML = `<img src="${e.target.result}">`;
-        nc_imgs[key] = e.target.result;
-    };
-    r.readAsDataURL(file);
+function sendSMSReminders() {
+
+  S.loans.forEach(l => {
+
+    let paid = S.payments
+      .filter(p=>p.loanId===l.id)
+      .reduce((s,p)=>s+p.amount,0);
+
+    if(paid < l.totalPayable) {
+
+      let msg = `Dear ${l.clientName}, you have an outstanding loan balance. Please pay promptly.`;
+
+      sendSMS(l.phone, msg);
+
+      db.collection("sms_log").add({
+        loanId: l.id,
+        phone: l.phone,
+        message: msg,
+        date: new Date().toISOString()
+      });
+
+    }
+
+  });
+
+  alert("SMS reminders sent (simulated)");
 }
 
-function doLogin() {
-    const u = document.getElementById('login-user').value;
-    const p = document.getElementById('login-pass').value;
-    if(u === 'admin' && p === 'Welb@2026') {
-        document.getElementById('login-screen').style.display = 'none';
-        document.getElementById('app').style.display = 'flex';
-        go('dashboard');
-    } else { document.getElementById('login-err').style.display = 'block'; }
-}
+// ================= INIT =================
+initRealtime();
 
-async function delDoc(col, id) { if(confirm("Permanently delete?")) await db.collection(col).doc(id).delete(); }
-function doLogout() { location.reload(); }
-function setSaveStatus(s) {
-    const d = document.getElementById('save-dot');
-    d.className = 'save-dot ' + (s==='saving'?'saving':s==='saved'?'saved':'');
-    document.getElementById('save-txt').textContent = s;
-}
-function openModal(id){ document.getElementById(id).style.display='flex'; }
-function closeModal(id){ document.getElementById(id).style.display='none'; }
-
-initFirebase();
 </script>
+
 </body>
 </html>
