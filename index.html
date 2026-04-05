@@ -7,7 +7,8 @@
 
 <!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>                                                                                     
 
 <style>
   *{box-sizing:border-box;margin:0;padding:0}
@@ -605,10 +606,31 @@ const FIREBASE_CONFIG = {
 // ============================================================
 
 // AUTH (simple credential check — stored in Firestore settings)
-let CREDENTIALS = { username: 'admin', password: 'Welb@2026' };
+const auth = firebase.auth();
+
+function doLogin() {
+  const email = document.getElementById('login-user').value.trim();
+  const pass = document.getElementById('login-pass').value;
+
+  auth.signInWithEmailAndPassword(email, pass)
+    .then(userCredential => {
+      currentUser = userCredential.user;
+
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('app').style.display = 'flex';
+
+      document.getElementById('sb-user').textContent = email;
+      document.getElementById('top-avatar').textContent = email.substring(0,2).toUpperCase();
+
+      loadAllData(); // 🔥 load after login
+    })
+    .catch(err => {
+      console.error(err);
+      document.getElementById('login-err').style.display = 'block';
+    });
+}
 let currentUser = null;
-// Track whether user has ever saved a custom password via Settings
-// If yes, Firebase password takes priority. If no, use hardcoded default.
+
 let credentialsCustomized = false;
 
 // LOCAL STATE (loaded from Firestore)
@@ -737,6 +759,20 @@ function doLogout() {
   document.getElementById('login-screen').style.display = 'flex';
   document.getElementById('login-user').value = '';
   document.getElementById('login-pass').value = '';
+ auth.onAuthStateChanged(user => {
+  if(user) {
+    currentUser = user;
+
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'flex';
+
+    loadAllData();
+
+  } else {
+    document.getElementById('login-screen').style.display = 'flex';
+    document.getElementById('app').style.display = 'none';
+  }
+});
 }
 
 // ============================================================
