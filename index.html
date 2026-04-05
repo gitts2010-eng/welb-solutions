@@ -4,132 +4,188 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WELB Solutions — Microfinance System</title>
+<title>WELB Microfinance System</title>
 
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
 <style>
-body{font-family:Arial;background:#f5f5f2}
-.btn{padding:8px 14px;background:#0f6e56;color:#fff;border:none;border-radius:6px;cursor:pointer}
-.card{background:#fff;padding:15px;margin:10px;border-radius:10px}
+body{font-family:Arial;background:#f5f5f2;margin:0}
+.top{background:#0f6e56;color:#fff;padding:10px}
+.container{padding:15px}
+.card{background:#fff;padding:15px;margin-bottom:12px;border-radius:8px}
+.btn{padding:8px 12px;background:#0f6e56;color:#fff;border:none;border-radius:6px;cursor:pointer}
+table{width:100%;border-collapse:collapse}
+th,td{padding:8px;border:1px solid #ddd;text-align:left}
 </style>
 
 </head>
 
 <body>
 
-<h2>WELB Microfinance Dashboard</h2>
+<div class="top">
+  <h2>WELB Microfinance Dashboard</h2>
+</div>
+
+<div class="container">
 
 <div class="card">
-  <h3>Profit Dashboard</h3>
-  <div id="profit"></div>
+  <h3>📊 Profit Dashboard</h3>
+  <div id="profitBox">Loading...</div>
 </div>
 
 <div class="card">
-  <h3>Contributions</h3>
-  <table border="1" width="100%">
-    <thead><tr><th>Date</th><th>Name</th><th>Amount</th></tr></thead>
+  <h3>💰 Contributions</h3>
+  <table>
+    <thead>
+      <tr><th>Date</th><th>Name</th><th>Amount</th></tr>
+    </thead>
     <tbody id="contributions"></tbody>
   </table>
 </div>
 
 <div class="card">
-  <button class="btn" onclick="sendSMSReminders()">Send SMS Reminders</button>
+  <button class="btn" onclick="sendLoanReminders()">Send SMS Reminders</button>
   <button class="btn" onclick="checkArrears()">Check Arrears</button>
+</div>
+
 </div>
 
 <script>
 
-// ================= FIREBASE =================
-const firebaseConfig = {
+// ================= CONFIG =================
+const FIREBASE_CONFIG = {
   apiKey: "AIzaSyCQJSAhF_H7J1rsl6hKMPPgiOA-0QqjaVQ",
   authDomain: "welb-solutions.firebaseapp.com",
   projectId: "welb-solutions"
 };
 
-firebase.initializeApp(firebaseConfig);
+firebase.initializeApp(FIREBASE_CONFIG);
 const db = firebase.firestore();
 
 // ================= STATE =================
 let S = {
-  loans: [],
-  payments: [],
-  contributions: []
+  clients:[],
+  loans:[],
+  contributions:[],
+  payments:[]
 };
 
-// ================= LOAD REALTIME =================
-function initRealtime() {
+// ================= HELPERS =================
+const fmt = n => 'KES ' + Number(n||0).toLocaleString();
+const today = () => new Date().toISOString().split('T')[0];
 
-  db.collection("contributions").onSnapshot(snap => {
-    S.contributions = snap.docs.map(d => d.data());
+const loanPaid = id =>
+  S.payments.filter(p=>p.loanId===id)
+            .reduce((s,p)=>s+p.amount,0);
+
+// ================= LOAD DATA =================
+async function loadAllData() {
+
+  const cols = ['clients','loans','contributions','payments'];
+
+  for(const col of cols){
+    const snap = await db.collection(col).get();
+    S[col] = snap.docs.map(d => ({...d.data(), _id:d.id}));
+  }
+
+  console.log("DATA:", S);
+
+  renderAll();
+}
+
+// ================= REALTIME =================
+function startRealtime(){
+
+  db.collection('contributions').onSnapshot(snap=>{
+    S.contributions = snap.docs.map(d=>({...d.data(), _id:d.id}));
     renderContributions();
+    renderProfit();
   });
 
-  db.collection("loans").onSnapshot(snap => {
-    S.loans = snap.docs.map(d => d.data());
-    calcProfit();
+  db.collection('loans').onSnapshot(snap=>{
+    S.loans = snap.docs.map(d=>({...d.data(), _id:d.id}));
+    renderProfit();
   });
 
-  db.collection("payments").onSnapshot(snap => {
-    S.payments = snap.docs.map(d => d.data());
-    calcProfit();
+  db.collection('payments').onSnapshot(snap=>{
+    S.payments = snap.docs.map(d=>({...d.data(), _id:d.id}));
+    renderProfit();
   });
 
 }
 
 // ================= RENDER =================
-function renderContributions() {
-  const tb = document.getElementById("contributions");
+function renderAll(){
+  renderContributions();
+  renderProfit();
+}
 
-  tb.innerHTML = S.contributions.map(c => `
+function renderContributions(){
+
+  const tb = document.getElementById('contributions');
+
+  if(!S.contributions.length){
+    tb.innerHTML = `<tr><td colspan="3">No data</td></tr>`;
+    return;
+  }
+
+  tb.innerHTML = S.contributions.map(c=>`
     <tr>
       <td>${c.date}</td>
-      <td>${c.founderName}</td>
-      <td>${c.amount}</td>
+      <td>${c.founderName || ''}</td>
+      <td>${fmt(c.amount)}</td>
     </tr>
   `).join('');
 }
 
 // ================= PROFIT =================
-function calcProfit() {
+function renderProfit(){
 
-  let disbursed = S.loans.reduce((s,l)=>s+l.amount,0);
-  let collected = S.payments.reduce((s,p)=>s+p.amount,0);
-  let capital = S.contributions.reduce((s,c)=>s+c.amount,0);
+  const disbursed = S.loans.reduce((s,l)=>s+(l.amount||0),0);
+  const collected = S.payments.reduce((s,p)=>s+(p.amount||0),0);
+  const capital = S.contributions.reduce((s,c)=>s+(c.amount||0),0);
 
-  let profit = collected - disbursed;
+  const profit = collected - disbursed;
 
-  document.getElementById("profit").innerHTML = `
-    Capital: KES ${capital}<br>
-    Disbursed: KES ${disbursed}<br>
-    Collected: KES ${collected}<br>
-    <b>Profit: KES ${profit}</b>
+  document.getElementById('profitBox').innerHTML = `
+    Capital: ${fmt(capital)} <br>
+    Disbursed: ${fmt(disbursed)} <br>
+    Collected: ${fmt(collected)} <br>
+    <b>Profit: ${fmt(profit)}</b>
   `;
 }
 
+// ================= SAVE =================
+async function saveDoc(col,data){
+
+  if(data._id){
+    await db.collection(col).doc(data._id).set(data);
+  }else{
+    const ref = await db.collection(col).add(data);
+    data._id = ref.id;
+  }
+
+  await loadAllData();
+}
+
 // ================= ARREARS =================
-function checkArrears() {
+function checkArrears(){
 
-  let today = new Date();
+  S.loans.forEach(l=>{
 
-  S.loans.forEach(l => {
+    const paid = loanPaid(l.id);
 
-    let paid = S.payments
-      .filter(p=>p.loanId===l.id)
-      .reduce((s,p)=>s+p.amount,0);
-
-    if(paid < l.totalPayable) {
+    if(paid < l.totalPayable){
 
       console.log("ARREARS:", l.clientName);
 
-      // optional: save alert
-      db.collection("alerts").add({
-        loanId: l.id,
-        client: l.clientName,
-        message: "Loan overdue",
-        date: new Date().toISOString()
+      db.collection('alerts').add({
+        loanId:l.id,
+        client:l.clientName,
+        message:"Loan overdue",
+        date:today()
       });
 
     }
@@ -140,43 +196,41 @@ function checkArrears() {
 }
 
 // ================= SMS =================
-function sendSMS(phone, message) {
-  console.log("Sending SMS to", phone, message);
+function sendSMS(phone,message){
+  console.log("SMS:", phone, message);
 
-  // 🔴 CONNECT YOUR SMS API HERE
-  // Example: Africa's Talking / Twilio
+  // 🔴 CONNECT API HERE (Africas Talking / Twilio)
 }
 
-function sendSMSReminders() {
+function sendLoanReminders(){
 
-  S.loans.forEach(l => {
+  S.loans.forEach(l=>{
 
-    let paid = S.payments
-      .filter(p=>p.loanId===l.id)
-      .reduce((s,p)=>s+p.amount,0);
+    const paid = loanPaid(l.id);
 
-    if(paid < l.totalPayable) {
+    if(paid < l.totalPayable){
 
-      let msg = `Dear ${l.clientName}, you have an outstanding loan balance. Please pay promptly.`;
+      const msg = `Dear ${l.clientName}, you have an outstanding loan. Please pay.`;
 
       sendSMS(l.phone, msg);
 
-      db.collection("sms_log").add({
-        loanId: l.id,
-        phone: l.phone,
-        message: msg,
-        date: new Date().toISOString()
+      db.collection('sms_log').add({
+        loanId:l.id,
+        phone:l.phone,
+        message:msg,
+        date:today()
       });
 
     }
 
   });
 
-  alert("SMS reminders sent (simulated)");
+  alert("SMS reminders processed");
 }
 
 // ================= INIT =================
-initRealtime();
+loadAllData();
+startRealtime();
 
 </script>
 
