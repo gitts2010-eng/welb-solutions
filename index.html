@@ -138,11 +138,55 @@ tfoot td{font-weight:700;background:#fafaf8;border-top:1px solid var(--border2)}
 /* BUSINESS PHOTO — wider upload */
 .biz-upload-ph{width:100%;height:120px;border-radius:8px;background:#f0f0ec;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;overflow:hidden}
 .biz-upload-ph img{width:100%;height:100%;object-fit:cover;border-radius:8px}
+/* HAMBURGER */
+#menu-toggle{display:none;background:none;border:none;cursor:pointer;padding:6px;border-radius:7px;color:var(--text);flex-shrink:0;align-items:center;justify-content:center}
+#menu-toggle:hover{background:#f0f0ec}
+/* SIDEBAR BACKDROP */
+#sidebar-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:199}
+/* BOTTOM NAV */
+#bottom-nav{display:none}
+/* TABLE SCROLL WRAPPER */
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.tbl-wrap table{min-width:580px}
+@media(min-width:769px){
+  #sidebar{display:flex}
+}
 @media(max-width:768px){
-  #sidebar{display:none}
-  .stats-grid{grid-template-columns:1fr 1fr}
-  .form-grid{grid-template-columns:1fr}
-  .form-grid-3{grid-template-columns:1fr}
+  body{font-size:14px}
+  #sidebar{display:flex;position:fixed;left:-260px;top:0;bottom:0;width:250px;z-index:200;transition:left 0.25s ease}
+  #sidebar.open{left:0;box-shadow:4px 0 24px rgba(0,0,0,0.2)}
+  #sidebar-backdrop{display:none}
+  #sidebar-backdrop.open{display:block}
+  #menu-toggle{display:flex}
+  .topbar{padding:0 12px;height:52px}
+  .topbar-title{font-size:13px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  #date-out{display:none}
+  .save-status span{display:none}
+  .stats-grid{grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+  .stat-value{font-size:16px}
+  .card{margin-bottom:10px}
+  .card-header{padding:10px 12px;flex-wrap:wrap;gap:6px}
+  .card-title{font-size:12px}
+  .form-grid,.form-grid-3{grid-template-columns:1fr}
+  .form-actions{padding:10px 12px}
+  .filters{flex-direction:column;align-items:stretch;gap:6px;padding:8px 10px}
+  .fi,.srch{width:100% !important}
+  .mini-stats{grid-template-columns:1fr 1fr;gap:6px;padding:10px}
+  .mini-val{font-size:14px}
+  .modal{width:96vw;max-height:88vh;border-radius:10px}
+  .modal-body{padding:12px;gap:9px}
+  .note{font-size:11px;padding:8px 10px}
+  .nav-item{padding:11px 16px;font-size:13px}
+  table{font-size:12px}
+  th,td{padding:7px 9px;white-space:nowrap}
+  .login-box{width:92vw;padding:24px 20px}
+  .login-title{font-size:16px}
+  .content{padding:10px;padding-bottom:70px}
+  #db-status{bottom:68px;right:10px;font-size:10px;padding:6px 10px}
+  #bottom-nav{display:flex;position:fixed;bottom:0;left:0;right:0;height:58px;background:var(--surface);border-top:1px solid var(--border);z-index:100;align-items:stretch;box-shadow:0 -2px 10px rgba(0,0,0,0.07)}
+  .bnav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;color:var(--text2);font-size:10px;font-weight:500;border:none;background:none;padding:6px 2px;transition:color 0.1s}
+  .bnav-item svg{width:20px;height:20px;flex-shrink:0;stroke:currentColor}
+  .bnav-item.active,.bnav-item:hover{color:var(--green)}
 }
 </style>
 </head>
@@ -171,6 +215,7 @@ tfoot td{font-weight:700;background:#fafaf8;border-top:1px solid var(--border2)}
 </div>
 
 <!-- MAIN APP -->
+<div id="sidebar-backdrop" onclick="toggleSidebar()"></div>
 <div id="app" style="display:none">
   <div id="sidebar">
     <div class="brand">
@@ -246,6 +291,7 @@ tfoot td{font-weight:700;background:#fafaf8;border-top:1px solid var(--border2)}
 
   <div id="main">
     <div class="topbar">
+      <button id="menu-toggle" onclick="toggleSidebar()" aria-label="Open menu"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="2" y1="5" x2="18" y2="5"/><line x1="2" y1="10" x2="18" y2="10"/><line x1="2" y1="15" x2="18" y2="15"/></svg></button>
       <div class="topbar-title" id="page-title">Dashboard</div>
       <div class="topbar-right">
         <div class="save-status"><div class="save-dot" id="save-dot"></div><span id="save-txt">Ready</span></div>
@@ -530,7 +576,7 @@ tfoot td{font-weight:700;background:#fafaf8;border-top:1px solid var(--border2)}
       <div class="page" id="page-founders">
         <div class="card">
           <div class="card-header"><div class="card-title">Founders (10 Seats)</div><button class="btn primary" onclick="openAddFounderModal()">+ Add Founder</button></div>
-          <div class="note" style="margin:12px 16px 0">Founders are the 10 original members who established WELB Solutions. They manage the company, appoint management, and share profits. Overall share capital target: <strong>KES 150,000</strong> (KES 15,000 per founder guide).</div>
+          <div class="note" style="margin:12px 16px 0">Founders are the 10 original members who established WELB Solutions. They manage the company, appoint management, and share profits. Overall share capital target: <strong>KES 20,000</strong> per share Holder who are also part of founders</div>
           <table style="margin-top:12px"><thead><tr><th>#</th><th>Name</th><th>Phone</th><th>Role</th><th>Contributed</th><th>Progress</th><th>Status</th><th>Action</th></tr></thead>
           <tbody id="ftbody"><tr><td colspan="8" style="text-align:center;padding:24px;color:var(--text2)">No founders added yet</td></tr></tbody></table>
         </div>
@@ -1575,6 +1621,61 @@ function openAddFounderModal() {
 // INIT
 document.getElementById('date-out').textContent=new Date().toLocaleDateString('en-KE',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
 initFirebase();
+
+// MOBILE SIDEBAR TOGGLE
+function toggleSidebar(){
+  const sb=document.getElementById('sidebar');
+  const bd=document.getElementById('sidebar-backdrop');
+  const open=sb.classList.toggle('open');
+  bd.classList.toggle('open',open);
+}
+document.addEventListener('DOMContentLoaded',function(){
+  document.querySelectorAll('.nav-item').forEach(function(el){
+    el.addEventListener('click',function(){
+      if(window.innerWidth<=768){
+        document.getElementById('sidebar').classList.remove('open');
+        document.getElementById('sidebar-backdrop').classList.remove('open');
+      }
+    });
+  });
+  // Wrap tables for horizontal scroll
+  document.querySelectorAll('table').forEach(function(tbl){
+    if(!tbl.closest('.tbl-wrap')){
+      var w=document.createElement('div');
+      w.className='tbl-wrap';
+      tbl.parentNode.insertBefore(w,tbl);
+      w.appendChild(tbl);
+    }
+  });
+});
+
+// Bottom nav active state
+function updateBottomNav(pageId){
+  document.querySelectorAll('.bnav-item').forEach(function(b){
+    b.classList.toggle('active', b.dataset.page===pageId);
+  });
+}
+var _origGo=go;
+go=function(page,el){_origGo(page,el);updateBottomNav(page);};
 </script>
+
+<nav id="bottom-nav">
+  <button class="bnav-item active" data-page="dashboard" onclick="go('dashboard',null)">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>Home
+  </button>
+  <button class="bnav-item" data-page="clients" onclick="go('clients',null)">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6" cy="5" r="3"/><path d="M1 13c0-3 2-5 5-5s5 2 5 5"/><circle cx="12" cy="5" r="2"/><path d="M15 13c0-2-1-3.5-3-4"/></svg>Clients
+  </button>
+  <button class="bnav-item" data-page="disbursements" onclick="go('disbursements',null)">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8h12M8 2l4 6-4 6"/></svg>Loans
+  </button>
+  <button class="bnav-item" data-page="founders" onclick="go('founders',null)">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 13V5l6-3 6 3v8"/><path d="M6 13V9h4v4"/></svg>Founders
+  </button>
+  <button class="bnav-item" data-page="accounting" onclick="go('accounting',null)">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="12" height="12" rx="1"/><path d="M5 8h6M5 5h4M5 11h3"/></svg>Finance
+  </button>
+</nav>
+
 </body>
 </html>
