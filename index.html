@@ -226,6 +226,10 @@ tfoot td{font-weight:700;background:#fafaf8;border-top:1px solid var(--border2)}
       <div class="nav-item" onclick="go('contributions',this)">
         <svg class="ni" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><path d="M8 5v6M5 8h6"/></svg>Share Contributions
       </div>
+      <div class="nav-section">Investors</div>
+      <div class="nav-item" onclick="go('investors',this)">
+        <svg class="ni" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 12l3-4 3 3 3-5 3 3"/><circle cx="14" cy="3" r="1.5"/></svg>Investors
+      </div>
       <div class="nav-section">Finance</div>
       <div class="nav-item" onclick="go('accounting',this)">
         <svg class="ni" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="12" height="12" rx="1"/><path d="M5 8h6M5 5h4M5 11h3"/></svg>Accounting
@@ -535,10 +539,20 @@ tfoot td{font-weight:700;background:#fafaf8;border-top:1px solid var(--border2)}
       <!-- SHAREHOLDERS — separate tab -->
       <div class="page" id="page-shareholders">
         <div class="card">
-          <div class="card-header"><div class="card-title">Shareholders / Investors</div><button class="btn primary" onclick="openModal('modal-shareholder')">+ Add Shareholder</button></div>
-          <div class="note" style="margin:12px 16px 0">Shareholders are external investors who provide capital for returns but do not participate in day-to-day management. They are separate from the 10 founders.</div>
-          <table style="margin-top:12px"><thead><tr><th>#</th><th>Name</th><th>Phone</th><th>ID Number</th><th>Investment (KES)</th><th>% Stake</th><th>Date Joined</th><th>Action</th></tr></thead>
-          <tbody id="shtbody"><tr><td colspan="8" style="text-align:center;padding:24px;color:var(--text2)">No shareholders yet</td></tr></tbody></table>
+          <div class="card-header"><div class="card-title">Shareholders</div><button class="btn primary" onclick="openShareholderModal()">+ Add Shareholder</button></div>
+          <div class="note" style="margin:12px 16px 0">Shareholders are members of WELB Solutions who hold shares in the company. They are part of the ownership structure and are entitled to dividends and profit sharing based on their shareholding. Different from the 10 founders who manage day-to-day operations.</div>
+          <table style="margin-top:12px"><thead><tr><th>#</th><th>Name</th><th>Phone</th><th>ID Number</th><th>Shares Amount (KES)</th><th>% Stake</th><th>Date Joined</th><th>Notes</th><th>Action</th></tr></thead>
+          <tbody id="shtbody"><tr><td colspan="9" style="text-align:center;padding:24px;color:var(--text2)">No shareholders yet</td></tr></tbody></table>
+        </div>
+      </div>
+
+      <!-- INVESTORS — completely separate tab -->
+      <div class="page" id="page-investors">
+        <div class="card">
+          <div class="card-header"><div class="card-title">External Investors</div><button class="btn primary" onclick="openInvestorModal()">+ Add Investor</button></div>
+          <div class="note" style="margin:12px 16px 0">External investors are individuals or institutions that provide capital to WELB Solutions in exchange for agreed returns. They do not own shares in the company and do not participate in governance or management.</div>
+          <table style="margin-top:12px"><thead><tr><th>#</th><th>Name</th><th>Phone</th><th>ID / Reg. No.</th><th>Amount Invested (KES)</th><th>Return Rate</th><th>Date</th><th>Notes</th><th>Action</th></tr></thead>
+          <tbody id="invtbody"><tr><td colspan="9" style="text-align:center;padding:24px;color:var(--text2)">No investors yet</td></tr></tbody></table>
         </div>
       </div>
 
@@ -618,17 +632,35 @@ tfoot td{font-weight:700;background:#fafaf8;border-top:1px solid var(--border2)}
 
 <div class="overlay" id="modal-shareholder" style="display:none">
   <div class="modal">
-    <div class="modal-hd"><div class="modal-title">Add Shareholder / Investor</div><button class="close-x" onclick="closeModal('modal-shareholder')">×</button></div>
+    <div class="modal-hd"><div class="modal-title" id="sh-modal-title">Add Shareholder</div><button class="close-x" onclick="closeModal('modal-shareholder')">×</button></div>
     <div class="modal-body">
       <div class="form-group"><label class="form-label">Full Name *</label><input class="form-input" id="sh-name" placeholder="Full name"></div>
       <div class="form-group"><label class="form-label">Phone *</label><input class="form-input" id="sh-phone" placeholder="07XX-XXX-XXX"></div>
       <div class="form-group"><label class="form-label">ID Number</label><input class="form-input" id="sh-id" placeholder="National ID number"></div>
-      <div class="form-group"><label class="form-label">Investment Amount (KES) *</label><input class="form-input" type="number" id="sh-amount" placeholder="e.g. 50000"></div>
+      <div class="form-group"><label class="form-label">Shares Amount (KES) *</label><input class="form-input" type="number" id="sh-amount" placeholder="e.g. 50000"></div>
       <div class="form-group"><label class="form-label">% Equity Stake</label><input class="form-input" type="number" id="sh-stake" placeholder="e.g. 5" step="0.1"></div>
       <div class="form-group"><label class="form-label">Date Joined</label><input class="form-input" type="date" id="sh-date"></div>
       <div class="form-group"><label class="form-label">Notes</label><input class="form-input" id="sh-notes" placeholder="Optional notes"></div>
     </div>
-    <div class="modal-ft"><button class="btn" onclick="closeModal('modal-shareholder')">Cancel</button><button class="btn primary" onclick="saveShareholder()">Add Shareholder</button></div>
+    <div class="modal-ft"><button class="btn" onclick="closeModal('modal-shareholder')">Cancel</button><button class="btn primary" id="sh-save-btn" onclick="saveShareholder()">Add Shareholder</button></div>
+  </div>
+</div>
+
+<!-- INVESTOR MODAL -->
+<div class="overlay" id="modal-investor" style="display:none">
+  <div class="modal">
+    <div class="modal-hd"><div class="modal-title" id="inv-modal-title">Add External Investor</div><button class="close-x" onclick="closeModal('modal-investor')">×</button></div>
+    <div class="modal-body">
+      <div class="form-group"><label class="form-label">Full Name / Organisation *</label><input class="form-input" id="inv-name" placeholder="Name or company name"></div>
+      <div class="form-group"><label class="form-label">Phone *</label><input class="form-input" id="inv-phone" placeholder="07XX-XXX-XXX"></div>
+      <div class="form-group"><label class="form-label">ID / Reg. Number</label><input class="form-input" id="inv-id" placeholder="National ID or company reg."></div>
+      <div class="form-group"><label class="form-label">Amount Invested (KES) *</label><input class="form-input" type="number" id="inv-amount" placeholder="e.g. 100000"></div>
+      <div class="form-group"><label class="form-label">Agreed Return Rate (%)</label><input class="form-input" type="number" id="inv-rate" placeholder="e.g. 15" step="0.1"></div>
+      <div class="form-group"><label class="form-label">Investment Date</label><input class="form-input" type="date" id="inv-date"></div>
+      <div class="form-group"><label class="form-label">Repayment Terms</label><input class="form-input" id="inv-terms" placeholder="e.g. 12 months, quarterly returns"></div>
+      <div class="form-group"><label class="form-label">Notes</label><input class="form-input" id="inv-notes" placeholder="Optional notes"></div>
+    </div>
+    <div class="modal-ft"><button class="btn" onclick="closeModal('modal-investor')">Cancel</button><button class="btn primary" id="inv-save-btn" onclick="saveInvestor()">Add Investor</button></div>
   </div>
 </div>
 
@@ -683,7 +715,7 @@ const FIREBASE_CONFIG = {
   appId: "1:226538094767:web:6a8e9815c2b69d64fc945a"
 };
 
-let S = { clients:[], loans:[], founders:[], contributions:[], payments:[], groups:[], shareholders:[], settings:{} };
+let S = { clients:[], loans:[], founders:[], contributions:[], payments:[], groups:[], shareholders:[], investors:[], settings:{} };
 let db = null, auth = null, dbOk = false, currentUser = null;
 let nc_imgs = { pass:null, idf:null, idb:null, biz:null };
 
@@ -694,7 +726,7 @@ const dd = d => { if(!d) return '—'; const p=d.split('-'); return p[2]+'/'+p[1
 const loanPaid = id => S.payments.filter(p=>p.loanId===id).reduce((s,p)=>s+p.amount,0);
 const founderTotal = id => S.contributions.filter(c=>c.founderId===id).reduce((s,c)=>s+c.amount,0);
 
-const TITLES = {dashboard:'Dashboard',clients:'All Clients',addclient:'Add New Client',groups:'Loan Groups',newloan:'New Loan Application',disbursements:'Loan Disbursements',collections:'Collections MTD',arrears:'Loan Arrears',report:'Progressive Report',founders:'Founders',shareholders:'Shareholders / Investors',contributions:'Share Contributions',accounting:'Accounting',settings:'Settings'};
+const TITLES = {dashboard:'Dashboard',clients:'All Clients',addclient:'Add New Client',groups:'Loan Groups',newloan:'New Loan Application',disbursements:'Loan Disbursements',collections:'Collections MTD',arrears:'Loan Arrears',report:'Progressive Report',founders:'Founders',shareholders:'Shareholders',investors:'External Investors',contributions:'Share Contributions',accounting:'Accounting',settings:'Settings'};
 
 // Business sub-sectors
 const SUBSECTORS = {
@@ -799,7 +831,7 @@ async function loadAllData() {
       if(s.company){const el=document.getElementById('set-company');if(el)el.value=s.company;}
       if(s.displayName){const el=document.getElementById('set-dname');if(el)el.value=s.displayName;}
     }
-    const cols = ['clients','loans','founders','contributions','payments','groups','shareholders'];
+    const cols = ['clients','loans','founders','contributions','payments','groups','shareholders','investors'];
     for(const col of cols) {
       const snap = await db.collection(col).get();
       S[col] = snap.docs.map(d=>({...d.data(),_id:d.id}));
@@ -828,7 +860,7 @@ function go(id, el) {
   const pg=document.getElementById('page-'+id); if(pg)pg.classList.add('active');
   document.getElementById('page-title').textContent=TITLES[id]||id;
   if(el)el.classList.add('active');
-  const renders={dashboard:renderDashboard,clients:renderClients,disbursements:renderDisbursements,collections:renderCollections,arrears:renderArrears,report:renderReport,founders:renderFounders,shareholders:renderShareholders,contributions:renderContributions,accounting:renderAccounting,groups:renderGroups,newloan:populateLoanForm,settings:loadSettings};
+  const renders={dashboard:renderDashboard,clients:renderClients,disbursements:renderDisbursements,collections:renderCollections,arrears:renderArrears,report:renderReport,founders:renderFounders,shareholders:renderShareholders,investors:renderInvestors,contributions:renderContributions,accounting:renderAccounting,groups:renderGroups,newloan:populateLoanForm,settings:loadSettings};
   if(renders[id])renders[id]();
 }
 function openModal(id){document.getElementById(id).style.display='flex';}
@@ -970,7 +1002,7 @@ function renderClients() {
     const status=isOverdue?'Overdue':hasLoan?'Active':'No Loan';
     const sc=status==='Active'?'s-active':status==='Overdue'?'s-overdue':'s-pending';
     const av=c.photo?`<img src="${c.photo}" class="client-av" style="border-radius:50%;object-fit:cover">`:`<div class="client-av-ph">${c.name.charAt(0).toUpperCase()}</div>`;
-    return `<tr><td>${av}</td><td style="font-weight:600">${c.id}</td><td>${c.name}</td><td style="color:var(--text2)">${c.nickname||'—'}</td><td>${c.phone}</td><td>${c.bizName||'—'}</td><td>${c.market||'—'}</td><td>${c.loanOfficer||'—'}</td><td>${fmt(Math.max(0,out))}</td><td><span class="sb ${sc}">${status}</span></td><td><button class="btn danger-sm" onclick="deleteClient('${c._id||c.id}','${c.name}')">Delete</button></td></tr>`;
+    return `<tr><td>${av}</td><td style="font-weight:600">${c.id}</td><td>${c.name}</td><td style="color:var(--text2)">${c.nickname||'—'}</td><td>${c.phone}</td><td>${c.bizName||'—'}</td><td>${c.market||'—'}</td><td>${c.loanOfficer||'—'}</td><td>${fmt(Math.max(0,out))}</td><td><span class="sb ${sc}">${status}</span></td><td style="display:flex;gap:4px"><button class="btn sm" onclick="openEditClient('${c._id||c.id}')">Edit</button><button class="btn danger-sm" onclick="deleteClient('${c._id||c.id}','${c.name}')">Delete</button></td></tr>`;
   }).join('');
 }
 
@@ -1006,7 +1038,7 @@ function renderFounders() {
     const total=founderTotal(f.id),pct=Math.min(100,Math.round(total/PER_FOUNDER_TARGET*100));
     const barC=pct>=100?'':pct<50?'danger':'warn';
     const status=pct>=100?'<span class="sb s-complete">At Target</span>':total>0?'<span class="sb s-pending">In Progress</span>':'<span class="sb s-overdue">Not Started</span>';
-    return `<tr><td>${i+1}</td><td><strong>${f.name}</strong></td><td>${f.phone||'—'}</td><td>${f.role}</td><td>${fmtK(total)}</td><td><div style="display:flex;align-items:center;gap:6px"><div class="prog-wrap"><div class="prog-bar ${barC}" style="width:${pct}%"></div></div><span style="font-size:11px;color:var(--text2)">${pct}%</span></div></td><td>${status}</td><td style="display:flex;gap:4px"><button class="btn sm" onclick="quickContrib('${f.id}')">+ Contribute</button><button class="btn danger-sm" onclick="deleteFounder('${f._id||f.id}','${f.name}')">Delete</button></td></tr>`;
+    return `<tr><td>${i+1}</td><td><strong>${f.name}</strong></td><td>${f.phone||'—'}</td><td>${f.role}</td><td>${fmtK(total)}</td><td><div style="display:flex;align-items:center;gap:6px"><div class="prog-wrap"><div class="prog-bar ${barC}" style="width:${pct}%"></div></div><span style="font-size:11px;color:var(--text2)">${pct}%</span></div></td><td>${status}</td><td style="display:flex;gap:4px;flex-wrap:wrap"><button class="btn sm" onclick="quickContrib('${f.id}')">+ Contribute</button><button class="btn sm" onclick="openEditFounder('${f._id||f.id}')">Edit</button><button class="btn danger-sm" onclick="deleteFounder('${f._id||f.id}','${f.name}')">Delete</button></td></tr>`;
   }).join('');
 }
 
@@ -1017,35 +1049,61 @@ function updateFounderSelects() {
 }
 
 // ============================================================
-// SHAREHOLDERS
+// SHAREHOLDERS — with edit support
 // ============================================================
+let editingShId = null;
+
+function openShareholderModal(shDocId) {
+  editingShId = shDocId || null;
+  const isEdit = !!shDocId;
+  document.getElementById('sh-modal-title').textContent = isEdit ? 'Edit Shareholder' : 'Add Shareholder';
+  document.getElementById('sh-save-btn').textContent = isEdit ? 'Save Changes' : 'Add Shareholder';
+  if(isEdit) {
+    const sh = S.shareholders.find(s=>(s._id||s.id)===shDocId);
+    if(!sh) return;
+    document.getElementById('sh-name').value = sh.name||'';
+    document.getElementById('sh-phone').value = sh.phone||'';
+    document.getElementById('sh-id').value = sh.idNumber||'';
+    document.getElementById('sh-amount').value = sh.investment||'';
+    document.getElementById('sh-stake').value = sh.stake||'';
+    document.getElementById('sh-date').value = sh.dateJoined||'';
+    document.getElementById('sh-notes').value = sh.notes||'';
+  } else {
+    ['sh-name','sh-phone','sh-id','sh-amount','sh-stake','sh-notes'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('sh-date').value = today();
+  }
+  openModal('modal-shareholder');
+}
+
 async function saveShareholder() {
   const name=document.getElementById('sh-name').value.trim();
   const phone=document.getElementById('sh-phone').value.trim();
   const amt=parseFloat(document.getElementById('sh-amount').value)||0;
   if(!name||!phone){alert('Name and phone are required.');return;}
-  if(!amt){alert('Enter investment amount.');return;}
-  const sh={
-    id:'SH-'+(S.shareholders.length+1).toString().padStart(3,'0'),
-    name,phone,
-    idNumber:document.getElementById('sh-id').value.trim(),
-    investment:amt,
-    stake:parseFloat(document.getElementById('sh-stake').value)||0,
-    dateJoined:document.getElementById('sh-date').value||today(),
-    notes:document.getElementById('sh-notes').value.trim()
-  };
-  S.shareholders.push(sh);await saveDoc('shareholders',sh);
+  if(!amt){alert('Enter shares amount.');return;}
+  if(editingShId) {
+    // EDIT existing
+    const idx=S.shareholders.findIndex(s=>(s._id||s.id)===editingShId);
+    if(idx===-1){alert('Shareholder not found.');return;}
+    S.shareholders[idx]={...S.shareholders[idx],name,phone,idNumber:document.getElementById('sh-id').value.trim(),investment:amt,stake:parseFloat(document.getElementById('sh-stake').value)||0,dateJoined:document.getElementById('sh-date').value||today(),notes:document.getElementById('sh-notes').value.trim()};
+    await saveDoc('shareholders',S.shareholders[idx]);
+    editingShId=null;
+  } else {
+    // ADD new
+    const sh={id:'SH-'+(S.shareholders.length+1).toString().padStart(3,'0'),name,phone,idNumber:document.getElementById('sh-id').value.trim(),investment:amt,stake:parseFloat(document.getElementById('sh-stake').value)||0,dateJoined:document.getElementById('sh-date').value||today(),notes:document.getElementById('sh-notes').value.trim()};
+    S.shareholders.push(sh);await saveDoc('shareholders',sh);
+  }
   closeModal('modal-shareholder');renderShareholders();renderDashboard();
-  ['sh-name','sh-phone','sh-id','sh-amount','sh-stake','sh-notes'].forEach(id=>document.getElementById(id).value='');
 }
 
 function renderShareholders() {
   const tb=document.getElementById('shtbody');
-  if(!S.shareholders.length){tb.innerHTML='<tr><td colspan="8" style="text-align:center;padding:24px;color:var(--text2)">No shareholders yet</td></tr>';return;}
-  const totalInvest=S.shareholders.reduce((s,sh)=>s+sh.investment,0);
+  if(!S.shareholders.length){tb.innerHTML='<tr><td colspan="9" style="text-align:center;padding:24px;color:var(--text2)">No shareholders yet</td></tr>';return;}
+  const totalShares=S.shareholders.reduce((s,sh)=>s+sh.investment,0);
   tb.innerHTML=S.shareholders.map((sh,i)=>{
-    const stake=sh.stake>0?sh.stake+'%':totalInvest>0?((sh.investment/totalInvest)*100).toFixed(1)+'%':'—';
-    return `<tr><td>${i+1}</td><td><strong>${sh.name}</strong></td><td>${sh.phone}</td><td>${sh.idNumber||'—'}</td><td style="font-weight:600;color:var(--green)">${fmtK(sh.investment)}</td><td>${stake}</td><td>${dd(sh.dateJoined)}</td><td><button class="btn danger-sm" onclick="deleteShareholder('${sh._id||sh.id}','${sh.name}')">Delete</button></td></tr>`;
+    const stake=sh.stake>0?sh.stake+'%':totalShares>0?((sh.investment/totalShares)*100).toFixed(1)+'%':'—';
+    const docId=sh._id||sh.id;
+    return `<tr><td>${i+1}</td><td><strong>${sh.name}</strong></td><td>${sh.phone}</td><td>${sh.idNumber||'—'}</td><td style="font-weight:600;color:var(--green)">${fmtK(sh.investment)}</td><td>${stake}</td><td>${dd(sh.dateJoined)}</td><td style="font-size:11px;color:var(--text2)">${sh.notes||'—'}</td><td style="display:flex;gap:4px"><button class="btn sm" onclick="openShareholderModal('${docId}')">Edit</button><button class="btn danger-sm" onclick="deleteShareholder('${docId}','${sh.name}')">Delete</button></td></tr>`;
   }).join('');
 }
 
@@ -1054,6 +1112,70 @@ async function deleteShareholder(docId,name) {
   S.shareholders=S.shareholders.filter(sh=>(sh._id||sh.id)!==docId);
   if(db){try{await db.collection('shareholders').doc(docId).delete();}catch(e){console.error(e);}}
   renderShareholders();renderDashboard();
+}
+
+// ============================================================
+// INVESTORS — completely separate, with edit support
+// ============================================================
+let editingInvId = null;
+
+function openInvestorModal(invDocId) {
+  editingInvId = invDocId || null;
+  const isEdit = !!invDocId;
+  document.getElementById('inv-modal-title').textContent = isEdit ? 'Edit Investor' : 'Add External Investor';
+  document.getElementById('inv-save-btn').textContent = isEdit ? 'Save Changes' : 'Add Investor';
+  if(isEdit) {
+    const inv = S.investors.find(i=>(i._id||i.id)===invDocId);
+    if(!inv) return;
+    document.getElementById('inv-name').value = inv.name||'';
+    document.getElementById('inv-phone').value = inv.phone||'';
+    document.getElementById('inv-id').value = inv.idNumber||'';
+    document.getElementById('inv-amount').value = inv.amount||'';
+    document.getElementById('inv-rate').value = inv.returnRate||'';
+    document.getElementById('inv-date').value = inv.date||'';
+    document.getElementById('inv-terms').value = inv.terms||'';
+    document.getElementById('inv-notes').value = inv.notes||'';
+  } else {
+    ['inv-name','inv-phone','inv-id','inv-amount','inv-rate','inv-terms','inv-notes'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('inv-date').value = today();
+  }
+  openModal('modal-investor');
+}
+
+async function saveInvestor() {
+  const name=document.getElementById('inv-name').value.trim();
+  const phone=document.getElementById('inv-phone').value.trim();
+  const amt=parseFloat(document.getElementById('inv-amount').value)||0;
+  if(!name||!phone){alert('Name and phone are required.');return;}
+  if(!amt){alert('Enter investment amount.');return;}
+  const data={name,phone,idNumber:document.getElementById('inv-id').value.trim(),amount:amt,returnRate:parseFloat(document.getElementById('inv-rate').value)||0,date:document.getElementById('inv-date').value||today(),terms:document.getElementById('inv-terms').value.trim(),notes:document.getElementById('inv-notes').value.trim()};
+  if(editingInvId) {
+    const idx=S.investors.findIndex(i=>(i._id||i.id)===editingInvId);
+    if(idx===-1){alert('Investor not found.');return;}
+    S.investors[idx]={...S.investors[idx],...data};
+    await saveDoc('investors',S.investors[idx]);
+    editingInvId=null;
+  } else {
+    const inv={id:'INV-'+(S.investors.length+1).toString().padStart(3,'0'),...data};
+    S.investors.push(inv);await saveDoc('investors',inv);
+  }
+  closeModal('modal-investor');renderInvestors();
+}
+
+function renderInvestors() {
+  const tb=document.getElementById('invtbody');
+  if(!S.investors.length){tb.innerHTML='<tr><td colspan="9" style="text-align:center;padding:24px;color:var(--text2)">No investors yet</td></tr>';return;}
+  tb.innerHTML=S.investors.map((inv,i)=>{
+    const docId=inv._id||inv.id;
+    return `<tr><td>${i+1}</td><td><strong>${inv.name}</strong></td><td>${inv.phone}</td><td>${inv.idNumber||'—'}</td><td style="font-weight:600;color:var(--green)">${fmtK(inv.amount)}</td><td>${inv.returnRate?inv.returnRate+'%':'—'}</td><td>${dd(inv.date)}</td><td style="font-size:11px;color:var(--text2)">${inv.terms||inv.notes||'—'}</td><td style="display:flex;gap:4px"><button class="btn sm" onclick="openInvestorModal('${docId}')">Edit</button><button class="btn danger-sm" onclick="deleteInvestor('${docId}','${inv.name}')">Delete</button></td></tr>`;
+  }).join('');
+}
+
+async function deleteInvestor(docId,name) {
+  if(!confirm(`Delete investor "${name}"?`))return;
+  S.investors=S.investors.filter(i=>(i._id||i.id)!==docId);
+  if(db){try{await db.collection('investors').doc(docId).delete();}catch(e){console.error(e);}}
+  renderInvestors();
 }
 
 // ============================================================
@@ -1314,6 +1436,140 @@ async function deleteGroup(docId,name) {
   S.groups=S.groups.filter(g=>(g._id||g.id)!==docId);
   if(db){try{await db.collection('groups').doc(docId).delete();}catch(e){console.error(e);}}
   renderGroups();updateGroupSelects();
+}
+
+// ============================================================
+// EDIT — CLIENTS
+// ============================================================
+function openEditClient(docId) {
+  const c = S.clients.find(x=>(x._id||x.id)===docId);
+  if(!c){alert('Client not found.');return;}
+  // Pre-fill all fields and navigate to addclient page
+  document.getElementById('nc-name').value=c.name||'';
+  document.getElementById('nc-nickname').value=c.nickname||'';
+  document.getElementById('nc-nid').value=c.nationalId||'';
+  document.getElementById('nc-dob').value=c.dob||'';
+  document.getElementById('nc-gender').value=c.gender||'';
+  document.getElementById('nc-marital').value=c.maritalStatus||'';
+  document.getElementById('nc-phone').value=c.phone||'';
+  document.getElementById('nc-phone2').value=c.phone2||'';
+  document.getElementById('nc-loc').value=c.location||'';
+  document.getElementById('nc-homeown').value=c.homeOwnership||'';
+  document.getElementById('nc-dependants').value=c.dependants||'';
+  document.getElementById('nc-dep-ages').value=c.dependantAges||'';
+  document.getElementById('nc-bizname').value=c.bizName||'';
+  document.getElementById('nc-market').value=c.market||'';
+  document.getElementById('nc-sector').value=c.sector||'';
+  loadSubsectors();
+  document.getElementById('nc-subsector').value=c.subsector||'';
+  document.getElementById('nc-occ').value=c.occupation||'';
+  document.getElementById('nc-officer').value=c.loanOfficer||'';
+  document.getElementById('nc-schedule').value=c.paymentSchedule||'';
+  document.getElementById('nc-kin').value=c.kin||'';
+  document.getElementById('nc-kinp').value=c.kinPhone||'';
+  document.getElementById('nc-gname').value=c.guarantorName||'';
+  document.getElementById('nc-gphone').value=c.guarantorPhone||'';
+  document.getElementById('nc-gid').value=c.guarantorId||'';
+  document.getElementById('nc-coll').value=c.collateral||'';
+  document.getElementById('nc-type').value=c.type||'individual';
+  toggleGroup();
+  // Store editing ID and change button text
+  window._editingClientId = docId;
+  const btn = document.querySelector('#page-addclient .form-actions .btn.primary');
+  if(btn){btn.textContent='Save Changes';btn.onclick=()=>updateClient(docId);}
+  document.getElementById('page-title').textContent='Edit Client — '+c.name;
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-addclient').classList.add('active');
+}
+
+async function updateClient(docId) {
+  const idx=S.clients.findIndex(c=>(c._id||c.id)===docId);
+  if(idx===-1){alert('Client not found.');return;}
+  const name=document.getElementById('nc-name').value.trim();
+  const phone=document.getElementById('nc-phone').value.trim();
+  if(!name||!phone){alert('Name and phone are required.');return;}
+  S.clients[idx]={
+    ...S.clients[idx], name,
+    nickname:document.getElementById('nc-nickname').value.trim(),
+    nationalId:document.getElementById('nc-nid').value.trim(),
+    dob:document.getElementById('nc-dob').value,
+    gender:document.getElementById('nc-gender').value,
+    maritalStatus:document.getElementById('nc-marital').value,
+    phone, phone2:document.getElementById('nc-phone2').value.trim(),
+    location:document.getElementById('nc-loc').value.trim(),
+    homeOwnership:document.getElementById('nc-homeown').value,
+    dependants:document.getElementById('nc-dependants').value,
+    dependantAges:document.getElementById('nc-dep-ages').value.trim(),
+    bizName:document.getElementById('nc-bizname').value.trim(),
+    market:document.getElementById('nc-market').value.trim(),
+    sector:document.getElementById('nc-sector').value,
+    subsector:document.getElementById('nc-subsector').value,
+    occupation:document.getElementById('nc-occ').value.trim(),
+    loanOfficer:document.getElementById('nc-officer').value,
+    paymentSchedule:document.getElementById('nc-schedule').value,
+    kin:document.getElementById('nc-kin').value.trim(),
+    kinPhone:document.getElementById('nc-kinp').value.trim(),
+    guarantorName:document.getElementById('nc-gname').value.trim(),
+    guarantorPhone:document.getElementById('nc-gphone').value.trim(),
+    guarantorId:document.getElementById('nc-gid').value.trim(),
+    collateral:document.getElementById('nc-coll').value.trim(),
+    updatedAt:today()
+  };
+  await saveDoc('clients',S.clients[idx]);
+  // restore button
+  const btn=document.querySelector('#page-addclient .form-actions .btn.primary');
+  if(btn){btn.textContent='Save Client';btn.onclick=saveClient;}
+  window._editingClientId=null;
+  alert('Client updated successfully!');
+  go('clients',null);
+}
+
+// ============================================================
+// EDIT — FOUNDERS
+// ============================================================
+let editingFounderId = null;
+
+function openEditFounder(docId) {
+  const f=S.founders.find(x=>(x._id||x.id)===docId);
+  if(!f){alert('Founder not found.');return;}
+  editingFounderId=docId;
+  document.getElementById('f-name').value=f.name||'';
+  document.getElementById('f-phone').value=f.phone||'';
+  document.getElementById('f-role').value=f.role||'Founder';
+  // Change modal title and button
+  document.querySelector('#modal-founder .modal-title').textContent='Edit Founder';
+  document.querySelector('#modal-founder .modal-ft .btn.primary').textContent='Save Changes';
+  document.querySelector('#modal-founder .modal-ft .btn.primary').onclick=saveEditFounder;
+  openModal('modal-founder');
+}
+
+async function saveEditFounder() {
+  const name=document.getElementById('f-name').value.trim();
+  if(!name){alert('Enter name.');return;}
+  const idx=S.founders.findIndex(f=>(f._id||f.id)===editingFounderId);
+  if(idx===-1){alert('Founder not found.');return;}
+  S.founders[idx]={...S.founders[idx],name,phone:document.getElementById('f-phone').value.trim(),role:document.getElementById('f-role').value};
+  await saveDoc('founders',S.founders[idx]);
+  editingFounderId=null;
+  // restore modal defaults
+  document.querySelector('#modal-founder .modal-title').textContent='Add Founder';
+  document.querySelector('#modal-founder .modal-ft .btn.primary').textContent='Add Founder';
+  document.querySelector('#modal-founder .modal-ft .btn.primary').onclick=saveFounder;
+  closeModal('modal-founder');renderFounders();updateFounderSelects();populateOfficerDropdown();
+  alert('Founder updated!');
+}
+
+// Override openAddFounderModal to reset modal state first
+const _origOpenFounderModal = openAddFounderModal;
+function openAddFounderModal() {
+  if(S.founders.length>=10){alert('Maximum 10 founders.');return;}
+  editingFounderId=null;
+  document.getElementById('f-name').value='';
+  document.getElementById('f-phone').value='';
+  document.querySelector('#modal-founder .modal-title').textContent='Add Founder';
+  document.querySelector('#modal-founder .modal-ft .btn.primary').textContent='Add Founder';
+  document.querySelector('#modal-founder .modal-ft .btn.primary').onclick=saveFounder;
+  openModal('modal-founder');
 }
 
 // INIT
