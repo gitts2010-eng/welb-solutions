@@ -307,7 +307,7 @@ tfoot td{font-weight:700;background:#fafaf8;border-top:1px solid var(--border2)}
           <div class="stat-card"><div class="stat-label">Total Disbursed</div><div class="stat-value" id="d-disbursed">KES 0</div><div class="stat-sub" id="d-lcount">0 active loans</div></div>
           <div class="stat-card"><div class="stat-label">Collections MTD</div><div class="stat-value" id="d-collected">KES 0</div><div class="stat-sub">Payments received</div></div>
           <div class="stat-card danger"><div class="stat-label">In Arrears</div><div class="stat-value" id="d-arrears">KES 0</div><div class="stat-sub" id="d-acount">0 overdue</div></div>
-          <div class="stat-card"><div class="stat-label">Share Capital Raised</div><div class="stat-value" id="d-cap">KES 0</div><div class="stat-sub" id="d-cap-sub">of KES 1.5M target</div></div>
+          <div class="stat-card"><div class="stat-label">Share Capital Raised</div><div class="stat-value" id="d-cap">KES 0</div><div class="stat-sub" id="d-cap-sub">of KES 20,000 per founder</div></div>
         </div>
         <div class="stats-grid">
           <div class="stat-card"><div class="stat-label">Total Clients</div><div class="stat-value" id="d-clients">0</div><div class="stat-sub" id="d-groups">0 groups</div></div>
@@ -1249,8 +1249,8 @@ async function saveContrib() {
 }
 
 function renderContributions() {
-  const TOTAL_TARGET=1500000;
-  const PER_FOUNDER_TARGET=S.founders.length>0?Math.round(TOTAL_TARGET/S.founders.length):20000;
+  const PER_FOUNDER_TARGET=20000;
+  const TOTAL_TARGET=S.founders.length>0?PER_FOUNDER_TARGET*S.founders.length:200000;
   const total=S.contributions.reduce((s,c)=>s+c.amount,0);
   const complete=S.founders.filter(f=>founderTotal(f.id)>=PER_FOUNDER_TARGET).length;
   const overallPct=Math.min(100,Math.round(total/TOTAL_TARGET*100));
