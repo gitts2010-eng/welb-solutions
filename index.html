@@ -311,7 +311,7 @@ tfoot td{font-weight:700;background:#fafaf8;border-top:1px solid var(--border2)}
         </div>
         <div class="stats-grid">
           <div class="stat-card"><div class="stat-label">Total Clients</div><div class="stat-value" id="d-clients">0</div><div class="stat-sub" id="d-groups">0 groups</div></div>
-          <div class="stat-card"><div class="stat-label">Interest Rate</div><div class="stat-value">12%</div><div class="stat-sub">Per annum flat</div></div>
+          <div class="stat-card"><div class="stat-label">Interest Rate</div><div class="stat-value">25%</div><div class="stat-sub">Per month flat</div></div>
           <div class="stat-card"><div class="stat-label">Founders</div><div class="stat-value" id="d-founders">0 / 10</div><div class="stat-sub">Registered</div></div>
           <div class="stat-card"><div class="stat-label">Shareholders</div><div class="stat-value" id="d-shareholders">0</div><div class="stat-sub">Registered investors</div></div>
         </div>
@@ -513,7 +513,7 @@ tfoot td{font-weight:700;background:#fafaf8;border-top:1px solid var(--border2)}
               <div class="form-group" id="nl-gw" style="display:none"><label class="form-label">Group *</label><select class="form-input" id="nl-group"><option value="">-- Select Group --</option></select></div>
               <div class="form-group"><label class="form-label">Loans Officer</label><select class="form-input" id="nl-officer"><option value="">-- Select --</option></select></div>
               <div class="form-group"><label class="form-label">Amount (KES) *</label><input class="form-input" type="number" id="nl-amt" placeholder="e.g. 50000" oninput="calcLoan()"></div>
-              <div class="form-group"><label class="form-label">Interest Rate</label><input class="form-input" value="12%" disabled style="opacity:0.6"></div>
+              <div class="form-group"><label class="form-label">Interest Rate</label><input class="form-input" value="25% per month" disabled style="opacity:0.6"></div>
               <div class="form-group"><label class="form-label">Repayment Period</label>
                 <select class="form-input" id="nl-period" onchange="calcLoan()"><option value="1">1 Month</option><option value="3">3 Months</option><option value="6" selected>6 Months</option><option value="12">12 Months</option></select>
               </div>
@@ -1292,7 +1292,7 @@ function toggleLoanType() {
 function calcLoan() {
   const amt=parseFloat(document.getElementById('nl-amt').value)||0;
   const months=parseInt(document.getElementById('nl-period').value)||6;
-  const interest=amt*0.12*(months/12),total=amt+interest;
+  const interest=amt*0.25*months,total=amt+interest;
   document.getElementById('s-p').textContent=fmtK(amt);
   document.getElementById('s-i').textContent=fmtK(interest);
   document.getElementById('s-t').textContent=fmtK(total);
@@ -1314,7 +1314,7 @@ async function saveLoan() {
     if(!groupId){alert('Select a group.');return;}
     clientName=(S.groups.find(g=>g.id===groupId)?.name||'')+' (Group)';
   }
-  const interest=amt*0.12*(months/12),total=amt+interest;
+  const interest=amt*0.25*months,total=amt+interest;
   const loan={id:'WS-'+(S.loans.length+1).toString().padStart(3,'0'),clientId,clientName,groupId,type:ltype,amount:amt,months,interest,totalPayable:total,monthlyInstalment:total/months,disbursedDate:dt,purpose:document.getElementById('nl-purpose').value,collateral:document.getElementById('nl-coll').value,officer:document.getElementById('nl-officer').value,status:'Active'};
   S.loans.push(loan);await saveDoc('loans',loan);
   alert(`Loan ${loan.id} submitted!\n${clientName}\nTotal: ${fmtK(total)} over ${months} months`);
