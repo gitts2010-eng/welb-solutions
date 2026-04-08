@@ -307,7 +307,7 @@ tfoot td{font-weight:700;background:#fafaf8;border-top:1px solid var(--border2)}
           <div class="stat-card"><div class="stat-label">Total Disbursed</div><div class="stat-value" id="d-disbursed">KES 0</div><div class="stat-sub" id="d-lcount">0 active loans</div></div>
           <div class="stat-card"><div class="stat-label">Collections MTD</div><div class="stat-value" id="d-collected">KES 0</div><div class="stat-sub">Payments received</div></div>
           <div class="stat-card danger"><div class="stat-label">In Arrears</div><div class="stat-value" id="d-arrears">KES 0</div><div class="stat-sub" id="d-acount">0 overdue</div></div>
-          <div class="stat-card"><div class="stat-label">Share Capital Raised</div><div class="stat-value" id="d-cap">KES 0</div><div class="stat-sub" id="d-cap-sub">of KES 150,000 target</div></div>
+          <div class="stat-card"><div class="stat-label">Share Capital Raised</div><div class="stat-value" id="d-cap">KES 0</div><div class="stat-sub" id="d-cap-sub">of KES 1.5M target</div></div>
         </div>
         <div class="stats-grid">
           <div class="stat-card"><div class="stat-label">Total Clients</div><div class="stat-value" id="d-clients">0</div><div class="stat-sub" id="d-groups">0 groups</div></div>
@@ -576,7 +576,7 @@ tfoot td{font-weight:700;background:#fafaf8;border-top:1px solid var(--border2)}
       <div class="page" id="page-founders">
         <div class="card">
           <div class="card-header"><div class="card-title">Founders (10 Seats)</div><button class="btn primary" onclick="openAddFounderModal()">+ Add Founder</button></div>
-          <div class="note" style="margin:12px 16px 0">Founders are the 10 original members who established WELB Solutions. They manage the company, appoint management, and share profits. Overall share capital target: <strong>KES 20,000</strong> per share Holder who are also part of founders</div>
+          <div class="note" style="margin:12px 16px 0">They appoint management at early stages, and share profit together with other shareholders. Overall share capital target: <strong>KES 20,000</strong> per founder who are also part of shareholders.</div>
           <table style="margin-top:12px"><thead><tr><th>#</th><th>Name</th><th>Phone</th><th>Role</th><th>Contributed</th><th>Progress</th><th>Status</th><th>Action</th></tr></thead>
           <tbody id="ftbody"><tr><td colspan="8" style="text-align:center;padding:24px;color:var(--text2)">No founders added yet</td></tr></tbody></table>
         </div>
@@ -606,7 +606,7 @@ tfoot td{font-weight:700;background:#fafaf8;border-top:1px solid var(--border2)}
       <div class="page" id="page-contributions">
         <div class="card">
           <div class="card-header"><div class="card-title">Share Capital Contributions</div><button class="btn primary" onclick="openContribModal()">+ Record Contribution</button></div>
-          <div class="note" style="margin:12px 16px 0">Overall share capital target is <strong>KES 150,000</strong> (KES 15,000 per founder as a guide). No upper limit per person.</div>
+          <div class="note" style="margin:12px 16px 0">Overall share capital target is <strong>KES 1.5 M</strong>. No upper limit per person.</div>
           <div style="padding:12px 16px;border-bottom:1px solid var(--border)" id="contrib-sum-cards"></div>
           <table><thead><tr><th>Founder</th><th>Contributed</th><th>Target</th><th>Remaining</th><th>Progress</th><th>Status</th></tr></thead>
           <tbody id="conttbody"></tbody><tfoot><tr id="conttfoot"></tr></tfoot></table>
@@ -1077,7 +1077,7 @@ async function saveFounder() {
 }
 
 function renderFounders() {
-  const PER_FOUNDER_TARGET=15000;
+  const PER_FOUNDER_TARGET=20000;
   const tb=document.getElementById('ftbody');
   if(!S.founders.length){tb.innerHTML='<tr><td colspan="8" style="text-align:center;padding:24px;color:var(--text2)">No founders yet</td></tr>';return;}
   tb.innerHTML=S.founders.map((f,i)=>{
@@ -1249,8 +1249,8 @@ async function saveContrib() {
 }
 
 function renderContributions() {
-  const TOTAL_TARGET=150000;
-  const PER_FOUNDER_TARGET=S.founders.length>0?Math.round(TOTAL_TARGET/S.founders.length):15000;
+  const TOTAL_TARGET=1500000;
+  const PER_FOUNDER_TARGET=S.founders.length>0?Math.round(TOTAL_TARGET/S.founders.length):20000;
   const total=S.contributions.reduce((s,c)=>s+c.amount,0);
   const complete=S.founders.filter(f=>founderTotal(f.id)>=PER_FOUNDER_TARGET).length;
   const overallPct=Math.min(100,Math.round(total/TOTAL_TARGET*100));
