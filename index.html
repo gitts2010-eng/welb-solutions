@@ -540,7 +540,7 @@ tfoot td{font-weight:700;background:#fafaf8;border-top:1px solid var(--border2)}
               <div class="form-group"><label class="form-label">Amount (KES) *</label><input class="form-input" type="number" id="nl-amt" placeholder="e.g. 50000" oninput="calcLoan()"></div>
               <div class="form-group"><label class="form-label">Interest Rate</label><input class="form-input" value="25% per month" disabled style="opacity:0.6"></div>
               <div class="form-group"><label class="form-label">Repayment Period</label>
-                <select class="form-input" id="nl-period" onchange="calcLoan()"><option value="1">1 Month</option><option value="3">3 Months</option><option value="6" selected>6 Months</option><option value="12">12 Months</option></select>
+                <select class="form-input" id="nl-period" onchange="calcLoan()"><option value="1" selected>1 Month</option><option value="1.25">5 Weeks</option></select>
               </div>
               <div class="form-group"><label class="form-label">Disbursement Date</label><input class="form-input" type="date" id="nl-date"></div>
               <div class="form-group"><label class="form-label">Purpose</label><input class="form-input" id="nl-purpose" placeholder="e.g. Business capital"></div>
@@ -1401,7 +1401,7 @@ function toggleLoanType() {
 }
 function calcLoan() {
   const amt=parseFloat(document.getElementById('nl-amt').value)||0;
-  const months=parseInt(document.getElementById('nl-period').value)||6;
+  const months=parseFloat(document.getElementById('nl-period').value)||1;
   const interest=amt*0.25*months,total=amt+interest;
   document.getElementById('s-p').textContent=fmtK(amt);
   document.getElementById('s-i').textContent=fmtK(interest);
@@ -1411,7 +1411,7 @@ function calcLoan() {
 async function saveLoan() {
   const ltype=document.getElementById('nl-type').value;
   const amt=parseFloat(document.getElementById('nl-amt').value);
-  const months=parseInt(document.getElementById('nl-period').value)||6;
+  const months=parseFloat(document.getElementById('nl-period').value)||1;
   const dt=document.getElementById('nl-date').value||today();
   if(!amt||amt<=0){alert('Enter valid amount.');return;}
   let clientId=null,clientName=null,groupId=null;
