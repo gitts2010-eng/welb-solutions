@@ -425,7 +425,7 @@ tfoot td{font-weight:700;background:#fafaf8;border-top:1px solid var(--border2)}
               </div>
               <div class="form-group"><label class="form-label">Phone *</label><input class="form-input" id="nc-phone" placeholder="07XX-XXX-XXX"></div>
               <div class="form-group"><label class="form-label">Alternative Phone</label><input class="form-input" id="nc-phone2" placeholder="07XX-XXX-XXX"></div>
-              <div class="form-group"><label class="form-label">Residential Area</label><input class="form-input" id="nc-loc" placeholder="e.g. Meru, Nkubu"></div>
+              <div class="form-group"><label class="form-label">Residential Area</label><input class="form-input" id="nc-loc" placeholder="e.g. Eastleigh, Nairobi"></div>
               <div class="form-group"><label class="form-label">Home Ownership</label>
                 <select class="form-input" id="nc-homeown"><option value="">-- Select --</option><option>Own Home</option><option>Renting</option><option>Family Home</option><option>Other</option></select>
               </div>
@@ -895,7 +895,11 @@ const fmtK = n => 'KES ' + fmt(n);
 const today = () => new Date().toISOString().split('T')[0];
 const dd = d => { if(!d) return '—'; const p=d.split('-'); return p[2]+'/'+p[1]+'/'+p[0]; };
 const loanPaid = id => S.payments.filter(p=>p.loanId===id).reduce((s,p)=>s+p.amount,0);
-const founderTotal = id => S.contributions.filter(c=>c.founderId===id||c.founderId===(S.founders.find(f=>f._id===id||f.id===id)?.id)).reduce((s,c)=>s+c.amount,0);
+const founderTotal = id => {
+  const f = S.founders.find(x=>x._id===id||x.id===id);
+  const ids = f ? [f._id, f.id].filter(Boolean) : [id];
+  return S.contributions.filter(c=>ids.includes(c.founderId)).reduce((s,c)=>s+c.amount,0);
+};
 
 const TITLES = {dashboard:'Dashboard',clients:'All Clients',addclient:'Add New Client',groups:'Loan Groups',newloan:'New Loan Application',disbursements:'Loan Disbursements',collections:'Collections MTD',arrears:'Loan Arrears',report:'Progressive Report',founders:'Founders',shareholders:'Shareholders',investors:'Investors','loan-repayments':'Loan Repayments','processed-payments':'Processed Payments','prepayments':'Prepayments','overpayments':'Overpayments','receipts':'Receipts','paying-summary':'Paying Summary','payments-report':'Payments Report','validate-payment':'Validate Payment',contributions:'Share Contributions',accounting:'Accounting',settings:'Settings'};
 
@@ -1209,12 +1213,17 @@ function renderFounders() {
     const total=founderTotal(f.id),pct=Math.min(100,Math.round(total/PER_FOUNDER_TARGET*100));
     const barC=pct>=100?'':pct<50?'danger':'warn';
     const status=pct>=100?'<span class="sb s-complete">At Target</span>':total>0?'<span class="sb s-pending">In Progress</span>':'<span class="sb s-overdue">Not Started</span>';
-    return `<tr><td>${i+1}</td><td><strong>${f.name}</strong></td><td>${f.phone||'—'}</td><td>${f.role}</td><td>${fmtK(total)}</td><td><div style="display:flex;align-items:center;gap:6px"><div class="prog-wrap"><div class="prog-bar ${barC}" style="width:${pct}%"></div></div><span style="font-size:11px;color:var(--text2)">${pct}%</span></div></td><td>${status}</td><td style="display:flex;gap:4px;flex-wrap:wrap"><button class="btn sm" onclick="quickContrib('${f.id}')">+ Contribute</button><button class="btn sm" style="background:var(--green-light);color:var(--green);border-color:#9fe1cb" onclick="printContribStatement('founder','${f.id}')">Statement</button><button class="btn sm" onclick="openEditFounder('${f._id||f.id}')">Edit</button><button class="btn danger-sm" onclick="deleteFounder('${f._id||f.id}','${f.name}')">Delete</button></td></tr>`;
+    return `<tr><td>${i+1}</td><td><strong>${f.name}</strong></td><td>${f.phone||'—'}</td><td>${f.role}</td><td>${fmtK(total)}</td><td><div style="display:flex;align-items:center;gap:6px"><div class="prog-wrap"><div class="prog-bar ${barC}" style="width:${pct}%"></div></div><span style="font-size:11px;color:var(--text2)">${pct}%</span></div></td><td>${status}</td><td style="display:flex;gap:4px;flex-wrap:wrap"><button class="btn sm" onclick="quickContrib('${f._id||f.id}')">+ Contribute</button><button class="btn sm" style="background:var(--green-light);color:var(--green);border-color:#9fe1cb" onclick="printContribStatement('founder','${f.id}')">Statement</button><button class="btn sm" onclick="openEditFounder('${f._id||f.id}')">Edit</button><button class="btn danger-sm" onclick="deleteFounder('${f._id||f.id}','${f.name}')">Delete</button></td></tr>`;
   }).join('');
 }
 
 function updateFounderSelects() {
-  const opts='<option value="">-- Select --</option>'+S.founders.map(f=>`<option value="${f.id}">${f.name}</option>`).join('');
+  // Use _id (Firestore doc id) as option value when available — this is what gets passed back from quickContrib buttons
+  // Store both ids as data attributes so matching works regardless of which id is used
+  const opts='<option value="">-- Select --</option>'+S.founders.map(f=>{
+    const val=f._id||f.id;
+    return `<option value="${val}" data-short-id="${f.id||''}" data-firestore-id="${f._id||''}">${f.name}</option>`;
+  }).join('');
   const el=document.getElementById('c-founder');if(el)el.innerHTML=opts;
   const osel=document.getElementById('nl-officer');if(osel)osel.innerHTML='<option value="">-- Select --</option>'+S.founders.map(f=>`<option value="${f.name}">${f.name}</option>`).join('');
 }
@@ -1401,7 +1410,7 @@ function openContribModal() {
   document.getElementById('c-amt').value='';document.getElementById('c-date').value=today();document.getElementById('c-note').value='';
   updateFounderSelects();openModal('modal-contrib');
 }
-function quickContrib(fid){openContribModal();const sel=document.getElementById('c-founder');for(let o of sel.options){if(o.value===fid){o.selected=true;break;}}}
+function quickContrib(fid){openContribModal();const sel=document.getElementById('c-founder');for(let o of sel.options){if(o.value===fid||o.dataset.shortId===fid||o.dataset.firestoreId===fid){o.selected=true;break;}}}
 
 async function saveContrib() {
   const fid=document.getElementById('c-founder').value;
@@ -1410,12 +1419,17 @@ async function saveContrib() {
   const note=document.getElementById('c-note').value.trim();
   if(!fid){alert('Select founder.');return;}
   if(!amt||amt<=0){alert('Enter valid amount.');return;}
-  // Robust founder lookup — match on stored id OR Firestore _id
-  const founder=S.founders.find(f=>(f.id===fid||f._id===fid));
+  // Robust founder lookup — match on Firestore _id, short id, or either
+  const founder=S.founders.find(f=>(f._id===fid||f.id===fid));
   if(!founder){alert('Founder not found. Please refresh and try again.');return;}
+  // Always store the canonical short id (e.g. F-001) as founderId for display matching
   const founderId=founder.id||founder._id;
+  // Also capture the Firestore _id so matching works after reload
+  const founderFirestoreId=founder._id||null;
   const prev=founderTotal(founderId),newTotal=prev+amt;
-  const c={id:'C-'+Date.now(),founderId,founderName:founder.name,amount:amt,date:dt,note,runningTotal:newTotal};
+  // Store founderName fresh from the founder object — never trust stale cache
+  const founderName=founder.name;
+  const c={id:'C-'+Date.now(),founderId,founderFirestoreId,founderName,amount:amt,date:dt,note,runningTotal:newTotal};
   S.contributions.push(c);await saveDoc('contributions',c);
   closeModal('modal-contrib');renderContributions();renderFounders();renderDashboard();
 }
@@ -1447,19 +1461,11 @@ function renderContributions() {
   const sortedContribs=[...S.contributions].sort((a,b)=>a.date.localeCompare(b.date)||(a.id||'').localeCompare(b.id||''));
   ht.innerHTML=sortedContribs.map(c=>{
     // Always resolve name live from founders array — fixes wrong-name bug
-    ht.innerHTML = sortedContribs.map(c => {
-  const name = c.founderName || 'Unknown'; // use stored name directly
-
-  return `<tr>
-    <td>${dd(c.date)}</td>
-    <td><strong>${name}</strong></td>
-    <td>${fmtK(c.amount)}</td>
-    <td>${fmtK(c.runningTotal)}</td>
-    <td>${c.note || '—'}</td>
-    <td><button class="btn sm" onclick="printContribStatement('founder','${c.founderId}')">Statement</button></td>
-    <td><button class="btn danger-sm" onclick="deleteContrib('${c._id||c.id}','${name}',${c.amount})">Delete</button></td>
-  </tr>`;
-}).join('');
+    // Match on founderId OR founderFirestoreId (both stored since the fix)
+    const liveFounder=S.founders.find(f=>
+      f.id===c.founderId||f._id===c.founderId||
+      (c.founderFirestoreId&&(f._id===c.founderFirestoreId||f.id===c.founderFirestoreId))
+    );
     const displayName=liveFounder?liveFounder.name:(c.founderName||'Unknown');
     return `<tr><td>${dd(c.date)}</td><td><strong>${displayName}</strong></td><td>${fmtK(c.amount)}</td><td>${fmtK(c.runningTotal)}</td><td>${c.note||'—'}</td><td><button class="btn sm" style="background:var(--green-light);color:var(--green);border-color:#9fe1cb" onclick="printContribStatement('founder','${c.founderId}')">Statement</button></td><td><button class="btn danger-sm" onclick="deleteContrib('${c._id||c.id}','${displayName}',${c.amount})">Delete</button></td></tr>`;
   }).join('');
