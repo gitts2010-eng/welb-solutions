@@ -425,7 +425,7 @@ tfoot td{font-weight:700;background:#fafaf8;border-top:1px solid var(--border2)}
               </div>
               <div class="form-group"><label class="form-label">Phone *</label><input class="form-input" id="nc-phone" placeholder="07XX-XXX-XXX"></div>
               <div class="form-group"><label class="form-label">Alternative Phone</label><input class="form-input" id="nc-phone2" placeholder="07XX-XXX-XXX"></div>
-              <div class="form-group"><label class="form-label">Residential Area</label><input class="form-input" id="nc-loc" placeholder="e.g. Eastleigh, Nairobi"></div>
+              <div class="form-group"><label class="form-label">Residential Area</label><input class="form-input" id="nc-loc" placeholder="e.g. Meru, Nkubu"></div>
               <div class="form-group"><label class="form-label">Home Ownership</label>
                 <select class="form-input" id="nc-homeown"><option value="">-- Select --</option><option>Own Home</option><option>Renting</option><option>Family Home</option><option>Other</option></select>
               </div>
@@ -1447,7 +1447,19 @@ function renderContributions() {
   const sortedContribs=[...S.contributions].sort((a,b)=>a.date.localeCompare(b.date)||(a.id||'').localeCompare(b.id||''));
   ht.innerHTML=sortedContribs.map(c=>{
     // Always resolve name live from founders array — fixes wrong-name bug
-    const liveFounder=S.founders.find(f=>f.id===c.founderId||f._id===c.founderId);
+    ht.innerHTML = sortedContribs.map(c => {
+  const name = c.founderName || 'Unknown'; // use stored name directly
+
+  return `<tr>
+    <td>${dd(c.date)}</td>
+    <td><strong>${name}</strong></td>
+    <td>${fmtK(c.amount)}</td>
+    <td>${fmtK(c.runningTotal)}</td>
+    <td>${c.note || '—'}</td>
+    <td><button class="btn sm" onclick="printContribStatement('founder','${c.founderId}')">Statement</button></td>
+    <td><button class="btn danger-sm" onclick="deleteContrib('${c._id||c.id}','${name}',${c.amount})">Delete</button></td>
+  </tr>`;
+}).join('');
     const displayName=liveFounder?liveFounder.name:(c.founderName||'Unknown');
     return `<tr><td>${dd(c.date)}</td><td><strong>${displayName}</strong></td><td>${fmtK(c.amount)}</td><td>${fmtK(c.runningTotal)}</td><td>${c.note||'—'}</td><td><button class="btn sm" style="background:var(--green-light);color:var(--green);border-color:#9fe1cb" onclick="printContribStatement('founder','${c.founderId}')">Statement</button></td><td><button class="btn danger-sm" onclick="deleteContrib('${c._id||c.id}','${displayName}',${c.amount})">Delete</button></td></tr>`;
   }).join('');
