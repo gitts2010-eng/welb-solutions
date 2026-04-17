@@ -896,9 +896,13 @@ const today = () => new Date().toISOString().split('T')[0];
 const dd = d => { if(!d) return '—'; const p=d.split('-'); return p[2]+'/'+p[1]+'/'+p[0]; };
 const loanPaid = id => S.payments.filter(p=>p.loanId===id).reduce((s,p)=>s+p.amount,0);
 const founderTotal = id => {
+  // Resolve all possible IDs for this founder (short id + Firestore _id)
   const f = S.founders.find(x=>x._id===id||x.id===id);
   const ids = f ? [f._id, f.id].filter(Boolean) : [id];
-  return S.contributions.filter(c=>ids.includes(c.founderId)).reduce((s,c)=>s+c.amount,0);
+  return S.contributions.filter(c=>
+    ids.includes(c.founderId) ||
+    (c.founderFirestoreId && ids.includes(c.founderFirestoreId))
+  ).reduce((s,c)=>s+c.amount,0);
 };
 
 const TITLES = {dashboard:'Dashboard',clients:'All Clients',addclient:'Add New Client',groups:'Loan Groups',newloan:'New Loan Application',disbursements:'Loan Disbursements',collections:'Collections MTD',arrears:'Loan Arrears',report:'Progressive Report',founders:'Founders',shareholders:'Shareholders',investors:'Investors','loan-repayments':'Loan Repayments','processed-payments':'Processed Payments','prepayments':'Prepayments','overpayments':'Overpayments','receipts':'Receipts','paying-summary':'Paying Summary','payments-report':'Payments Report','validate-payment':'Validate Payment',contributions:'Share Contributions',accounting:'Accounting',settings:'Settings'};
@@ -1419,15 +1423,18 @@ async function saveContrib() {
   const note=document.getElementById('c-note').value.trim();
   if(!fid){alert('Select founder.');return;}
   if(!amt||amt<=0){alert('Enter valid amount.');return;}
-  // Robust founder lookup — match on Firestore _id, short id, or either
-  const founder=S.founders.find(f=>(f._id===fid||f.id===fid));
+  // Robust founder lookup — match on Firestore _id OR short id
+  const founder=S.founders.find(f=>f._id===fid||f.id===fid);
   if(!founder){alert('Founder not found. Please refresh and try again.');return;}
-  // Always store the canonical short id (e.g. F-001) as founderId for display matching
-  const founderId=founder.id||founder._id;
-  // Also capture the Firestore _id so matching works after reload
+  // ALWAYS store the canonical short id (e.g. F-001) as founderId
+  // This ensures founderTotal(f.id) always matches correctly
+  const founderId=founder.id;
+  // Also store Firestore _id as a fallback for older records
   const founderFirestoreId=founder._id||null;
-  const prev=founderTotal(founderId),newTotal=prev+amt;
-  // Store founderName fresh from the founder object — never trust stale cache
+  // Compute running total using the canonical short id
+  const prev=founderTotal(founderId);
+  const newTotal=prev+amt;
+  // Store founderName directly from the founder object — never rely on stale data
   const founderName=founder.name;
   const c={id:'C-'+Date.now(),founderId,founderFirestoreId,founderName,amount:amt,date:dt,note,runningTotal:newTotal};
   S.contributions.push(c);await saveDoc('contributions',c);
