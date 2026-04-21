@@ -715,16 +715,16 @@ tfoot td{font-weight:700;background:#fafaf8;border-top:1px solid var(--border2)}
       <!-- CONTRIBUTIONS -->
       <div class="page" id="page-contributions">
         <div class="card">
-          <div class="card-header"><div class="card-title">Share Capital Contributions</div><button class="btn primary" onclick="openContribModal()">+ Record Contribution</button></div>
-          <div class="note" style="margin:12px 16px 0">Overall share capital target is <strong>KES 20,000</strong> per shareholder. No upper limit per person.</div>
+          <div class="card-header"><div class="card-title">Share Capital Contributions</div></div>
+          <div class="note" style="margin:12px 16px 0">Overall share capital target is <strong>KES 20,000</strong> per shareholder. Contributions are recorded per shareholder from the Shareholders tab.</div>
           <div style="padding:12px 16px;border-bottom:1px solid var(--border)" id="contrib-sum-cards"></div>
-          <table><thead><tr><th>Founder</th><th>Contributed</th><th>Target</th><th>Remaining</th><th>Progress</th><th>Status</th></tr></thead>
+          <table><thead><tr><th>Shareholder</th><th>Contributed</th><th>Target</th><th>Remaining</th><th>Progress</th><th>Status</th></tr></thead>
           <tbody id="conttbody"></tbody><tfoot><tr id="conttfoot"></tr></tfoot></table>
         </div>
         <div class="card">
           <div class="card-header"><div class="card-title">Contribution History</div></div>
-          <table><thead><tr><th>Date</th><th>Founder</th><th>Amount</th><th>Running Total</th><th>Note</th><th>Statement</th><th>Action</th></tr></thead>
-          <tbody id="conthtbody"><tr><td colspan="7" style="text-align:center;padding:24px;color:var(--text2)">No contributions yet</td></tr></tbody></table>
+          <table><thead><tr><th>Date</th><th>Shareholder</th><th>Amount</th><th>Running Total</th><th>Note</th><th>Statement</th></tr></thead>
+          <tbody id="conthtbody"><tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text2)">No contributions yet</td></tr></tbody></table>
         </div>
       </div>
 
@@ -886,7 +886,7 @@ const FIREBASE_CONFIG = {
   appId: "1:226538094767:web:6a8e9815c2b69d64fc945a"
 };
 
-let S = { clients:[], loans:[], founders:[], contributions:[], payments:[], groups:[], shareholders:[], investors:[], settings:{} };
+let S = { clients:[], loans:[], founders:[], contributions:[], payments:[], groups:[], shareholders:[], investors:[], shContributions:[], settings:{} };
 let db = null, auth = null, dbOk = false, currentUser = null;
 let nc_imgs = { pass:null, idf:null, idb:null, biz:null };
 
@@ -1010,7 +1010,7 @@ async function loadAllData() {
       if(s.company){const el=document.getElementById('set-company');if(el)el.value=s.company;}
       if(s.displayName){const el=document.getElementById('set-dname');if(el)el.value=s.displayName;}
     }
-    const cols = ['clients','loans','founders','contributions','payments','groups','shareholders','investors'];
+    const cols = ['clients','loans','founders','contributions','payments','groups','shareholders','investors','shContributions'];
     for(const col of cols) {
       const snap = await db.collection(col).get();
       S[col] = snap.docs.map(d=>({...d.data(),_id:d.id}));
@@ -1326,16 +1326,18 @@ async function saveShContrib() {
   const note = document.getElementById('shc-note').value.trim();
   const sh = S.shareholders.find(s=>(s._id||s.id)===_shContribTargetId);
   if(!sh){alert('Shareholder not found.');return;}
-  // Update shareholder investment total
-  const idx = S.shareholders.findIndex(s=>(s._id||s.id)===_shContribTargetId);
-  S.shareholders[idx] = {...S.shareholders[idx], investment: (S.shareholders[idx].investment||0) + amt};
-  await saveDoc('shareholders', S.shareholders[idx]);
-  // Also log it as a contribution record (stored in a shContributions sub-key on the shareholder or as separate doc)
-  const contrib = {id:'SHC-'+Date.now(), shareholderId: _shContribTargetId, shareholderName: sh.name, amount: amt, date: dt, note};
-  if(db){try{await db.collection('shContributions').add(contrib);}catch(e){console.error(e);}}
+  // Compute running total from existing contribution records only
+  const existing = (S.shContributions||[]).filter(c=>c.shareholderId===_shContribTargetId||c.shareholderId===(sh._id||sh.id));
+  const prevTotal = existing.reduce((s,c)=>s+c.amount, 0);
+  const newRunning = prevTotal + amt;
+  // Log the contribution record — do NOT modify investment (that is the share capital target)
+  const contrib = {id:'SHC-'+Date.now(), shareholderId: sh._id||sh.id, shareholderName: sh.name, amount: amt, date: dt, note, runningTotal: newRunning};
+  if(!S.shContributions) S.shContributions = [];
+  S.shContributions.push(contrib);
+  if(db){try{const ref=await db.collection('shContributions').add(contrib);contrib._id=ref.id;}catch(e){console.error(e);}}
   closeModal('modal-sh-contrib');
-  renderShareholders();renderDashboard();
-  alert('Contribution of KES '+fmt(amt)+' recorded for '+sh.name+'.');
+  renderShareholders();renderContributions();renderDashboard();
+  alert('Contribution of KES '+fmt(amt)+' recorded for '+sh.name+'. Running total: KES '+fmt(newRunning));
 }
 
 // ============================================================
@@ -1431,39 +1433,38 @@ async function saveContrib() {
 }
 
 function renderContributions() {
-  const PER_FOUNDER_TARGET=20000;
-  const TOTAL_TARGET=S.founders.length>0?PER_FOUNDER_TARGET*S.founders.length:200000;
-  const total=S.contributions.reduce((s,c)=>s+c.amount,0);
-  const complete=S.founders.filter(f=>founderTotal(f.id)>=PER_FOUNDER_TARGET).length;
+  const PER_SH_TARGET=20000;
+  // Helper: get total contributions made by a shareholder from shContributions records
+  const shTotal = shId => (S.shContributions||[]).filter(c=>c.shareholderId===shId).reduce((s,c)=>s+c.amount,0);
+  const TOTAL_TARGET=S.shareholders.length>0?PER_SH_TARGET*S.shareholders.length:200000;
+  const total=(S.shContributions||[]).reduce((s,c)=>s+c.amount,0);
+  const complete=S.shareholders.filter(sh=>shTotal(sh._id||sh.id)>=PER_SH_TARGET).length;
   const overallPct=Math.min(100,Math.round(total/TOTAL_TARGET*100));
   document.getElementById('contrib-sum-cards').innerHTML=`<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
-    <div class="mini-stat"><div class="mini-val">${fmtK(total)}</div><div class="mini-lbl">Total Raised</div></div>
+    <div class="mini-stat"><div class="mini-val">${fmtK(total)}</div><div class="mini-lbl">Total Contributed</div></div>
     <div class="mini-stat"><div class="mini-val">${fmtK(TOTAL_TARGET)}</div><div class="mini-lbl">Overall Target</div></div>
     <div class="mini-stat"><div class="mini-val">${overallPct}%</div><div class="mini-lbl">Overall Progress</div></div>
-    <div class="mini-stat"><div class="mini-val">${complete} / ${S.founders.length}</div><div class="mini-lbl">Founders at Target</div></div>
+    <div class="mini-stat"><div class="mini-val">${complete} / ${S.shareholders.length}</div><div class="mini-lbl">Shareholders at Target</div></div>
   </div>`;
   const tb=document.getElementById('conttbody'),tf=document.getElementById('conttfoot');
-  if(!S.founders.length){tb.innerHTML='<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text2)">No founders added</td></tr>';return;}
-  tb.innerHTML=S.founders.map(f=>{
-    const tot=founderTotal(f.id),pct=Math.min(100,Math.round(tot/PER_FOUNDER_TARGET*100)),rem=Math.max(0,PER_FOUNDER_TARGET-tot);
+  if(!S.shareholders.length){tb.innerHTML='<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text2)">No shareholders added</td></tr>';return;}
+  tb.innerHTML=[...S.shareholders].sort((a,b)=>(a.memberNo||'').localeCompare(b.memberNo||'')).map(sh=>{
+    const shId=sh._id||sh.id;
+    const tot=shTotal(shId),pct=Math.min(100,Math.round(tot/PER_SH_TARGET*100)),rem=Math.max(0,PER_SH_TARGET-tot);
     const barC=pct>=100?'':pct<50?'danger':'warn';
     const status=pct>=100?'<span class="sb s-complete">At Target</span>':tot>0?'<span class="sb s-pending">In Progress</span>':'<span class="sb s-overdue">Not Started</span>';
-    return `<tr><td>${f.name}</td><td>${fmtK(tot)}</td><td>${fmtK(PER_FOUNDER_TARGET)}</td><td style="color:${rem>0?'var(--warn)':'var(--green)'}">${fmtK(rem)}</td><td><div style="display:flex;align-items:center;gap:6px"><div class="prog-wrap"><div class="prog-bar ${barC}" style="width:${pct}%"></div></div><span style="font-size:11px;color:var(--text2)">${pct}%</span></div></td><td>${status}</td></tr>`;
+    return `<tr><td>${sh.name}</td><td>${fmtK(tot)}</td><td>${fmtK(PER_SH_TARGET)}</td><td style="color:${rem>0?'var(--warn)':'var(--green)'}">${fmtK(rem)}</td><td><div style="display:flex;align-items:center;gap:6px"><div class="prog-wrap"><div class="prog-bar ${barC}" style="width:${pct}%"></div></div><span style="font-size:11px;color:var(--text2)">${pct}%</span></div></td><td>${status}</td></tr>`;
   }).join('');
   tf.innerHTML=`<td>Totals</td><td>${fmtK(total)}</td><td>${fmtK(TOTAL_TARGET)}</td><td>${fmtK(Math.max(0,TOTAL_TARGET-total))}</td><td></td><td></td>`;
   const ht=document.getElementById('conthtbody');
-  if(!S.contributions.length){ht.innerHTML='<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--text2)">No contributions yet</td></tr>';return;}
-  // Sort oldest first so latest entry is always at the bottom
-  const sortedContribs=[...S.contributions].sort((a,b)=>a.date.localeCompare(b.date)||(a.id||'').localeCompare(b.id||''));
-  ht.innerHTML=sortedContribs.map(c=>{
-    // Always resolve name live from founders array — fixes wrong-name bug
-    // Match on founderId OR founderFirestoreId (both stored since the fix)
-    const liveFounder=S.founders.find(f=>
-      f.id===c.founderId||f._id===c.founderId||
-      (c.founderFirestoreId&&(f._id===c.founderFirestoreId||f.id===c.founderFirestoreId))
-    );
-    const displayName=liveFounder?liveFounder.name:(c.founderName||'Unknown');
-    return `<tr><td>${dd(c.date)}</td><td><strong>${displayName}</strong></td><td>${fmtK(c.amount)}</td><td>${fmtK(c.runningTotal)}</td><td>${c.note||'—'}</td><td><button class="btn sm" style="background:var(--green-light);color:var(--green);border-color:#9fe1cb" onclick="printContribStatement('founder','${c.founderId}')">Statement</button></td><td><button class="btn danger-sm" onclick="deleteContrib('${c._id||c.id}','${displayName}',${c.amount})">Delete</button></td></tr>`;
+  const allSHContribs=S.shContributions||[];
+  if(!allSHContribs.length){ht.innerHTML='<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text2)">No contributions yet</td></tr>';return;}
+  const sorted=[...allSHContribs].sort((a,b)=>a.date.localeCompare(b.date)||(a.id||'').localeCompare(b.id||''));
+  ht.innerHTML=sorted.map(c=>{
+    const sh=S.shareholders.find(s=>(s._id||s.id)===c.shareholderId);
+    const displayName=sh?sh.name:(c.shareholderName||'Unknown');
+    const shDocId=sh?.(sh._id||sh.id)||c.shareholderId;
+    return `<tr><td>${dd(c.date)}</td><td><strong>${displayName}</strong></td><td>${fmtK(c.amount)}</td><td>${fmtK(c.runningTotal||0)}</td><td>${c.note||'—'}</td><td><button class="btn sm" style="background:var(--green-light);color:var(--green);border-color:#9fe1cb" onclick="printContribStatement('shareholder','${shDocId}')">Statement</button></td></tr>`;
   }).join('');
 }
 
@@ -1682,8 +1683,14 @@ function printContribStatement(type, personId) {
     personType = person?.role||'Founder';
   } else {
     person = S.shareholders.find(s=>s.id===personId||s._id===personId);
-    // For pure shareholders, use shContributions if available, else show single investment record
-    contribs = [{date:person?.dateJoined||today(), amount:person?.investment||0, note:'Initial investment', runningTotal:person?.investment||0}];
+    const shId = person?._id||person?.id;
+    // Use only actual contribution records — investment is the target, not a contribution
+    const rawContribs = (S.shContributions||[])
+      .filter(c=>c.shareholderId===shId||c.shareholderId===personId)
+      .sort((a,b)=>a.date.localeCompare(b.date));
+    // Recompute running totals in order
+    let running = 0;
+    contribs = rawContribs.map(c=>{ running+=c.amount; return {...c, runningTotal: running}; });
     personType = 'Shareholder';
   }
 
